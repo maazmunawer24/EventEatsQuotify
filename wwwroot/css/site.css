@@ -1,0 +1,74 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+/*body {
+  margin-bottom: 60px;
+}*/
+
+.text-pink{
+    color:#ff1448;
+
+}
+.text-pink-menu {
+    color: #ff1448;
+}
+.text-pink-menu:hover {
+    color: #FFB4B4;
+}
+
+.nav-link{
+    letter-spacing:2px;
+}
+#carouselExampleSlidesOnly{
+    /*height:50%;*/
+    width:100%;
+}
+.row-carousel{
+    width:100%
+}
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    flex: 1;
+}
+footer {
+    background-color: #FFB4B4;
+    height: 230px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    /*background-color: #333;*/ /* Adjust the background color as needed */
+    /*color: #fff;*/ /* Adjust the text color as needed */
+    padding: 20px;
+}
+header{
+    z-index:1000;
+}
+
+.dishCard{
+    height:250px;
+}
+
+.validation-summary-errors li{
+    color:#dc3545;
+}
+.login-carousel{
+ /*   height:70%;
+    width:75%;*/
+}

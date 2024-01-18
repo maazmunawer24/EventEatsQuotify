@@ -1,0 +1,86 @@
+﻿@model EventEatsQuotify.ViewModels.VendorProfileViewModel
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+
+            <div class="card shadow mt-5">
+                <div class="card-body">
+
+                    <h1 class="text-center mb-4">Edit Vendor Profile</h1>
+
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <label asp-for="BusinessName" class="form-label">Business Name</label>
+                                <input asp-for="BusinessName" class="form-control" />
+                                <span asp-validation-for="BusinessName" class="text-danger"></span>
+                            </div>
+                            <div class="col">
+                                <label asp-for="ContactEmail" class="form-label">Contact Email</label>
+                                <input asp-for="ContactEmail" class="form-control" />
+                                <span asp-validation-for="ContactEmail" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ContactPhone" class="form-label">Contact Phone</label>
+                            <input asp-for="ContactPhone" class="form-control" />
+                            <span asp-validation-for="ContactPhone" class="text-danger"></span>
+                        </div>
+
+                        <!-- Additional properties -->
+                        <div class="mb-3">
+                            <label asp-for="Location" class="form-label">Location</label>
+                            <input asp-for="Location" class="form-control" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Website" class="form-label">Website</label>
+                            <input asp-for="Website" class="form-control" />
+                            <span asp-validation-for="Website" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Specialties" class="form-label">Specialties</label>
+                            <input asp-for="Specialties" class="form-control" />
+                            <span asp-validation-for="Specialties" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">About Us</label>
+                            <input asp-for="Description" class="form-control" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="MenuHighlights" class="form-label">Menu Highlights</label>
+                            <input asp-for="MenuHighlights" class="form-control" />
+                            <span asp-validation-for="MenuHighlights" class="text-danger"></span>
+                        </div>
+
+                        <!-- Profile Picture Upload -->
+                        <div class="mb-3">
+                            <label asp-for="ProfilePictureFile" class="form-label">Profile Picture</label>
+                            <input asp-for="ProfilePictureFile" type="file" class="form-control" />
+                            <span asp-validation-for="ProfilePictureFile" class="text-danger"></span>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+                        </div>
+                    </form>
+
+                    <p class="text-center mt-3">
+                        <a asp-action="Index" class="btn btn-link">Back to Profile</a>
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

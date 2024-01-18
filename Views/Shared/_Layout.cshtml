@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EventEats Quotify</title>
+
+    <!-- External Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/c58416c086.js" crossorigin="anonymous"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- External Styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/EventEatsQuotify.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="position-sticky top-0">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand text-danger fw-bold fs-6" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" asp-area="" asp-controller="Home" asp-action="Index">EventEats Quotify</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="">Order Now</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="">Menu</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="">Feedbacks</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="">Contact</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="FoodItem" asp-action="Index">Food Items</a>
+                        </li>
+
+                        <!-- Vendor-specific link -->
+                        <li class="nav-item vendor-link">
+                            <a class="nav-link text-dark" asp-controller="VendorProfile" asp-action="Index">Vendor Profile</a>
+                        </li>
+
+                        <!-- Customer-specific link -->
+                        <li class="nav-item customer-link">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="CustomerProfile" asp-action="Index">Customer Profile</a>
+                        </li>
+                    </ul>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <div>
+                            <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="Login">Log In</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">Hi, @User.Identity.Name!</span>
+                            <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="LogOut">Log Out</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-md-4 col-xl-4">
+                    <h4>EventEats Quotify</h4>
+                </div>
+                <div class="col-sm-4 col-md-4 col-xl-4">
+                    <h4>Contact Us</h4>
+                    <div class="mt-3">
+                        <span>
+                            <i class="fab fa-instagram fs-5"></i>
+                        </span>
+                        <span class="fs-6 mx-1">
+                            Instagram
+                        </span>
+                    </div>
+                    <div class="mb-1">
+                        <span>
+                            <i class="fab fa-whatsapp fs-5"></i>
+                        </span>
+                        <span class="fs-6 mx-1">
+                            Whatsapp
+                        </span>
+                    </div>
+                    <div class="mb-1">
+                        <span>
+                            <i class="fab fa-facebook fs-5"></i>
+                        </span>
+                        <span class="fs-6 mx-1">
+                            Facebook
+                        </span>
+                    </div>
+                    <div class="mb-1">
+                        <span>
+                            <i class="far fa-envelope fs-5"></i>
+                        </span>
+                        <span class="fs-6 mx-1">
+                            Mail
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                    <h4>Address</h4>
+                    <pre>XYZ, Block A, Karachi Pakistan</pre>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-center">Powered By CATERINGEXPERTS</h3>
+            </div>
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        @using System.Security.Claims
+
+        // JavaScript to conditionally show/hide elements based on user role
+        document.addEventListener('DOMContentLoaded', function () {
+            var userRole = '@User.FindFirstValue("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")';
+
+            // Check user role and show/hide links accordingly
+            if (userRole === 'Vendor') {
+                // Show Vendor-specific links
+                document.querySelectorAll('.customer-link').forEach(function (el) {
+                    el.style.display = 'none';
+                });
+            } else if (userRole === 'Customer') {
+                // Show Customer-specific links
+                document.querySelectorAll('.vendor-link').forEach(function (el) {
+                    el.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

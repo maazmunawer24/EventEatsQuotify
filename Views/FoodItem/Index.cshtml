@@ -1,0 +1,116 @@
+﻿@model EventEatsQuotify.ViewModels.FoodItemViewModel
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Food Items</h1>
+        </div>
+    </div>
+
+    @if (User.IsInRole("Vendor"))
+    {
+        <!-- Vendor-specific view for uploading food items -->
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center mb-4">Upload Food Items</h2>
+                <!-- Your vendor-specific form for uploading food items goes here -->
+                <!-- You can create a separate partial view or form for this purpose -->
+                @await Html.PartialAsync("VendorUploadForm", new VendorFoodItemUploadModel())
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Customer Dropdown for Vendors -->
+        <div class="row">
+            <div class="col-12 text-end">
+                <label for="vendorDropdown" class="form-label">Select Vendor:</label>
+                <select id="vendorDropdown" class="form-select" onchange="loadFoodItems()">
+                    <option value="">Select Vendor</option>
+                    @foreach (var vendor in Model.Vendors)
+                    {
+                        <option value="@vendor.Id">@vendor.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <!-- Food Items Grid -->
+        <div class="row justify-content-center">
+            <div class="col-8">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Food Item</th>
+                            <th>Quantity (KG)</th>
+                            <th>Price per KG</th>
+                            <!-- Add more columns as needed -->
+                        </tr>
+                    </thead>
+                    <tbody id="foodItemsGrid">
+                        <!-- The grid rows will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Get Quotation Button -->
+        <div class="row">
+            <div class="col-12 text-start">
+                <button type="button" class="btn btn-primary" onclick="addFoodItemRow()">+ Add Food Item</button>
+            </div>
+            <div class="col-12 text-end">
+                <button type="submit" class="btn btn-success">Get Quotation</button>
+            </div>
+        </div>
+    }
+</div>
+
+
+@section scripts {
+    <script>
+        function loadFoodItems() {
+            debugger;
+            var vendorDropdown = document.getElementById("vendorDropdown");
+            var vendorId = vendorDropdown.value;
+
+            if (!vendorId) {
+                debugger;
+                // No vendor selected, do not proceed
+                return;
+            }
+
+            fetch(`/FoodItem/GetFoodItems?vendorId=${vendorId}`)
+                .then(response => response.json())
+                .then(data => {
+                    var foodItemsGrid = document.getElementById("foodItemsGrid");
+                    foodItemsGrid.innerHTML = ""; // Clear existing rows
+
+                    data.forEach(foodItem => {
+                        var row = foodItemsGrid.insertRow();
+                        var cell1 = row.insertCell(0);
+                        var cell2 = row.insertCell(1);
+                        var cell3 = row.insertCell(2);
+
+                        // Adjust the rendering based on your actual data structure
+                        cell1.innerHTML = `<select class="form-select" name="FoodItems[${foodItem.Id}].Id">${renderFoodItemsOptions(foodItem)}</select>`;
+                        cell2.innerHTML = `<input type="number" class="form-control" name="FoodItems[${foodItem.Id}].SelectedQuantity" value="0" min="0">`;
+                        cell3.innerHTML = `$${foodItem.Price}`;
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function renderFoodItemsOptions(foodItem) {
+            // This function renders the options for the food items dropdown
+            // You can customize this based on your requirements
+            // For simplicity, it returns a single option with the food item name
+            return `<option value="${foodItem.Id}">${foodItem.Name}</option>`;
+        }
+
+        function addFoodItemRow() {
+            // Implement logic to dynamically add a new row to the food items grid
+            // This can be achieved by cloning an existing row and appending it to the grid
+        }
+    </script>
+}

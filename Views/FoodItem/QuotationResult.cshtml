@@ -1,0 +1,36 @@
+﻿@model EventEatsQuotify.ViewModels.FoodItemViewModel
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Quotation Result</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Food Item</th>
+                        <th>Quantity (KG)</th>
+                        <!-- Add more columns as needed -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.SelectedFoodItems.Count; i++)
+                    {
+                        var foodItemId = Model.SelectedFoodItems[i].FoodItemId;
+                        var selectedQuantity = Model.SelectedQuantities[i].SelectedQuantity;
+
+                        <tr>
+                            <td>@Model.FoodItems.FirstOrDefault(item => item.Id == foodItemId)?.Name</td>
+                            <td>@selectedQuantity</td>
+                            <!-- Display additional columns as needed -->
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

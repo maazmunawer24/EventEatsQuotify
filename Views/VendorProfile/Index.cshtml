@@ -1,0 +1,65 @@
+﻿@model EventEatsQuotify.ViewModels.VendorProfileViewModel
+
+<div class="container mt-5">
+    <div class="row">
+
+        <!-- Profile Image -->
+        <div class="col-md-4">
+            <div class="card text-center p-4 border border-primary rounded-3 shadow">
+                @if (Model.ProfilePicture != null)
+                {
+                    <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProfilePicture)" alt="Profile Image" class="img-fluid rounded-circle mb-3">
+                }
+                else
+                {
+                    <img src="~/images/defaultimages/user.png" alt="Default Profile Image" class="img-fluid rounded-circle mb-3">
+                }
+
+                <p class="lead text-muted fs-6">Vendor since: [@Model.RegistrationDate.ToShortDateString()]</p>
+            </div>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="col-md-8">
+            <div class="card shadow p-4 border-0 rounded-3">
+                <h1 class="display-4 text-primary mb-4">@Model.BusinessName</h1>
+
+                <dl class="row">
+                    <dt class="col-sm-3 text-muted">Contact Email:</dt>
+                    <dd class="col-sm-9">@Model.ContactEmail</dd>
+
+                    <dt class="col-sm-3 text-muted">Contact Phone:</dt>
+                    <dd class="col-sm-9">@Model.ContactPhone</dd>
+
+                    <!-- Additional properties -->
+                    <dt class="col-sm-3 text-muted">Location:</dt>
+                    <dd class="col-sm-9">@Model.Location</dd>
+
+                    <dt class="col-sm-3 text-muted">Website:</dt>
+                    <dd class="col-sm-9"><a href="@Model.Website" target="_blank" class="text-decoration-none text-primary">@Model.Website</a></dd>
+
+                    <dt class="col-sm-3 text-muted">Specialties:</dt>
+                    <dd class="col-sm-9">@Model.Specialties</dd>
+                </dl>
+
+                <hr class="my-4 border-primary">
+
+                <h4 class="text-primary">About Us</h4>
+                <p class="lead">@Model.Description</p>
+
+                <!-- Additional sections -->
+                <hr class="my-4 border-primary">
+                <h4 class="text-primary">Menu Highlights</h4>
+                <p class="lead">@Model.MenuHighlights</p>
+
+                <hr class="my-4 border-primary">
+                <h4 class="text-primary">Customer Reviews</h4>
+                <p class="lead">@Model.CustomerReviews</p>
+
+                <div class="text-center mt-4">
+                    <a asp-action="Edit" class="btn btn-primary btn-lg rounded-pill">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

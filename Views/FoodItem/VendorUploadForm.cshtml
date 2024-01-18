@@ -1,0 +1,69 @@
+﻿@model EventEatsQuotify.Models.VendorFoodItemUploadModel
+<script src="/js/site.js"></script>
+
+
+<!-- Your HTML Form and Table -->
+
+<form method="post" id="uploadForm">
+    <!-- Add your form fields for uploading food items here -->
+    <div class="mb-3">
+        <label for="foodItemName" class="form-label">Food Item Name</label>
+        <input type="text" class="form-control" id="foodItemName" name="FoodItems[0].Name" required>
+    </div>
+
+    <div class="mb-3">
+        <label for="price" class="form-label">Price Per KG (Rupees)</label>
+        <input type="number" class="form-control" id="price" name="FoodItems[0].Price" min="0" required>
+    </div>
+
+    <!-- Add more fields as needed -->
+
+    <button type="button" class="btn btn-primary" onclick="uploadFoodItem()">Upload Food Item</button>
+</form>
+
+<div id="foodItemsContainer">
+    <!-- Render the initial grid using Razor syntax -->
+    @if (Model.FoodItems != null && Model.FoodItems.Any())
+    {
+        <div class="mt-5">
+            <h2>Uploaded Food Items</h2>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Food Item</th>
+                        <th>Price Per KG (Rupees)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var foodItem in Model.FoodItems)
+                    {
+                        <tr>
+                            <td>@foodItem.Name</td>
+                            <td>@foodItem.Price</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="contextMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Actions
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="contextMenu">
+                                        <a class="dropdown-item" href="#" onclick="editFoodItem(@foodItem.Id)">Edit</a>
+                                        <a class="dropdown-item" href="#" onclick="deleteFoodItem(@foodItem.Id)">Delete</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="mt-5">
+            <p>No food items added.</p>
+        </div>
+    }
+</div>
+
