@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using EventEatsQuotify.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace EventEatsQuotify.Controllers
 {
@@ -29,12 +30,15 @@ namespace EventEatsQuotify.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { Email = login.Email };
-                var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, false, false);
-                if (result.Succeeded)
+                var user = await _userManager.FindByEmailAsync(login.Email);
+                if (user != null)
                 {
-                    // Redirect based on user role
-                    return await RedirectToDashboardAsync(login.Email);
+                    var result = await _signInManager.PasswordSignInAsync(user, login.Password, false, false);
+                    if (result.Succeeded)
+                    {
+                        // Redirect based on user role
+                        return await RedirectToDashboardAsync(user);
+                    }
                 }
                 ModelState.AddModelError("", "Invalid Login Attempt");
             }
@@ -61,7 +65,6 @@ namespace EventEatsQuotify.Controllers
         }
 
         [HttpPost]
-       
         public async Task<IActionResult> Register(RegisterViewModel register)
         {
             if (ModelState.IsValid)
@@ -86,8 +89,8 @@ namespace EventEatsQuotify.Controllers
                     {
                         await _userManager.AddToRoleAsync(user, register.SelectedRole);
 
-                        await _signInManager.PasswordSignInAsync(user, register.Password, false, false);
-                        return await RedirectToDashboardAsync(register.Email);
+                        await _signInManager.SignInAsync(user, false);
+                        return await RedirectToDashboardAsync(user);
                     }
                     else
                     {
@@ -111,26 +114,19 @@ namespace EventEatsQuotify.Controllers
             return View(register);
         }
 
-        private async Task<IActionResult> RedirectToDashboardAsync(string? userEmail)
+        private async Task<IActionResult> RedirectToDashboardAsync(ApplicationUser user)
         {
-            if (userEmail != null)
-            {
-                var user = await _userManager.FindByEmailAsync(userEmail);
-                if (user != null)
-                {
-                    var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
 
-                    if (roles.Contains("Vendor"))
-                    {
-                        // Placeholder for Vendor Dashboard
-                        return RedirectToAction("VendorDashboard", "Vendor");
-                    }
-                    else if (roles.Contains("Customer"))
-                    {
-                        // Placeholder for Customer Dashboard
-                        return RedirectToAction("CustomerDashboard", "Customer");
-                    }
-                }
+            if (roles.Contains("Vendor"))
+            {
+                // Placeholder for Vendor Dashboard
+                return RedirectToAction("VendorDashboard", "Vendor");
+            }
+            else if (roles.Contains("Customer"))
+            {
+                // Placeholder for Customer Dashboard
+                return RedirectToAction("CustomerDashboard", "Customer");
             }
 
             // Default redirection for other roles or scenarios

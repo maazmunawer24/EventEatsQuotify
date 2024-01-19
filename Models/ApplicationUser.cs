@@ -6,10 +6,10 @@ namespace EventEatsQuotify.Models
     public class ApplicationUser : IdentityUser
     {
         [Display(Name = "Name")]
-        public string? Name { get; set; }
+        public string Name { get; set; } = "DefaultName";
 
         [Display(Name = "Address")]
-        public string? Address { get; set; }
+        public string Address { get; set; } = "DefaultAddress";
 
         // Additional properties
 
