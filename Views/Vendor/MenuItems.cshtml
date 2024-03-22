@@ -1,0 +1,43 @@
+﻿@model IEnumerable<EventEatsQuotify.Models.FoodItem>
+
+@if (Model != null && Model.Any())
+{
+    <!-- Display menu items in a table -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Photo</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var menuItem in Model)
+            {
+                <tr>
+                    <td>@menuItem.Name</td>
+                    <td>@menuItem.Description</td>
+                    <td>@menuItem.Price</td>
+                    <td>@menuItem.Category</td>
+                    <td>
+                        <img src="@Url.Content(menuItem.FoodPicturePath)" alt="Menu Item Photo" style="max-width: 100px; max-height: 100px;" />
+                    </td>
+                    <td>
+                        <a href="@Url.Action("EditMenuItem", "Vendor", new { id = menuItem.Id })">Edit</a> |
+                        <a href="@Url.Action("DeleteMenuItem", "Vendor", new { id = menuItem.Id })">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No menu items found.</p>
+}
+
+<!-- Add button for uploading a new menu item -->
+<a href="@Url.Action("UploadMenuItem", "Vendor")" class="btn btn-primary">Upload New Menu Item</a>

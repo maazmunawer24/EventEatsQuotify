@@ -1,6 +1,5 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,11 +16,15 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EventEatsQuotify.styles.css" asp-append-version="true" />
-</head>
 
+    <style>
+
+    </style>
+</head>
 <body>
-    <header class="position-sticky top-0">
+    <header class="position-sticky top-0 custom-navbar">
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <!-- Navbar content -->
             <div class="container-fluid">
                 <a class="navbar-brand text-danger fw-bold fs-4" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" asp-area="" asp-controller="Home" asp-action="Index">EventEats Quotify</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,23 +32,42 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="FoodItem" asp-action="Index">Order Now</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="">Feedbacks</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="">Contact</a>
-                        </li>
+                        @if (!User.IsInRole("Admin"))
+                        {
+                            @if (User.IsInRole("Vendor"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vendor" asp-action="VendorDashboard"><i class="fas fa-home"></i> Home</a>
+                                </li>
+                            }
+                            else if (User.IsInRole("Customer"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="CustomerDashboard"><i class="fas fa-home"></i> Home</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> Home</a>
+                                </li>
+                            }
+
+                        @*     <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="FoodItem" asp-action="Index"><i class="fas fa-utensils"></i> Order Now</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area=""><i class="fas fa-comment-alt"></i>Feedbacks</a>
+                            </li> *@
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="ContactUs" asp-action="Contact"><i class="fas fa-envelope"></i> Contact</a>
+                            </li>
+                        }
                     </ul>
                     @if (!User.Identity.IsAuthenticated)
                     {
                         <div>
-                            <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="Login">LogIn/SignUp</a>
+                            <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="Login"><i class="fas fa-sign-in-alt"></i> LogIn/SignUp</a>
                         </div>
                     }
                     else
@@ -53,15 +75,22 @@
                         @if (User.IsInRole("Vendor"))
                         {
                             <div class="d-flex align-items-center">
-                                <a class="nav-link vendor-link text-dark" asp-controller="VendorProfile" asp-action="Index">Hi, @User.Identity.Name!</a>
-                                <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="LogOut">Log Out</a>
+                                <a class="nav-link vendor-link text-dark" asp-controller="VendorProfile" asp-action="Index">Hi, @User.Identity.Name! <i class="fas fa-user"></i></a>
+                                <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="LogOut"><i class="fas fa-sign-out-alt"></i> SignOut</a>
                             </div>
                         }
-                        else 
+                        else if (User.IsInRole("Customer"))
                         {
                             <div class="d-flex align-items-center">
-                                <a class="nav-link customer-link text-dark" asp-controller="CustomerProfile" asp-action="Index">Hi, @User.Identity.Name!</a>
-                                <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="LogOut">SignOut</a>
+                                <a class="nav-link customer-link text-dark" asp-controller="CustomerProfile" asp-action="Index">Hi, @User.Identity.Name! <i class="fas fa-user"></i></a>
+                                <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="LogOut"><i class="fas fa-sign-out-alt"></i> SignOut</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="d-flex align-items-center">
+                                <a class="nav-link customer-link text-dark" asp-controller="Admin" asp-action="AdminDashboard">Hi, @User.Identity.Name! <i class="fas fa-user"></i></a>
+                                <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="LogOut"><i class="fas fa-sign-out-alt"></i> SignOut</a>
                             </div>
                         }
                     }
@@ -75,15 +104,15 @@
         </main>
     </div>
 
-    <footer class="border-top bg-light py-5">
+    <footer class="border-top bg-light py-5 custom-footer">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <h4 class="mb-4">EventEats Quotify</h4>
+                    <h4 class="mb-4 footer-heading">EventEats Quotify</h4>
                     <p class="text-muted">Your go-to platform for event catering and quotations.</p>
                 </div>
                 <div class="col-md-4">
-                    <h4 class="mb-4">Contact Us</h4>
+                    <h4 class="mb-4 footer-heading">Contact Us</h4>
                     <ul class="list-unstyled">
                         <li>
                             <i class="fab fa-instagram me-2 text-primary"></i>
@@ -104,7 +133,7 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h4 class="mb-4">Address</h4>
+                    <h4 class="mb-4 footer-heading">Address</h4>
                     <address class="text-muted">XYZ, Block A, Karachi, Pakistan</address>
                 </div>
             </div>
@@ -134,5 +163,5 @@
             });
     </script>
 </body>
-
 </html>
+

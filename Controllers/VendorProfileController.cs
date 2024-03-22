@@ -1,13 +1,13 @@
-﻿using EventEatsQuotify.Models;
+﻿using EventEatsQuotify.ContextDBConfig;
+using EventEatsQuotify.Models;
+using EventEatsQuotify.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Threading.Tasks;
-using EventEatsQuotify.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using EventEatsQuotify.ContextDBConfig;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EventEatsQuotify.Controllers
 {
@@ -15,35 +15,38 @@ namespace EventEatsQuotify.Controllers
     public class VendorProfileController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly EventEatsQuotifyDBContext _context;
 
-        private readonly EventEatsQuotifyDBContext _context;  // Add this line
-
-        public VendorProfileController(UserManager<ApplicationUser> userManager, EventEatsQuotifyDBContext context)  // Add EventEatsQuotifyDBContext to the constructor
+        public VendorProfileController(UserManager<ApplicationUser> userManager, EventEatsQuotifyDBContext context)
         {
             _userManager = userManager;
-            _context = context;  // Assign the injected context to the private variable
+            _context = context;
         }
 
         // GET: /VendorProfile
         public async Task<IActionResult> Index()
         {
-            // Retrieve the current vendor's profile
-            var vendor = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User);
+
+            if (!user.IsApproved)
+            {
+                // If the user is not approved by the admin, redirect to a page indicating pending approval
+                return RedirectToAction("PendingApproval", "Home");
+            }
 
             var viewModel = new VendorProfileViewModel
             {
-                // Map vendor properties to the view model
-                BusinessName = vendor.Name,
-                ContactEmail = vendor.Email,
-                ContactPhone = vendor.PhoneNumber,
-                Location = vendor.Address,
-                Website = vendor.Website,
-                Specialties = vendor.Specialties,
-                Description = vendor.Description,
-                MenuHighlights = vendor.MenuHighlights,
-                CustomerReviews = vendor.CustomerReviews,
-                ProfilePicture = vendor.ProfilePicture
-                // Add more properties as needed
+                BusinessName = user.Name,
+                ContactEmail = user.Email,
+                ContactPhone = user.PhoneNumber,
+                Location = user.ShopAddress,
+                Website = user.Website,
+                Specialties = user.Specialties,
+                Description = user.Description,
+                MenuHighlights = user.MenuHighlights,
+                CustomerReviews = user.CustomerReviews,
+                ProfilePicture = user.ProfilePicture,
+                RegistrationDate = user.RegistrationDate
             };
 
             return View(viewModel);
@@ -52,23 +55,26 @@ namespace EventEatsQuotify.Controllers
         // GET: /VendorProfile/Edit
         public async Task<IActionResult> Edit()
         {
-            // Similar to the Index action, retrieve the vendor's profile
-            var vendor = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User);
+
+            if (!user.IsApproved)
+            {
+                // If the user is not approved by the admin, redirect to a page indicating pending approval
+                return RedirectToAction("PendingApproval", "Home");
+            }
 
             var viewModel = new VendorProfileViewModel
             {
-                // Map vendor properties to the view model
-                BusinessName = vendor.Name,
-                ContactEmail = vendor.Email,
-                ContactPhone = vendor.PhoneNumber,
-                Location = vendor.Address,
-                Website = vendor.Website,
-                Specialties = vendor.Specialties,
-                Description = vendor.Description,
-                MenuHighlights = vendor.MenuHighlights,
-                CustomerReviews = vendor.CustomerReviews,
-                ProfilePicture = vendor.ProfilePicture
-                // Add more properties as needed
+                BusinessName = user.Name,
+                ContactEmail = user.Email,
+                ContactPhone = user.PhoneNumber,
+                Location = user.ShopAddress,
+                Website = user.Website,
+                Specialties = user.Specialties,
+                Description = user.Description,
+                MenuHighlights = user.MenuHighlights,
+                CustomerReviews = user.CustomerReviews,
+                ProfilePicture = user.ProfilePicture
             };
 
             return View(viewModel);
@@ -81,66 +87,33 @@ namespace EventEatsQuotify.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Retrieve the current vendor's profile
-                var vendor = await _userManager.GetUserAsync(User);
+                var user = await _userManager.GetUserAsync(User);
 
-                // Update vendor properties based on the view model
-                vendor.Name = viewModel.BusinessName;
-                vendor.Email = viewModel.ContactEmail;
-                vendor.PhoneNumber = viewModel.ContactPhone;
-                vendor.Address = viewModel.Location;
-                vendor.Website = viewModel.Website;
-                vendor.Description = viewModel.Description;
-                vendor.Specialties = viewModel.Specialties;
-                vendor.CustomerReviews = viewModel.CustomerReviews;
-                vendor.MenuHighlights = viewModel.MenuHighlights;
-                //vendor.ProfilePicture = viewModel.ProfilePicture;
+                user.Name = viewModel.BusinessName;
+                user.Email = viewModel.ContactEmail;
+                user.PhoneNumber = viewModel.ContactPhone;
+                user.ShopAddress = viewModel.Location;
+                user.Website = viewModel.Website;
+                user.Description = viewModel.Description;
+                user.Specialties = viewModel.Specialties;
+                user.CustomerReviews = viewModel.CustomerReviews;
+                user.MenuHighlights = viewModel.MenuHighlights;
 
-                // Handle Profile Picture upload
                 if (viewModel.ProfilePictureFile != null)
                 {
                     using (var memoryStream = new MemoryStream())
                     {
                         await viewModel.ProfilePictureFile.CopyToAsync(memoryStream);
-                        vendor.ProfilePicture = memoryStream.ToArray();
+                        user.ProfilePicture = memoryStream.ToArray();
                     }
                 }
 
-                // Update the vendor's profile in the database
-                var result = await _userManager.UpdateAsync(vendor);
+                await _userManager.UpdateAsync(user);
 
-                if (result.Succeeded)
-                {
-                    // Redirect to the profile page after successful update
-                    return RedirectToAction("Index");
-                }
-
-                // If the update fails, add errors to the ModelState
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                }
+                return RedirectToAction("Index");
             }
-            else
-            {
-                if (!ModelState.IsValid)
-                {
-                    var errors = ModelState.Values.SelectMany(v => v.Errors);
-                    // Inspect 'errors' in the debugger to see specific validation issues
-                    // ...
-                }
-            }
-
-            // If the model state is not valid, return to the edit page with validation errors
-
-            // Retrieve the vendor's profile again with updated food items
-            var updatedVendor = await _userManager.GetUserAsync(User);
-            viewModel.FoodItems = _context.FoodItems.Where(f => f.VendorId == updatedVendor.Id).ToList();
 
             return View(viewModel);
         }
-
     }
 }
-
-

@@ -1,0 +1,133 @@
+﻿@model IEnumerable<EventEatsQuotify.Models.RegisterViewModel>
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<style>
+    body {
+        font-family: Arial, sans-serif; /* Change to your preferred font */
+        background-color: #f8f9fa; /* Light gray background */
+    }
+
+  
+    h1 {
+        font-size: 2.5rem;
+        font-weight: bold; /* Add bold font weight */
+        text-align: center;
+        margin-bottom: 20px; /* Reduce margin for better spacing */
+        color: #333; /* Dark gray text */
+        text-transform: uppercase; /* Uppercase text */
+        letter-spacing: 1px; /* Add letter spacing */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Add subtle text shadow */
+    }
+
+
+
+    .card {
+        background-color: #fff; /* White background for cards */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        color: #333; /* Dark gray text */
+    }
+
+    .card-text {
+        font-size: 1rem;
+        margin-bottom: 10px;
+        color: #666; /* Gray text */
+    }
+
+    .card-img {
+        margin-top: 20px;
+    }
+
+        .card-img img {
+            max-height: 200px;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+        }
+
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #007bff; /* Blue button */
+        color: #fff; /* White text */
+        border: none;
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Red button */
+        color: #fff; /* White text */
+        border: none;
+    }
+
+    .no-requests {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #555; /* Dark gray text */
+    }
+</style>
+
+<h1>Admin Dashboard</h1>
+
+@if (Model.Any())
+{
+    <div class="row">
+        <p class="no-requests">pending vendor registration requests.</p>
+
+        @foreach (var vendor in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@vendor.Name</h5>
+                        <p class="card-text"><strong>Email:</strong> @vendor.Email</p>
+                        <p class="card-text"><strong>CNIC Number:</strong> @vendor.CNICNumber</p>
+                        <p class="card-text"><strong>Shop Address:</strong> @vendor.ShopAddress</p>
+                        <p class="card-text"><strong>Role:</strong> @vendor.SelectedRole</p>
+                        <div class="card-img">
+                            <p class="card-text"><strong>CNIC Image: </strong></p>
+                            <img src="@vendor.CNICImagePath" alt="CNIC Image" class="img-fluid mb-2" />
+                            <p class="card-text"><strong>Billing Image: </strong></p>
+                            <img src="@vendor.BillingImagePath" alt="Billing Image" class="img-fluid" />
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <form asp-controller="Admin" asp-action="Approve" method="post">
+                            <input type="hidden" name="userId" value="@vendor.Email" />
+                            <button type="submit" class="btn btn-primary">Approve</button>
+                        </form>
+                        <form asp-controller="Admin" asp-action="Reject" method="post">
+                            <input type="hidden" name="userId" value="@vendor.Email" />
+                            <button type="submit" class="btn btn-danger">Reject</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p class="no-requests">No pending vendor registration requests.</p>
+}

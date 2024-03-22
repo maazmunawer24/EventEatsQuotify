@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEatsQuotify.Migrations
 {
     [DbContext(typeof(EventEatsQuotifyDBContext))]
-    [Migration("20240116213334_initial2")]
-    partial class initial2
+    [Migration("20240313195925_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,8 +32,13 @@ namespace EventEatsQuotify.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
+                    b.Property<string>("BillingImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CNICImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CNICNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -51,6 +56,9 @@ namespace EventEatsQuotify.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -92,6 +100,10 @@ namespace EventEatsQuotify.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ShopAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Specialties")
                         .HasColumnType("nvarchar(max)");
 
@@ -127,7 +139,6 @@ namespace EventEatsQuotify.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("FoodPicture")
@@ -141,7 +152,6 @@ namespace EventEatsQuotify.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("VendorId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -180,15 +190,15 @@ namespace EventEatsQuotify.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b8d8c09e-3404-4fa4-95a5-abdeb2c71e3c",
-                            ConcurrencyStamp = "87d2fb1e-ed2d-40c4-a372-928be3ce446e",
+                            Id = "6768a3f4-d5e5-4202-9f67-3092d2949d0e",
+                            ConcurrencyStamp = "95238f8c-1731-4ed0-8e83-f6204fa41d49",
                             Name = "Vendor",
                             NormalizedName = "VENDOR"
                         },
                         new
                         {
-                            Id = "a3b2d8f6-fab6-4553-86ff-e59feede12f8",
-                            ConcurrencyStamp = "a4d859a8-1525-4716-b192-f782ef13e37e",
+                            Id = "1893fa83-c9cb-47a1-ad62-91dcf67cb2e9",
+                            ConcurrencyStamp = "0fb6bcf0-a4b0-4aa6-9306-28f183c9e723",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -304,9 +314,7 @@ namespace EventEatsQuotify.Migrations
                 {
                     b.HasOne("EventEatsQuotify.Models.ApplicationUser", "Vendor")
                         .WithMany()
-                        .HasForeignKey("VendorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("VendorId");
 
                     b.Navigation("Vendor");
                 });

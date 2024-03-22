@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace EventEatsQuotify.Models
@@ -8,10 +9,8 @@ namespace EventEatsQuotify.Models
         [Display(Name = "Name")]
         public string Name { get; set; } = "DefaultName";
 
-        [Display(Name = "Address")]
-        public string Address { get; set; } = "DefaultAddress";
-
-        // Additional properties
+        [Display(Name = "ShopAddress")]
+        public string ShopAddress { get; set; } = "DefaultAddress";
 
         [Display(Name = "Website")]
         [Url]
@@ -20,7 +19,6 @@ namespace EventEatsQuotify.Models
         [Display(Name = "Specialties")]
         public string? Specialties { get; set; }
 
-        // Additional sections
         [Display(Name = "About Us")]
         public string? Description { get; set; }
 
@@ -36,6 +34,19 @@ namespace EventEatsQuotify.Models
         [Display(Name = "Registration Date")]
         public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
 
+        // New fields for admin approval and CNIC verification
+        [Display(Name = "Is Approved")]
+        public bool IsApproved { get; set; } = false;
+
+        // Property for storing CNIC image path
+        public string? CNICImagePath { get; set; }
+
+        // Property for storing billing image path
+        public string? BillingImagePath { get; set; }
+
+        // Property for CNIC Number
+        [Display(Name = "CNIC Number")]
+        public string? CNICNumber { get; set; }
 
     }
 }

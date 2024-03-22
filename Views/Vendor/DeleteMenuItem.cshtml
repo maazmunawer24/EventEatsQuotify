@@ -1,0 +1,14 @@
+﻿@model EventEatsQuotify.Models.FoodItem
+
+<h1>Delete Menu Item</h1>
+
+<p>Are you sure you want to delete the menu item "@Model.Name"?</p>
+
+@using (Html.BeginForm("DeleteMenuItem", "Vendor", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.Id)
+
+    <input type="submit" value="Delete" class="btn btn-danger" />
+}

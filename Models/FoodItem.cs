@@ -18,16 +18,19 @@ namespace EventEatsQuotify.Models
         [Display(Name = "Description")]
         public string? Description { get; set; }  // Make it nullable
 
-        [Display(Name = "Vendor")]
+        [Display(Name = "VendorId")]
         public string? VendorId { get; set; }  // Make it nullable
 
         [Display(Name = "Vendor")]
         public ApplicationUser? Vendor { get; set; }  // Make it nullable
 
-        [Display(Name = "Food Picture")]
-        public byte[]? FoodPicture { get; set; }  // Make it nullable
+        [Display(Name = "Category")]
+        public string Category { get; set; } // Category of the menu item (e.g., starter, main course, dessert, beverage)
+
+        // This property will store the path to the food picture in the file system
+        [Display(Name = "Food Picture Path")]
+        public string? FoodPicturePath { get; set; } // Make it nullable
 
         // Add more properties as needed
     }
-
 }

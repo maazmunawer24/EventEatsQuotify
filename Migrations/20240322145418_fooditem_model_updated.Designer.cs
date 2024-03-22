@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEatsQuotify.Migrations
 {
     [DbContext(typeof(EventEatsQuotifyDBContext))]
-    [Migration("20240110184957_Initial")]
-    partial class Initial
+    [Migration("20240322145418_fooditem_model_updated")]
+    partial class fooditem_model_updated
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,8 +32,13 @@ namespace EventEatsQuotify.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
+                    b.Property<string>("BillingImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CNICImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CNICNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -51,6 +56,9 @@ namespace EventEatsQuotify.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -92,6 +100,10 @@ namespace EventEatsQuotify.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ShopAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Specialties")
                         .HasColumnType("nvarchar(max)");
 
@@ -116,6 +128,41 @@ namespace EventEatsQuotify.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.FoodItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FoodPicturePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("VendorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VendorId");
+
+                    b.ToTable("FoodItems");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -147,15 +194,15 @@ namespace EventEatsQuotify.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0d921a91-8f96-40d2-b327-ec00997131de",
-                            ConcurrencyStamp = "71f91133-60fb-41f3-9f5f-7e7d34869144",
+                            Id = "975354b4-d8c0-49a5-8c30-4e75dfb0065f",
+                            ConcurrencyStamp = "4bc79bf3-452b-4079-872a-f2d2896cfb23",
                             Name = "Vendor",
                             NormalizedName = "VENDOR"
                         },
                         new
                         {
-                            Id = "72640be3-3eed-4031-adcd-af91ed754fb3",
-                            ConcurrencyStamp = "0393a3ab-1ff0-4f5c-afc6-2ee619a6eafb",
+                            Id = "9fe3828d-2151-43e1-8179-8ac42db32253",
+                            ConcurrencyStamp = "4549d532-518c-4bcd-bf1b-18a1bd158877",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -265,6 +312,15 @@ namespace EventEatsQuotify.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.FoodItem", b =>
+                {
+                    b.HasOne("EventEatsQuotify.Models.ApplicationUser", "Vendor")
+                        .WithMany()
+                        .HasForeignKey("VendorId");
+
+                    b.Navigation("Vendor");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

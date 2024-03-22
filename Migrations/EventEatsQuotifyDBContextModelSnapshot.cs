@@ -30,8 +30,13 @@ namespace EventEatsQuotify.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
+                    b.Property<string>("BillingImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CNICImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CNICNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -49,6 +54,9 @@ namespace EventEatsQuotify.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -90,6 +98,10 @@ namespace EventEatsQuotify.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ShopAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Specialties")
                         .HasColumnType("nvarchar(max)");
 
@@ -124,11 +136,15 @@ namespace EventEatsQuotify.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("FoodPicture")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("FoodPicturePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -176,15 +192,15 @@ namespace EventEatsQuotify.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "673fb540-214c-478a-be3b-6d6f7689ff02",
-                            ConcurrencyStamp = "f3dc35d9-101d-47b7-9a32-54b0b4c6fe33",
+                            Id = "975354b4-d8c0-49a5-8c30-4e75dfb0065f",
+                            ConcurrencyStamp = "4bc79bf3-452b-4079-872a-f2d2896cfb23",
                             Name = "Vendor",
                             NormalizedName = "VENDOR"
                         },
                         new
                         {
-                            Id = "7cb688d8-e36b-4d60-acf1-9148c9551ba5",
-                            ConcurrencyStamp = "1c690ff1-6a1b-40e8-bcc9-6d6397125577",
+                            Id = "9fe3828d-2151-43e1-8179-8ac42db32253",
+                            ConcurrencyStamp = "4549d532-518c-4bcd-bf1b-18a1bd158877",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });

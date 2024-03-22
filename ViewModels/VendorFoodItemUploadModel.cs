@@ -1,7 +1,7 @@
 ﻿using EventEatsQuotify.Models;
 using System.Collections.Generic;
 
-namespace EventEatsQuotify.Models
+namespace EventEatsQuotify.ViewModels
 {
     public class VendorFoodItemUploadModel
     {
