@@ -10,39 +10,66 @@
             <div>
                 <img src="~/images/carouselImages/p1.jpg" class="w-100" />
             </div>
-
-        </div> 
+        </div>
         <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
             <form autocomplete="on" method="post" class="m-3 p-3" action="/Account/Login">
-                <div class="mb-3" >
-                    <h2 class="text-pink fst-italic">SignIn</h2>
-                    <span class="fst-italic text-muted">SignIn into your account </span>
-                </div>  
+                <div class="mb-3">
+                    <h2 class="text-pink fst-italic">LogIn</h2>
+                    <span class="fst-italic text-muted">LogIn into your account </span>
+                </div>
                 <div class="mb-3">
                     @Html.ValidationSummary()
                 </div>
                 <div class="form-floating mb-3">
-                    @Html.TextBoxFor(m => m.Email, new {@class="form-control",placeholder="Email"})
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email" })
                     <label for="Email">Email</label>
-
-
                 </div>
-                <div class="form-floating mb-3">
-                    @Html.TextBoxFor(m => m.Password,new {@class="form-control",placeholder="Password", type="password"})
+                <div class="form-floating mb-3 password-input-container">
+                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control", placeholder = "Password", type = "password", id = "password" })
                     <label for="Password">Password</label>
+                    <span class="password-toggle-icon" onclick="togglePasswordVisibility()"><i id="toggleIcon" class="far fa-eye"></i></span>
                 </div>
                 <div class="mb-3">
                     <button class="btn btn-sm btn-dark w-100 p-2 shadow rounded" type="submit">LogIn</button>
                 </div>
                 <div class="mb-3">
                     <span>Don't have an account?</span>
-                    <a asp-controller="account" asp-action="Register" 
-                    class="text-decoration-none text-dark">Register here</a>
+                    <a asp-controller="account" asp-action="Register"
+                       class="text-decoration-none text-dark">Register here</a>
                 </div>
             </form>
-
-
         </div>
-     </div>
+    </div>
 </div>
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("password");
+        var toggleIcon = document.getElementById("toggleIcon");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleIcon.classList.remove("far", "fa-eye");
+            toggleIcon.classList.add("far", "fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            toggleIcon.classList.remove("far", "fa-eye-slash");
+            toggleIcon.classList.add("far", "fa-eye");
+        }
+    }
+</script>
+
+<style>
+    .password-input-container {
+        position: relative;
+    }
+
+    .password-toggle-icon {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+</style>
