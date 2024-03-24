@@ -2,7 +2,6 @@
 
 <div class="container mt-5">
     <div class="row">
-
         <!-- Profile Image -->
         <div class="col-md-4">
             <div class="card text-center p-4 border border-primary rounded-3 shadow">
@@ -23,8 +22,7 @@
         <div class="col-md-8">
             <div class="card shadow p-4 border-0 rounded-3">
                 <h1 class="display-4 text-primary mb-4">@Model.BusinessName</h1>
-
-                <dl class="row">
+                <dl class="row g-4">
                     <dt class="col-sm-3 text-muted">Contact Email:</dt>
                     <dd class="col-sm-9">@Model.ContactEmail</dd>
 
@@ -42,18 +40,19 @@
                     <dd class="col-sm-9">@Model.Specialties</dd>
                 </dl>
 
+
                 <hr class="my-4 border-primary">
 
-                <h4 class="text-primary">About Us</h4>
+                <h4 class="text-primary mb-3">About Us</h4>
                 <p class="lead">@Model.Description</p>
 
                 <!-- Additional sections -->
                 <hr class="my-4 border-primary">
-                <h4 class="text-primary">Menu Highlights</h4>
+                <h4 class="text-primary mb-3">Menu Highlights</h4>
                 <p class="lead">@Model.MenuHighlights</p>
 
                 <hr class="my-4 border-primary">
-                <h4 class="text-primary">Customer Reviews</h4>
+                <h4 class="text-primary mb-3">Customer Reviews</h4>
                 <p class="lead">@Model.CustomerReviews</p>
 
                 <div class="text-center mt-4">

@@ -39,19 +39,20 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Vendor" asp-action="VendorDashboard"><i class="fas fa-home"></i> Home</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ContactUs" asp-action="Contact"><i class="fas fa-envelope"></i> Contact</a>
+                                </li>
                             }
                             else if (User.IsInRole("Customer"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="CustomerDashboard"><i class="fas fa-home"></i> Home</a>
                                 </li>
-                            }
-                            else
-                            {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> Home</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ContactUs" asp-action="Contact"><i class="fas fa-envelope"></i> Feedback</a>
                                 </li>
                             }
+                           
 
                         @*     <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="FoodItem" asp-action="Index"><i class="fas fa-utensils"></i> Order Now</a>
@@ -59,9 +60,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area=""><i class="fas fa-comment-alt"></i>Feedbacks</a>
                             </li> *@
-                            <li class="nav-item">
+                           @*  <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="ContactUs" asp-action="Contact"><i class="fas fa-envelope"></i> Contact</a>
-                            </li>
+                            </li> *@
                         }
                     </ul>
                     @if (!User.Identity.IsAuthenticated)
