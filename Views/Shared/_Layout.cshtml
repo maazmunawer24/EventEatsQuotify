@@ -13,8 +13,8 @@
 
     <!-- External Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/EventEatsQuotify.styles.css" asp-append-version="true" />
 
     <style>
@@ -52,17 +52,17 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="ContactUs" asp-action="Contact"><i class="fas fa-envelope"></i> Feedback</a>
                                 </li>
                             }
-                           
 
-                        @*     <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="FoodItem" asp-action="Index"><i class="fas fa-utensils"></i> Order Now</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area=""><i class="fas fa-comment-alt"></i>Feedbacks</a>
-                            </li> *@
-                           @*  <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="ContactUs" asp-action="Contact"><i class="fas fa-envelope"></i> Contact</a>
-                            </li> *@
+
+                            @*     <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="FoodItem" asp-action="Index"><i class="fas fa-utensils"></i> Order Now</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area=""><i class="fas fa-comment-alt"></i>Feedbacks</a>
+                        </li> *@
+                            @*  <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="ContactUs" asp-action="Contact"><i class="fas fa-envelope"></i> Contact</a>
+                        </li> *@
                         }
                     </ul>
                     @if (!User.Identity.IsAuthenticated)
@@ -165,4 +165,3 @@
     </script>
 </body>
 </html>
-

@@ -4,6 +4,7 @@ using EventEatsQuotify.ContextDBConfig;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEatsQuotify.Migrations
 {
     [DbContext(typeof(EventEatsQuotifyDBContext))]
-    partial class EventEatsQuotifyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240416200132_AddPhotoToFoodItem")]
+    partial class AddPhotoToFoodItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,13 +155,6 @@ namespace EventEatsQuotify.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("QuantityOrPersons")
-                        .HasColumnType("int");
-
-                    b.Property<string>("QuantityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("VendorId")
                         .HasColumnType("nvarchar(450)");
 
@@ -182,7 +177,7 @@ namespace EventEatsQuotify.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FoodItemId")
+                    b.Property<int?>("FoodItemId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -221,15 +216,15 @@ namespace EventEatsQuotify.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a57d40f1-30f1-4703-b6e4-dd3e7681d6c7",
-                            ConcurrencyStamp = "1fc820cb-0d05-434e-ab10-0c931742f448",
+                            Id = "2f80dc57-b9b1-4cee-807e-352536257442",
+                            ConcurrencyStamp = "16e232db-7c68-42b3-9f1e-91e91a0cefdc",
                             Name = "Vendor",
                             NormalizedName = "VENDOR"
                         },
                         new
                         {
-                            Id = "5f0d4f78-cdf9-45aa-a73c-b0e9733838f7",
-                            ConcurrencyStamp = "2a12df01-c868-4d2b-87d6-74d8656e647b",
+                            Id = "a911eaf0-dddf-4d62-9c69-e9bd5bd058a8",
+                            ConcurrencyStamp = "8c0ceecb-b8f9-4afb-9e94-1b874f9f868d",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -344,7 +339,7 @@ namespace EventEatsQuotify.Migrations
             modelBuilder.Entity("EventEatsQuotify.Models.FoodItem", b =>
                 {
                     b.HasOne("EventEatsQuotify.Models.ApplicationUser", "Vendor")
-                        .WithMany()
+                        .WithMany("FoodItems")
                         .HasForeignKey("VendorId");
 
                     b.Navigation("Vendor");
@@ -352,13 +347,9 @@ namespace EventEatsQuotify.Migrations
 
             modelBuilder.Entity("EventEatsQuotify.Models.Photo", b =>
                 {
-                    b.HasOne("EventEatsQuotify.Models.FoodItem", "FoodItem")
+                    b.HasOne("EventEatsQuotify.Models.FoodItem", null)
                         .WithMany("Photos")
-                        .HasForeignKey("FoodItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FoodItem");
+                        .HasForeignKey("FoodItemId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -410,6 +401,11 @@ namespace EventEatsQuotify.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("FoodItems");
                 });
 
             modelBuilder.Entity("EventEatsQuotify.Models.FoodItem", b =>

@@ -4,6 +4,7 @@ using EventEatsQuotify.ContextDBConfig;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEatsQuotify.Migrations
 {
     [DbContext(typeof(EventEatsQuotifyDBContext))]
-    partial class EventEatsQuotifyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240416201606_UpdatePhotoModel")]
+    partial class UpdatePhotoModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,13 +155,6 @@ namespace EventEatsQuotify.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("QuantityOrPersons")
-                        .HasColumnType("int");
-
-                    b.Property<string>("QuantityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("VendorId")
                         .HasColumnType("nvarchar(450)");
 
@@ -221,15 +216,15 @@ namespace EventEatsQuotify.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a57d40f1-30f1-4703-b6e4-dd3e7681d6c7",
-                            ConcurrencyStamp = "1fc820cb-0d05-434e-ab10-0c931742f448",
+                            Id = "bf269dfa-aaff-495c-901c-8363e6e3e1c8",
+                            ConcurrencyStamp = "20a167df-76f7-46fe-a1d4-98af6153ee2a",
                             Name = "Vendor",
                             NormalizedName = "VENDOR"
                         },
                         new
                         {
-                            Id = "5f0d4f78-cdf9-45aa-a73c-b0e9733838f7",
-                            ConcurrencyStamp = "2a12df01-c868-4d2b-87d6-74d8656e647b",
+                            Id = "b1e9cc6d-dab3-4792-bb4d-c1de2930e326",
+                            ConcurrencyStamp = "c51a08f3-ce40-4649-8cd5-3f847ee5a25f",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -344,7 +339,7 @@ namespace EventEatsQuotify.Migrations
             modelBuilder.Entity("EventEatsQuotify.Models.FoodItem", b =>
                 {
                     b.HasOne("EventEatsQuotify.Models.ApplicationUser", "Vendor")
-                        .WithMany()
+                        .WithMany("FoodItems")
                         .HasForeignKey("VendorId");
 
                     b.Navigation("Vendor");
@@ -410,6 +405,11 @@ namespace EventEatsQuotify.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("FoodItems");
                 });
 
             modelBuilder.Entity("EventEatsQuotify.Models.FoodItem", b =>

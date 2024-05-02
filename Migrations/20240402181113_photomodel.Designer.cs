@@ -4,6 +4,7 @@ using EventEatsQuotify.ContextDBConfig;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEatsQuotify.Migrations
 {
     [DbContext(typeof(EventEatsQuotifyDBContext))]
-    partial class EventEatsQuotifyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240402181113_photomodel")]
+    partial class photomodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,13 +155,6 @@ namespace EventEatsQuotify.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("QuantityOrPersons")
-                        .HasColumnType("int");
-
-                    b.Property<string>("QuantityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("VendorId")
                         .HasColumnType("nvarchar(450)");
 
@@ -182,14 +177,14 @@ namespace EventEatsQuotify.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FoodItemId")
+                    b.Property<int?>("FoodItemId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FoodItemId");
 
-                    b.ToTable("Photos");
+                    b.ToTable("Photo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -221,15 +216,15 @@ namespace EventEatsQuotify.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a57d40f1-30f1-4703-b6e4-dd3e7681d6c7",
-                            ConcurrencyStamp = "1fc820cb-0d05-434e-ab10-0c931742f448",
+                            Id = "50807652-a42e-4c39-9e84-0c3dbc4b4734",
+                            ConcurrencyStamp = "209fc85f-f28c-48e4-96a4-fad0b9745171",
                             Name = "Vendor",
                             NormalizedName = "VENDOR"
                         },
                         new
                         {
-                            Id = "5f0d4f78-cdf9-45aa-a73c-b0e9733838f7",
-                            ConcurrencyStamp = "2a12df01-c868-4d2b-87d6-74d8656e647b",
+                            Id = "9fbb191d-c8bc-4190-a0e2-390e40c8484a",
+                            ConcurrencyStamp = "a656c752-eee3-48d3-8960-5243574ee347",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -352,13 +347,9 @@ namespace EventEatsQuotify.Migrations
 
             modelBuilder.Entity("EventEatsQuotify.Models.Photo", b =>
                 {
-                    b.HasOne("EventEatsQuotify.Models.FoodItem", "FoodItem")
+                    b.HasOne("EventEatsQuotify.Models.FoodItem", null)
                         .WithMany("Photos")
-                        .HasForeignKey("FoodItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FoodItem");
+                        .HasForeignKey("FoodItemId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

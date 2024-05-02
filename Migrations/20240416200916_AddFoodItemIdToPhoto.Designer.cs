@@ -4,6 +4,7 @@ using EventEatsQuotify.ContextDBConfig;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEatsQuotify.Migrations
 {
     [DbContext(typeof(EventEatsQuotifyDBContext))]
-    partial class EventEatsQuotifyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240416200916_AddFoodItemIdToPhoto")]
+    partial class AddFoodItemIdToPhoto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,13 +155,6 @@ namespace EventEatsQuotify.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("QuantityOrPersons")
-                        .HasColumnType("int");
-
-                    b.Property<string>("QuantityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("VendorId")
                         .HasColumnType("nvarchar(450)");
 
@@ -221,15 +216,15 @@ namespace EventEatsQuotify.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a57d40f1-30f1-4703-b6e4-dd3e7681d6c7",
-                            ConcurrencyStamp = "1fc820cb-0d05-434e-ab10-0c931742f448",
+                            Id = "a16c9e3d-0766-4949-80f9-76af7f2b4dc0",
+                            ConcurrencyStamp = "b898e786-6377-4149-8a34-fc842863c597",
                             Name = "Vendor",
                             NormalizedName = "VENDOR"
                         },
                         new
                         {
-                            Id = "5f0d4f78-cdf9-45aa-a73c-b0e9733838f7",
-                            ConcurrencyStamp = "2a12df01-c868-4d2b-87d6-74d8656e647b",
+                            Id = "31d71bc8-b0ab-41c9-bae8-1ee4969800af",
+                            ConcurrencyStamp = "5cb26ecb-2aea-4971-bb6a-db6fe51d0365",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -344,7 +339,7 @@ namespace EventEatsQuotify.Migrations
             modelBuilder.Entity("EventEatsQuotify.Models.FoodItem", b =>
                 {
                     b.HasOne("EventEatsQuotify.Models.ApplicationUser", "Vendor")
-                        .WithMany()
+                        .WithMany("FoodItems")
                         .HasForeignKey("VendorId");
 
                     b.Navigation("Vendor");
@@ -352,13 +347,11 @@ namespace EventEatsQuotify.Migrations
 
             modelBuilder.Entity("EventEatsQuotify.Models.Photo", b =>
                 {
-                    b.HasOne("EventEatsQuotify.Models.FoodItem", "FoodItem")
+                    b.HasOne("EventEatsQuotify.Models.FoodItem", null)
                         .WithMany("Photos")
                         .HasForeignKey("FoodItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("FoodItem");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -410,6 +403,11 @@ namespace EventEatsQuotify.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("FoodItems");
                 });
 
             modelBuilder.Entity("EventEatsQuotify.Models.FoodItem", b =>

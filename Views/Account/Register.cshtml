@@ -15,9 +15,6 @@
           integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wyb80XY94U6wCJo/U1wnUnY1C5+gz/ixH6"
           crossorigin="anonymous" />
 
-    <!-- Font Awesome CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-
     <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
@@ -26,6 +23,7 @@
     <div class="container">
         <div class="row justify-content-center my-5">
             <div class="col-md-8">
+                <!-- Adjust width of the form -->
                 <div class="card">
                     <div class="card-body">
                         <h2 class="text-center text-pink mb-4">Register</h2>
@@ -41,7 +39,7 @@
                                     </ul>
                                 </div>
                             }
-
+                            
                             <div class="form-group">
                                 <input type="text" class="form-control" placeholder="Name" required name="Name" />
                                 <div class="invalid-feedback">Please enter your name.</div>
@@ -52,10 +50,9 @@
                             </div>
                             <div class="form-group">
                                 <div class="input-group">
+
                                     <input type="password" class="form-control" placeholder="Password" required name="Password" id="password" />
-                                  
-                                        <span class="input-group-text" onclick="togglePasswordVisibility('password', 'toggleIcon')"><i id="toggleIcon" class="far fa-eye"></i></span>
-                                 
+                                <span class="input-group-text" onclick="togglePasswordVisibility('password', 'toggleIcon')"><i id="toggleIcon" class="far fa-eye"></i></span>
                                 </div>
                                 <div class="invalid-feedback">Please enter a password.</div>
                             </div>
@@ -73,12 +70,32 @@
                             <div id="vendorFields" style="display: none;">
                                 <h4 class="text-center text-muted mb-3">Additional Information for Vendors</h4>
 
-                                <!-- Additional fields for vendors -->
+                                <div class="form-group">
+                                    <h5>UPLOAD CNIC IMAGE: </h5>
+                                    <input type="file" class="form-control" name="CNICImageFile" />
+                                    <div class="invalid-feedback">Please upload CNIC image file.</div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="CNIC Number" name="CNICNumber" />
+                                    <div class="invalid-feedback">Please enter CNIC number.</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <h5>UPLOAD BILLING IMAGE: </h5>
+                                    <input type="file" class="form-control" name="BillingImageFile" />
+                                    <div class="invalid-feedback">Please upload billing image file.</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Shop Address" name="ShopAddress" />
+                                    <div class="invalid-feedback">Please enter shop address.</div>
+                                </div>
                             </div>
                             <div class="form-group text-center mt-4">
                                 <button type="submit" class="btn btn-dark btn-block">Register</button>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -90,9 +107,6 @@
 
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-    <!-- Font Awesome Script -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 
     <!-- Script to show/hide additional fields for Vendor role and handle validation -->
     <script>

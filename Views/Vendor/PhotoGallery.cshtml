@@ -1,0 +1,41 @@
+﻿@model EventEatsQuotify.Models.FoodItem
+
+<h1>Photo Gallery for @Model.Name</h1>
+
+@if (Model.Photos != null && Model.Photos.Any())
+{
+    <div class="row">
+        @foreach (var photo in Model.Photos)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <img src="@Url.Content(photo.FilePath)" class="card-img-top" alt="Photo" style="max-height: 200px;">
+                    <div class="card-body">
+                        <form method="post" action="@Url.Action("DeletePhoto", "Vendor", new { itemId = Model.Id, photoId = photo.Id })">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No photos found for this menu item.</p>
+}
+
+<hr>
+
+<h2>Upload New Photo</h2>
+
+<form method="post" action="@Url.Action("UploadPhoto", "Vendor", new { itemId = Model.Id })" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label for="photo">Choose Photo:</label>
+        <input type="file" name="photo" class="form-control-file">
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
+<a href="@Url.Action("MenuItems", "Vendor")" class="btn btn-secondary">Back to Menu Items</a>

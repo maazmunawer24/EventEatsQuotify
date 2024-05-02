@@ -4,6 +4,7 @@ using EventEatsQuotify.ContextDBConfig;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEatsQuotify.Migrations
 {
     [DbContext(typeof(EventEatsQuotifyDBContext))]
-    partial class EventEatsQuotifyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240420044759_Updatefooditemmodel")]
+    partial class Updatefooditemmodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,13 +155,6 @@ namespace EventEatsQuotify.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("QuantityOrPersons")
-                        .HasColumnType("int");
-
-                    b.Property<string>("QuantityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("VendorId")
                         .HasColumnType("nvarchar(450)");
 
@@ -221,15 +216,15 @@ namespace EventEatsQuotify.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a57d40f1-30f1-4703-b6e4-dd3e7681d6c7",
-                            ConcurrencyStamp = "1fc820cb-0d05-434e-ab10-0c931742f448",
+                            Id = "f5b312db-e422-479f-a1fe-06e6ac6f9687",
+                            ConcurrencyStamp = "67d52a43-5e1f-4f2e-a987-728ef52ae26f",
                             Name = "Vendor",
                             NormalizedName = "VENDOR"
                         },
                         new
                         {
-                            Id = "5f0d4f78-cdf9-45aa-a73c-b0e9733838f7",
-                            ConcurrencyStamp = "2a12df01-c868-4d2b-87d6-74d8656e647b",
+                            Id = "174cb68d-1a49-4965-bb41-be3ca93efb79",
+                            ConcurrencyStamp = "f0cec4ba-402a-41a6-b069-77ee0b268d68",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });

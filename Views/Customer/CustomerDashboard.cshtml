@@ -1,6 +1,334 @@
-﻿@{
+﻿@model List<EventEatsQuotify.Models.ApplicationUser>
+
+@{
     ViewData["Title"] = "Customer Dashboard";
 }
 
-<h2>Welcome to the Customer Dashboard</h2>
-<p>This is the place where customers can view and select food items.</p>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .custom-card {
+            border: none;
+            border-radius: 5px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+        }
+
+            .custom-card:hover {
+                transform: scale(1.02);
+            }
+
+        .custom-card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .custom-card-body {
+            padding: 1rem;
+        }
+
+        .custom-card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .custom-card-text {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .custom-btn {
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+            .custom-btn:hover {
+                background-color: #e8e8e8;
+            }
+
+        .custom-btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+            .custom-btn-primary:hover {
+                background-color: #0069d9;
+            }
+
+        .custom-btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+            .custom-btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
+        .custom-modal {
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        .custom-modal-content {
+            border-radius: 5px;
+        }
+
+        .custom-modal-header {
+            border-bottom: none;
+        }
+
+        .custom-modal-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .custom-modal-footer {
+            border-top: none;
+        }
+
+            .custom-modal-footer .custom-btn {
+                margin-right: 0.5rem;
+            }
+    </style>
+</head>
+
+<h2 class="text-center mb-4">Welcome to the Customer Dashboard</h2>
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var vendor in Model)
+        {
+            <div class="col">
+                <div class="custom-card h-100 shadow">
+                    @if (vendor.ProfilePicture != null && vendor.ProfilePicture.Length > 0)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(vendor.ProfilePicture)" class="custom-card-img-top" alt="Profile Image">
+                    }
+                    else
+                    {
+                        <img src="~/images/defaultimages/user.png" class="custom-card-img-top" alt="Profile Image">
+                    }
+                    <div class="custom-card-body">
+                        <h5 class="custom-card-title">@vendor.Name</h5>
+                        <p class="custom-card-text">@vendor.Description</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <div>
+                            <!-- View Vendor Profile Modal Button -->
+                            <button type="button" class="custom-btn custom-btn-primary" onclick="loadVendorProfile('@vendor.Id')">View Profile</button>
+
+                            <!-- View Vendor Menu Modal Button -->
+                            <button type="button" class="custom-btn custom-btn-secondary" onclick="loadMenuItems('@vendor.Id')">View Menu Items</button>
+                        </div>
+                        <div>
+                            <!-- Request Quotation Modal Button -->
+                            @* <button type="button" class="custom-btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#requestQuotationModal-@vendor.Id" onclick="loadMenuItems('@vendor.Id')">Get Quotation</button> *@
+                            <a href="@Url.Action("GetQuotation", "Customer", new { vendorId = vendor.Id })" class="custom-btn btn-outline-primary btn-sm">Get Quotation</a>
+                            @* <a href="@Url.Action("UploadMenuItem", "Vendor")" class="btn btn-primary">Upload New Menu Item</a> *@
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vendor Profile Modal -->
+            <div class="modal fade" id="vendorProfileModal-@vendor.Id" tabindex="-1" aria-labelledby="vendorProfileModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="vendorProfileModalLabel">@vendor.Name Profile</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Vendor Profile Details Here -->
+                            <div id="vendorProfileModalContent-@vendor.Id">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vendor Menu Modal -->
+            <div class="modal fade" id="vendorMenuModal-@vendor.Id" tabindex="-1" aria-labelledby="vendorMenuModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title" id="vendorMenuModalLabel">@vendor.Name Menu</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Vendor Menu Details Here -->
+                            <div id="vendorMenuModalContent-@vendor.Id">
+                                <!-- Content will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+@* 
+            <!-- customerDashboardView.html -->
+
+            <div id="quotationFormContainer"></div> *@
+
+        }
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/c58416c086.js" crossorigin="anonymous"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+       
+        function loadMenuItems(vendorId) {
+            console.log(vendorId);
+            $.ajax({
+                url: '/Customer/GetMenuItems',
+                method: 'GET',
+                data: { vendorId: vendorId },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        // Generate HTML content for menu items
+                        var htmlContent = '';
+                        $.each(response.data, function (index, item) {
+                            htmlContent += '<div class="mb-3">';
+                            htmlContent += '<h6>' + (item.name || "") + '</h6>';
+                            htmlContent += '<p><strong>Description:</strong> ' + (item.description || "") + '</p>';
+                            htmlContent += '<p><strong>Price:</strong> ' + (item.price || "") + '</p>';
+                            htmlContent += '<img src="' + (item.foodPicturePath || '~/images/defaultimages/placeholder.png') + '" alt="' + (item.name || "Item") + '" class="img-fluid rounded">';
+                            htmlContent += '</div>';
+                        });
+                        $('#vendorMenuModalContent-' + vendorId).html(htmlContent);
+                        $('#vendorMenuModal-' + vendorId).modal('show');
+                    } else {
+                        console.error(response.message);
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        function loadVendorProfile(vendorId) {
+            console.log('Vendor ID for Profile:', vendorId);
+            $.ajax({
+                url: '/Customer/GetVendorProfile',
+                method: 'GET',
+                data: { vendorId: vendorId },
+                dataType: 'json',
+                success: function (response) {
+                    debugger;
+                    if (response.success) {
+                        var vendor = response.data;
+                        var profileImageSrc = vendor.ProfilePicture ? 'data:image/png;base64,' + vendor.ProfilePicture : '~/images/defaultimages/user.png';
+                        var specialties = vendor.specialties || "";
+                        var menuHighlights = vendor.menuHighlights || "";
+                        var customerReviews = vendor.customerReviews || "";
+
+                        var htmlContent = `
+                            <img src="${profileImageSrc}" class="img-fluid rounded">
+                            <p><strong>Name:</strong> ${vendor.name || ""}</p>
+                            <p><strong>Description:</strong> ${vendor.description || ""}</p>
+                            <p><strong>Address:</strong> ${vendor.shopAddress || ""}</p>
+                            <p><strong>Website:</strong> <a href="${vendor.website || "#"}" target="_blank">${vendor.website || ""}</a></p>
+                            <p><strong>Specialties:</strong> ${specialties}</p>
+                            <p><strong>Menu Highlights:</strong> ${menuHighlights}</p>
+                            <p><strong>Customer Reviews:</strong> ${customerReviews}</p>
+                        `;
+                        $('#vendorProfileModalContent-' + vendorId).html(htmlContent);
+                        $('#vendorProfileModal-' + vendorId).modal('show');
+                    } else {
+                        console.error(response.message);
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
+        // Function to fetch food items based on the selected vendor
+        function fetchFoodItems(vendorId) {
+            debugger;
+            $.ajax({
+                url: '/Customer/GetFoodItems',
+                method: 'GET',
+                data: { vendorId: vendorId },
+                dataType: 'json',
+                success: function (response) {
+                    debugger;
+                    if (response.success) {
+                        // Generate HTML content for food items dropdowns
+                        $('#addFoodItem').hide();
+                        var htmlContent = '';
+                        $.each(response.data, function (index, item) {
+                            htmlContent += '<div class="mb-3 food-item">';
+                            htmlContent += '<label for="foodItem' + index + '" class="form-label">Food Item</label>';
+                            htmlContent += '<select class="form-select" name="foodItem[]" id="foodItem' + index + '">';
+                            // Populate options for food items
+                            $.each(item.foodItems, function (i, food) {
+                                htmlContent += '<option value="' + food.id + '">' + food.name + '</option>';
+                            });
+                            htmlContent += '</select>';
+                            // Add quantity input based on quotation type
+                            if ($('#quotationOptions').val() === 'quantity') {
+                                htmlContent += '<label for="quantity' + index + '" class="form-label">Quantity (kg)</label>';
+                                htmlContent += '<input type="text" class="form-control" name="quantity[]" id="quantity' + index + '">';
+                            } else {
+                                htmlContent += '<label for="noOfPersons' + index + '" class="form-label">No of Persons</label>';
+                                htmlContent += '<input type="text" class="form-control" name="noOfPersons[]" id="noOfPersons' + index + '">';
+                            }
+                            htmlContent += '</div>';
+                        });
+                        $('#foodItemsContainer').html(htmlContent);
+                    } else {
+                        console.error(response.message);
+                    }
+                },
+                error: function (error) {
+                    debugger;
+                    console.error(error);
+                }
+            });
+        }
+
+        // Event handler for quotation type change
+        $('#quotationOptions').change(function () {
+            debugger;
+            console.log("quotation option triggered");
+            var quotationType = $(this).val();
+            if (quotationType) {
+                // Show the "+ Add Food Item" button
+                $('#addFoodItem').show();
+            } else {
+                // Hide the "+ Add Food Item" button if no quotation type is selected
+                $('#addFoodItem').hide();
+            }
+        });
+
+        // Event handler for adding a food item
+        $('#addFoodItem').click(function () {
+            // Clone the food item dropdown and quantity input fields
+            var newFoodItem = $('#foodItemsContainer .food-item').first().clone();
+            // Clear the selected value of the cloned food item dropdown
+            newFoodItem.find('select').val('');
+            // Append the cloned fields to the food items container
+            $('#foodItemsContainer').append(newFoodItem);
+        });
+
+
+
+    </script>
+
+}

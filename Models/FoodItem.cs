@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventEatsQuotify.Models
 {
@@ -31,6 +32,16 @@ namespace EventEatsQuotify.Models
         [Display(Name = "Food Picture Path")]
         public string? FoodPicturePath { get; set; } // Make it nullable
 
-        // Add more properties as needed
+        public ICollection<Photo> Photos { get; set; } = new List<Photo>();
+
+        // property to store quantity or number of persons
+        [Display(Name = "Quantity or No of Persons")]
+        public int QuantityOrPersons { get; set; }
+
+        // property to store the type of quantity (e.g., KG, Persons)
+        [Display(Name = "Quantity Type")]
+        public string QuantityType { get; set; }
     }
+
 }
+

@@ -8,6 +8,7 @@ namespace EventEatsQuotify.ContextDBConfig
     public class EventEatsQuotifyDBContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<FoodItem> FoodItems { get; set; }
+        public DbSet<Photo> Photos { get; set; } // Add this line
         public EventEatsQuotifyDBContext(DbContextOptions<EventEatsQuotifyDBContext> options) : base(options)
         {
         }

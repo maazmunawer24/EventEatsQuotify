@@ -1,0 +1,277 @@
+﻿@model EventEatsQuotify.Models.ApplicationUser;
+@* VendorID: @ViewBag.VendorId *@
+
+<style>
+    #loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.5); /* Add a semi-transparent background */
+    z-index: 9999; /* Ensure it's above other content */
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+</style>
+<div id="quotationFormContainer" class="container mt-5">
+    <form id="quotationForm">
+        <input type="hidden" name="vendorId" id="vendorIdInput" value="@ViewBag.VendorId" />
+
+        <!-- Quotation Type Selection -->
+        <div class="mb-3">
+            <label for="quotationOption" class="form-label">Select Quotation Type</label>
+            <select class="form-select" name="quotationOption" id="quotationOptions">
+                <option value="" disabled selected>Select Quotation Type</option>
+                <option value="quantity">Food Quantity</option>
+                <option value="persons">No of Persons</option>
+            </select>
+            <!-- Validation Error Message -->
+            <div id="quotationOptionError" class="invalid-feedback"></div>
+        </div>
+
+        <!-- Food Items and Quantities/No of Persons -->
+        <div id="foodItemsContainer">
+            <!-- This will be populated based on the selected quotation type -->
+        </div>
+
+        <!-- Add Food Item Button -->
+        <button type="button" class="btn btn-outline-secondary mb-3" id="addFoodItem">Add Food Item</button>
+
+        <!-- Additional Instructions -->
+        <div class="mb-3">
+            <label for="additionalInstructions" class="form-label">Additional Instructions</label>
+            <textarea class="form-control" name="additionalInstructions" id="additionalInstructions" rows="3"></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="button" class="btn btn-primary" id="sendQuotationRequest">Get Quotation</button>
+    </form>
+
+    <!-- Loader -->
+    <div id="loader" class="d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-+bh3QNp5q/IsJLwhXKmnMzVDl9yo0hU1mPoL0b+UkAQ=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $('#addFoodItem').hide();
+        });
+
+        // Variable to store fetched food items
+        var fetchedFoodItems = '';
+        var quotationType = '';
+
+        // Function to fetch food items based on the selected vendor
+        function fetchFoodItems(vendorId) {
+            $.ajax({
+                url: '/Customer/GetFoodItems',
+                method: 'GET',
+                data: { vendorId: vendorId },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        // Store fetched data in variable
+                        fetchedFoodItems = response.data;
+                        // Show the "Add Food Item" button
+                        $('#addFoodItem').show();
+                    } else {
+                        console.error(response.message);
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        $('#addFoodItem').click(function () {
+            // Check if fetched food items exist
+            if (fetchedFoodItems && fetchedFoodItems.length > 0) {
+                // Generate HTML content for a single food item dropdown and textbox
+                var htmlContent = '<div class="mb-3 row food-item border p-3">';
+                htmlContent += '<div class="col">';
+                htmlContent += '<label for="foodItem" class="form-label">Food Item</label>';
+                htmlContent += '<select class="form-select food-dropdown" name="foodItem[]" id="foodItem" data-quotation-option="' + $('#quotationOptions').val() + '">';
+                htmlContent += '<option value="" selected disabled>Select Food Item</option>'; // Placeholder option
+
+                // Populate options for food items
+                $.each(fetchedFoodItems, function (index, food) {
+                    htmlContent += '<option value="' + food.id + '">' + food.name + '</option>';
+                });
+
+                htmlContent += '</select>';
+                htmlContent += '</div>';
+
+                htmlContent += '<div class="col">';
+                // Add quantity input based on quotation type
+                if ($('#quotationOptions').val() === 'quantity') {
+                    htmlContent += '<label for="quantity" class="form-label">Quantity (kg)</label>';
+                    htmlContent += '<input type="text" class="form-control quantity-input" name="quantity[]" id="quantity">';
+                } else {
+                    htmlContent += '<label for="noOfPersons" class="form-label">No of Persons</label>';
+                    htmlContent += '<input type="text" class="form-control persons-input" name="noOfPersons[]" id="noOfPersons">';
+                }
+                htmlContent += '</div>';
+
+                htmlContent += '<div class="col-auto">';
+                // Add remove item button
+                htmlContent += '<button type="button" class="btn btn-danger remove-item mt-2">Remove Item</button>';
+                htmlContent += '</div>';
+
+                htmlContent += '</div>';
+
+                // Append the HTML content to the container
+                $('#foodItemsContainer').append(htmlContent);
+            }
+        });
+
+        // Event handler for quotation type change
+        $('#quotationOptions').change(function () {
+            $('#quotationOptions').removeClass('is-invalid');
+            $('#quotationOptionError').text('');
+            quotationType = $(this).val();
+            if (quotationType) {
+                fetchFoodItems($('#vendorIdInput').val());
+            } else {
+                $('#addFoodItem').hide();
+                $('#foodItemsContainer').empty();
+            }
+        });
+
+        // Event handler for removing item
+        $('#foodItemsContainer').on('click', '.remove-item', function () {
+            $(this).closest('.food-item').remove();
+        });
+
+        // Event handler for input change (quantity or number of persons)
+        $('.quantity-input, .persons-input').on('input', function () {
+            $(this).removeClass('is-invalid');
+        });
+
+        // Event handler for sending quotation request
+        $('#sendQuotationRequest').click(function () {
+            // Show loader
+            $('#loader').removeClass('d-none');
+
+            // Client-side validation
+            var isValid = true;
+
+            // Reset all validation messages
+            $('.form-control').removeClass('is-invalid');
+            $('.invalid-feedback').text('');
+
+            // Validate if a quotation type is selected
+            if (!$('#quotationOptions').val()) {
+                isValid = false;
+                $('#quotationOptions').addClass('is-invalid');
+                $('#quotationOptionError').text('Please select a quotation type.');
+            }
+
+            // Validate if at least one food item is added
+            if ($('.food-item').length === 0) {
+                isValid = false;
+                $('#addFoodItem').addClass('is-invalid');
+                $('#addFoodItemError').text('Please add at least one food item.');
+            }
+
+            // Validate if at least one food item is added with its corresponding quantity or number of persons
+            $('.food-item').each(function () {
+                var foodDropdown = $(this).find('.food-dropdown');
+                var quantityInput = $(this).find('.quantity-input');
+                var personsInput = $(this).find('.persons-input');
+
+                if (!foodDropdown.val() || (!quantityInput.val() && !personsInput.val())) {
+                    isValid = false;
+                    $(this).addClass('is-invalid');
+                    $(this).find('.invalid-feedback').text('Please select a food item and enter its corresponding quantity or number of persons.');
+                }
+            });
+
+            // Validate quantity or number of persons
+            $('.quantity-input, .persons-input').each(function () {
+                var input = $(this);
+                if (isNaN(input.val())) {
+                    isValid = false;
+                    input.addClass('is-invalid');
+                    input.next('.invalid-feedback').text('Please enter a valid number.');
+                }
+            });
+
+            // Show error message if validation fails
+            if (!isValid) {
+                $('#validationError').removeClass('d-none');
+                // Hide loader
+                $('#loader').addClass('d-none');
+                return; // Stop further execution
+            } else {
+                $('#validationError').addClass('d-none');
+            }
+
+            // Prepare data object to send to the server-side endpoint
+            var data = {
+                VendorId: $('#vendorIdInput').val(),
+                QuotationOption: $('#quotationOptions').val(),
+                AdditionalInstructions: $('#additionalInstructions').val(),
+                FoodItems: [] // Populate this array with food items as needed
+            };
+
+            // Iterate through each food item
+            $('.food-item').each(function () {
+                var foodId = $(this).find('.food-dropdown').val();
+                var foodName = $(this).find('.food-dropdown option:selected').text();
+                var quantityOrPersons = $(this).find('.quantity-input, .persons-input').val();
+                var quantityType = $(this).find('.food-dropdown').data('quotation-option'); // Get the quotation type from the data attribute
+
+                // Create food item object
+                var foodItem = {
+                    Id: foodId,
+                    Name: foodName,
+                    QuantityOrPersons: quantityOrPersons,
+                    QuantityType: quantityType // Add the quotation type
+                };
+
+                // Add food item to the FoodItems array
+                data.FoodItems.push(foodItem);
+            });
+
+            // Send form data to the server-side endpoint using AJAX
+            $.ajax({
+                url: '/Customer/SendQuotationRequest',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data), // Convert data object to JSON string
+                success: function (response) {
+                    // Hide loader
+                    $('#loader').addClass('d-none');
+                    if (response.success) {
+                        // Show success message or perform any other action
+                        alert('Quotation request sent successfully!');
+                    } else {
+                        // Show error message or handle errors
+                        alert('Failed to send quotation request. Please try again later.');
+                    }
+                },
+                error: function (error) {
+                    // Hide loader
+                    $('#loader').addClass('d-none');
+                    console.error(error);
+                    // Show error message or handle errors
+                    alert('An error occurred while sending the quotation request. Please try again later.');
+                }
+            });
+        });
+    </script>
+}

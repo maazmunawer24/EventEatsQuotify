@@ -1,43 +1,206 @@
 ﻿@model IEnumerable<EventEatsQuotify.Models.FoodItem>
 
-@if (Model != null && Model.Any())
-{
-    <!-- Display menu items in a table -->
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th>Photo</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var menuItem in Model)
-            {
-                <tr>
-                    <td>@menuItem.Name</td>
-                    <td>@menuItem.Description</td>
-                    <td>@menuItem.Price</td>
-                    <td>@menuItem.Category</td>
-                    <td>
-                        <img src="@Url.Content(menuItem.FoodPicturePath)" alt="Menu Item Photo" style="max-width: 100px; max-height: 100px;" />
-                    </td>
-                    <td>
-                        <a href="@Url.Action("EditMenuItem", "Vendor", new { id = menuItem.Id })">Edit</a> |
-                        <a href="@Url.Action("DeleteMenuItem", "Vendor", new { id = menuItem.Id })">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No menu items found.</p>
-}
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form asp-action="MenuItems" asp-controller="Vendor" method="get">
+            <input type="text" class="form-control" placeholder="Search..." name="searchString" value="@ViewBag.CurrentFilter" />
+            <button type="submit" class="btn btn-primary mt-2">Search</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        @using (Html.BeginForm("DeleteSelectedMenuItems", "Vendor", FormMethod.Post, new { id = "deleteForm" }))
+        {
+            <button type="submit" class="btn btn-danger">Delete Selected</button>
+        }
+    </div>
+</div>
 
-<!-- Add button for uploading a new menu item -->
+<table class="table" id="menuItemsTable">
+    <thead>
+        <tr>
+            <th>
+                <input type="checkbox" id="selectAll" />
+            </th>
+            <th>
+                <a asp-action="MenuItems" asp-route-sortOrder="@ViewBag.NameSortParam">Name</a>
+            </th>
+            <th>Description</th>
+            <th>
+                <a asp-action="MenuItems" asp-route-sortOrder="@ViewBag.PriceSortParam">Price</a>
+            </th>
+            <th>Category</th>
+            <th>Photo</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var menuItem in Model)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox" name="selectedIds" value="@menuItem.Id" />
+                </td>
+                <td class="item-name">@menuItem.Name</td>
+                <td class="item-description">@menuItem.Description</td>
+                <td class="item-price">@menuItem.Price</td>
+                <td class="item-category">@menuItem.Category</td>
+                <td class="item-photo">
+                    @if (!string.IsNullOrEmpty(menuItem.FoodPicturePath))
+                    {
+                        <img src="@menuItem.FoodPicturePath" alt="Item Photo" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
+                    }
+                    else
+                    {
+                        <span>No Photo Available</span>
+                    }
+                </td>
+
+                <td>
+                    <button type="button" class="btn btn-primary edit-btn">Edit</button>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
 <a href="@Url.Action("UploadMenuItem", "Vendor")" class="btn btn-primary">Upload New Menu Item</a>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Menu Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="itemId" />
+                <div class="form-group">
+                    <label for="itemName">Name</label>
+                    <input type="text" class="form-control" id="itemName" />
+                </div>
+                <div class="form-group">
+                    <label for="itemDescription">Description</label>
+                    <textarea class="form-control" id="itemDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="itemPrice">Price</label>
+                    <input type="text" class="form-control" id="itemPrice" />
+                </div>
+                <div class="form-group">
+                    <label for="itemCategory">Category</label>
+                    <input type="text" class="form-control" id="itemCategory" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveEditBtn">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Handle select all checkbox
+            $('#selectAll').change(function () {
+                var isChecked = $(this).prop('checked');
+                $('input[name="selectedIds"]').prop('checked', isChecked);
+            });
+
+            // Handle individual checkbox change
+            $('input[name="selectedIds"]').change(function () {
+                var allChecked = $('input[name="selectedIds"]:checked').length === $('input[name="selectedIds"]').length;
+                $('#selectAll').prop('checked', allChecked);
+            });
+
+            // Handle edit button click
+            $('#menuItemsTable').on('click', '.edit-btn', function () {
+                var row = $(this).closest('tr');
+                var id = row.find('input[name="selectedIds"]').val();
+                var name = row.find('.item-name').text();
+                var description = row.find('.item-description').text();
+                var price = row.find('.item-price').text();
+                var category = row.find('.item-category').text();
+
+                // Populate modal with item data
+                $('#itemId').val(id);
+                $('#itemName').val(name);
+                $('#itemDescription').val(description);
+                $('#itemPrice').val(price);
+                $('#itemCategory').val(category);
+
+                // Show modal
+                $('#editModal').modal('show');
+            });
+
+            // Handle save edit button click
+            $('#saveEditBtn').click(function () {
+                var id = $('#itemId').val();
+                var name = $('#itemName').val();
+                var description = $('#itemDescription').val();
+                var price = $('#itemPrice').val();
+                var category = $('#itemCategory').val();
+
+                // Perform AJAX request to update item
+                $.ajax({
+                    url: '/Vendor/UpdateMenuItem',
+                    method: 'POST',
+                    data: { id: id, name: name, description: description, price: price, category: category },
+                    success: function (response) {
+                        // Find the table row corresponding to the edited item
+                        var editedRow = $('#menuItemsTable').find('input[value="' + id + '"]').closest('tr');
+
+                        // Update the content of the table row with the new values
+                        editedRow.find('.item-name').text(name);
+                        editedRow.find('.item-description').text(description);
+                        editedRow.find('.item-price').text(price);
+                        editedRow.find('.item-category').text(category);
+
+                        // Hide the modal
+                        $('#editModal').modal('hide');
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.error(error);
+                    }
+                });
+            });
+
+            // Handle delete selected form submission
+            $('#deleteForm').submit(function (e) {
+                e.preventDefault(); // Prevent default form submission
+
+                var selectedIds = $('input[name="selectedIds"]:checked').map(function () {
+                    return $(this).val();
+                }).get(); // Get array of selected IDs
+
+                // Confirm deletion
+                if (selectedIds.length === 0) {
+                    alert('Please select at least one item to delete.');
+                    return;
+                }
+
+                // Perform AJAX request to delete selected items
+                $.ajax({
+                    url: '/Vendor/DeleteSelectedMenuItems',
+                    method: 'POST',
+                    data: { selectedIds: selectedIds },
+                    traditional: true, // This ensures that the array is sent correctly
+                    success: function (response) {
+                        // Handle success, maybe refresh the page or update the table
+                        location.reload(); // Reload the page to reflect changes
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
+}

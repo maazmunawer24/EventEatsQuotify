@@ -27,6 +27,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\billing_images\" />
     <Folder Include="wwwroot\images\cnic_images\" />
+    <Folder Include="wwwroot\images\Foods\" />
   </ItemGroup>
 
 </Project>

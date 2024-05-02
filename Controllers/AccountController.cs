@@ -9,6 +9,7 @@ using EventEatsQuotify.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EventEatsQuotify.Controllers
 {
@@ -19,17 +20,20 @@ namespace EventEatsQuotify.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
         private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly string _adminEmail = ""; // Change this to the admin's email address
+        private readonly ILogger<AccountController> _logger;
+        private readonly string _adminEmail = "maaz.munawer@outlook.com"; // Change this to the admin's email address
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, IWebHostEnvironment hostEnvironment)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, IWebHostEnvironment hostEnvironment, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _emailSender = emailSender;
             _hostEnvironment = hostEnvironment;
+            _logger = logger;
         }
 
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
@@ -94,12 +98,13 @@ namespace EventEatsQuotify.Controllers
                 ModelState.Remove("BillingImagePath");
                 ModelState.Remove("CNICNumber");
                 ModelState.Remove("ShopAddress");
-            }else if(register.SelectedRole == "Vendor")
+            }
+            else if (register.SelectedRole == "Vendor")
             {
                 ModelState.Remove("CNICImagePath");
                 ModelState.Remove("BillingImagePath");
             }
-    
+
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser()
@@ -108,7 +113,6 @@ namespace EventEatsQuotify.Controllers
                     Email = register.Email,
                     UserName = register.Email,
                     RegistrationDate = DateTime.UtcNow
-
                 };
 
                 var result = await _userManager.CreateAsync(user, register.Password);
@@ -119,34 +123,52 @@ namespace EventEatsQuotify.Controllers
                     {
                         if (register.SelectedRole == "Vendor")
                         {
-                            // Save CNIC image
-                            user.CNICImagePath = await SaveFile(register.CNICImageFile, "cnic_images");
+                            try
+                            {
+                                // Save CNIC image
+                                user.CNICImagePath = await SaveFile(register.CNICImageFile, "cnic_images");
 
-                            // Save Billing image
-                            user.BillingImagePath = await SaveFile(register.BillingImageFile, "billing_images");
+                                // Save Billing image
+                                user.BillingImagePath = await SaveFile(register.BillingImageFile, "billing_images");
 
-                            user.CNICNumber = register.CNICNumber;
+                                user.CNICNumber = register.CNICNumber;
+                                user.ShopAddress = register.ShopAddress;
 
-                            user.ShopAddress = register.ShopAddress;
+                                // Update user with image paths
+                                await _userManager.UpdateAsync(user);
 
-                            // Update user with image paths
-                            await _userManager.UpdateAsync(user);
+                                // Add the selected role to the user
+                                await _userManager.AddToRoleAsync(user, register.SelectedRole);
 
-                            // Add the selected role to the user
-                            await _userManager.AddToRoleAsync(user, register.SelectedRole);
+                                await SendRegistrationRequestEmailAsync(user);
 
-                            await SendRegistrationRequestEmailAsync(user);
+                                // Set IsApproved to false for new vendor registrations
+                                user.IsApproved = false;
 
-                            // Set IsApproved to false for new vendor registrations
-                            user.IsApproved = false;
+                                // Set message for displaying pending request notification
+                                TempData["RegistrationPendingMessage"] = "Your registration request as a vendor is pending approval.";
 
-                            // Set message for displaying pending request notification
-                            TempData["RegistrationPendingMessage"] = "Your registration request as a vendor is pending approval.";
+                                // Redirect to the home index
+                                return RedirectToAction("Index", "Home");
+                            }
+                            catch (System.Net.Sockets.SocketException ex)
+                            {
+                                 await _userManager.DeleteAsync(user);
 
-                            // Redirect to the home index
-                            return RedirectToAction("Index", "Home");
+                                _logger.LogError(ex, "Error sending email: No such host is known.");
+                                ModelState.AddModelError(string.Empty,"An error occurred while sending the email(Check your internet connection). Please try again later.");
+                            }
+                            catch (Exception ex)
+                            {
+                                await _userManager.DeleteAsync(user);
+
+                                // Log the exception
+                                _logger.LogError(ex, "Error occurred during vendor registration.");
+
+                                // Add error message to ModelState
+                                ModelState.AddModelError(string.Empty, "An error occurred during vendor registration. Please try again later.");
+                            }
                         }
-
                         else if (register.SelectedRole == "Customer")
                         {
                             // Add the selected role to the user
@@ -167,7 +189,7 @@ namespace EventEatsQuotify.Controllers
                         ModelState.AddModelError("", $"Role {register.SelectedRole} does not exist.");
                     }
                 }
-                if (!result.Succeeded)
+                else
                 {
                     foreach (var error in result.Errors)
                     {
@@ -182,7 +204,6 @@ namespace EventEatsQuotify.Controllers
                         }
                     }
                 }
-
             }
 
             register.AvailableRoles = new List<string> { "Vendor", "Customer" };
@@ -225,21 +246,39 @@ namespace EventEatsQuotify.Controllers
 
             // Format the message body as HTML with a button
             var htmlMessage = $@"
-                <html>
-                <body>
-                    <p>{message}</p>
-                    <p>
-                        You can access the admin dashboard 
-                            <a href=""{adminDashboardUrl}"" style=""text-decoration: none;"">
-                            <button style=""background-color: #007bff; color: #ffffff; border: none; padding: 10px 20px; border-radius: 5px;"">Redirect to Dashboard</button>
-                        </a>
-                    </p>
-                </body>
-                </html>";
+        <html>
+        <body>
+            <p>{message}</p>
+            <p>
+                You can access the admin dashboard 
+                    <a href=""{adminDashboardUrl}"" style=""text-decoration: none;"">
+                    <button style=""background-color: #007bff; color: #ffffff; border: none; padding: 10px 20px; border-radius: 5px;"">Redirect to Dashboard</button>
+                </a>
+            </p>
+        </body>
+        </html>";
 
-            // Send the email with the HTML-formatted message body
-            await _emailSender.SendEmailAsync(_adminEmail, subject, htmlMessage);
+            try
+            {
+                // Send the email with the HTML-formatted message body
+                await _emailSender.SendEmailAsync(_adminEmail, subject, htmlMessage);
+            }
+            catch (System.Net.Sockets.SocketException ex)
+            {
+                _logger.LogError(ex, "Error sending registration request email: No such host is known.");
+                // Log the error and handle it gracefully
+                // For example, you can set a flag to indicate that the email sending failed
+                throw new Exception("An error occurred while sending the registration request email. Please try again later.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while sending registration request email.");
+                // Log the error and handle it gracefully
+                // For example, you can set a flag to indicate that the email sending failed
+                throw new Exception("An unexpected error occurred. Please try again later.");
+            }
         }
+
 
 
 

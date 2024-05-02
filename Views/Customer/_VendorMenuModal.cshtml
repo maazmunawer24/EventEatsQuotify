@@ -1,0 +1,19 @@
+﻿@model List<FoodItem>
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Menu Items</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        @foreach (var item in Model)
+        {
+            <div class="mb-3">
+                <h6>@item.Name</h6>
+                <img src="@item.FoodPicturePath" alt="@item.Name" class="img-fluid rounded">
+                <p><strong>Description:</strong> @item.Description</p>
+                <p><strong>Price:</strong> @item.Price</p>
+            </div>
+        }
+    </div>
+</div>

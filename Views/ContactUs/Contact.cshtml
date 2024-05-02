@@ -1,4 +1,5 @@
-﻿@model EventEatsQuotify.ViewModels.ContactViewModel
+﻿@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@model EventEatsQuotify.ViewModels.ContactViewModel
 @{
     ViewData["Title"] = "Contact";
 }
@@ -38,6 +39,16 @@
                             <h2 class="text-center text-pink mb-4">Feedback</h2>
 
                         }
+                        <!-- Display error messages if there are any -->
+                        @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+                        {
+                            <div class="alert alert-danger">
+                                @ViewData["ErrorMessage"]
+                            </div>
+                        }
+
+
+                        <!-- Form content -->
                         <form method="post" class="p-4" action="/ContactUs/Contact" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="name">Name</label>
@@ -62,5 +73,15 @@
     </div>
 
     <!-- Include necessary scripts -->
+    <script>
+        $(document).ready(function () {
+            // Check if TempData contains the Contact US message
+            var ContactUSMessage = "@TempData["ContactUSMessage"]";
+            if (ContactUSMessage) {
+                // Display the popup message
+                alert(ContactUSMessage);
+            }
+        });
+    </script>
 </body>
 </html>

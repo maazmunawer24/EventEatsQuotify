@@ -131,3 +131,13 @@ else
 {
     <p class="no-requests">No pending vendor registration requests.</p>
 }
+<script>
+    $(document).ready(function () {
+        // Check if TempData contains the Contact US message
+        var ContactUSMessage = "@TempData["ContactUSMessage"]";
+        if (ContactUSMessage) {
+            // Display the popup message
+            alert(ContactUSMessage);
+        }
+    });
+</script>

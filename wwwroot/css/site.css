@@ -22,10 +22,10 @@ html {
 
 }
 .text-pink-menu {
-    color: #ff1448;
+    color: #ff1448 !important;
 }
 .text-pink-menu:hover {
-    color: #FFB4B4;
+    color: #FFB4B4 !important;
 }
 
 .nav-link{
@@ -148,3 +148,8 @@ body {
                 .custom-footer .list-unstyled li a:hover {
                     color: #0056b3; /* Hover color */
                 }
+
+
+#btn-success-color{
+    color:#fff !important;
+}

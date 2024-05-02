@@ -2,109 +2,46 @@
     ViewData["Title"] = "Vendor Dashboard";
 }
 
-<div class="vendor-dashboard-container">
-    <h2>Welcome to the Vendor Dashboard</h2>
-    <p>This is the place where vendors can manage their food items and pricing.</p>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg rounded">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title"><i class="fas fa-store"></i> EventEats Quotify - Vendor Dashboard</h3>
+                </div>
 
-    <div class="dashboard-icon">
-        <i class="fas fa-store"></i>
+                <div class="card-body">
+                    <p class="lead">Welcome to the Vendor Dashboard. This is the place where vendors can manage their food items and pricing.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <h3>Menu Item Management</h3>
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="card shadow rounded">
+                <div class="card-header bg-success text-white">
+                    <h4 class="card-title"><i class="fas fa-utensils"></i> Menu Item Management</h4>
+                </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title">MenuItems</h5>
-                    <p class="card-text">View existing menu items.</p>
-                    <a href="@Url.Action("MenuItems", "Vendor")" class="btn btn-primary">View</a>
+                    <p class="card-text">Manage your menu items here.</p>
+                    <a href="@Url.Action("MenuItems", "Vendor")" class="btn btn-success btn-block">Manage Menu Items</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Upload New Menu Item</h5>
-                    <p class="card-text">Add a new menu item to your offerings.</p>
-                    <a href="@Url.Action("UploadMenuItem", "Vendor")" class="btn btn-primary">Upload</a>
+
+        <div class="col-lg-6">
+            <div class="card shadow rounded">
+                <div class="card-header bg-info text-white">
+                    <h4 class="card-title"><i class="fas fa-images"></i> Photo Management</h4>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card mb-3">
+
                 <div class="card-body">
-                    <h5 class="card-title">Edit Menu Item</h5>
-                    <p class="card-text">Modify details of existing menu items.</p>
-                    <a href="@Url.Action("EditMenuItem", "Vendor")" class="btn btn-primary">Edit</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Delete Menu Item</h5>
-                    <p class="card-text">Remove menu items from your offerings.</p>
-                    <a href="@Url.Action("DeleteMenuItem", "Vendor")" class="btn btn-primary">Delete</a>
+                    <p class="card-text">Manage photos for each menu item.</p>
+                    <a href="#" class="btn btn-info btn-block disabled" aria-disabled="true">Photo Management (Coming Soon)</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .vendor-dashboard-container {
-        max-width: 1300px;
-        margin: 50px auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
-    }
-
-        .vendor-dashboard-container h2 {
-            font-size: 2.5rem;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .vendor-dashboard-container p {
-            font-size: 1.1rem;
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .vendor-dashboard-container h3 {
-            font-size: 1.8rem;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-    .card {
-        border: none;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-title {
-        font-size: 1.2rem;
-        color: #333;
-        margin-bottom: 10px;
-    }
-
-    .card-text {
-        font-size: 1rem;
-        color: #666;
-        margin-bottom: 20px;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-</style>
