@@ -40,7 +40,7 @@ namespace EventEatsQuotify.Models
 
         // property to store the type of quantity (e.g., KG, Persons)
         [Display(Name = "Quantity Type")]
-        public string QuantityType { get; set; }
+        public string? QuantityType { get; set; }
     }
 
 }

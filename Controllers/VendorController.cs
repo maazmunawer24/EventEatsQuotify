@@ -34,18 +34,27 @@ namespace EventEatsQuotify.Controllers
         }
 
         [HttpGet]
-        public IActionResult MenuItems(string sortOrder, string searchString)
+        public async Task<IActionResult> MenuItems(string sortOrder, string searchString)
         {
             ViewBag.NameSortParam = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.PriceSortParam = sortOrder == "Price" ? "price_desc" : "Price";
+            // Retrieve the currently logged-in user
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound(); // Handle the case where the user is not authenticated
+            }
 
-            var menuItems = from item in _dbContext.FoodItems
-                            select item;
+            var vendorId = user.Id;
+
+            // Filter menu items based on the vendor ID
+            var menuItems = _dbContext.FoodItems.Where(item => item.VendorId == vendorId);
 
             if (!String.IsNullOrEmpty(searchString))
             {
                 menuItems = menuItems.Where(item => item.Name.Contains(searchString));
             }
+
 
             switch (sortOrder)
             {
@@ -63,8 +72,9 @@ namespace EventEatsQuotify.Controllers
                     break;
             }
 
-            return View(menuItems.ToList());
+            return View(await menuItems.ToListAsync());
         }
+
 
         [HttpPost]
         public ActionResult DeleteSelectedMenuItems(List<int> selectedIds)
