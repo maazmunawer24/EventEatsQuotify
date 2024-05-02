@@ -172,11 +172,11 @@
                     </div>
                 </div>
             </div>
-@* 
-            <!-- customerDashboardView.html -->
-
-            <div id="quotationFormContainer"></div> *@
-
+            <div id="loader" class="d-none">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
         }
     </div>
 </div>
@@ -191,6 +191,9 @@
     <script>
        
         function loadMenuItems(vendorId) {
+            // Show loader
+            $('#loader').removeClass('d-none');
+
             console.log(vendorId);
             $.ajax({
                 url: '/Customer/GetMenuItems',
@@ -198,6 +201,8 @@
                 data: { vendorId: vendorId },
                 dataType: 'json',
                 success: function (response) {
+                    // Hide loader
+                    $('#loader').addClass('d-none');
                     if (response.success) {
                         // Generate HTML content for menu items
                         var htmlContent = '';
@@ -216,12 +221,17 @@
                     }
                 },
                 error: function (error) {
+                    // Hide loader
+                    $('#loader').addClass('d-none');
                     console.error(error);
                 }
             });
         }
 
         function loadVendorProfile(vendorId) {
+            // Show loader
+            $('#loader').removeClass('d-none');
+
             console.log('Vendor ID for Profile:', vendorId);
             $.ajax({
                 url: '/Customer/GetVendorProfile',
@@ -229,7 +239,8 @@
                 data: { vendorId: vendorId },
                 dataType: 'json',
                 success: function (response) {
-                    debugger;
+                    // Hide loader
+                    $('#loader').addClass('d-none');
                     if (response.success) {
                         var vendor = response.data;
                         var profileImageSrc = vendor.ProfilePicture ? 'data:image/png;base64,' + vendor.ProfilePicture : '~/images/defaultimages/user.png';
@@ -254,20 +265,25 @@
                     }
                 },
                 error: function (error) {
+                    // Hide loader
+                    $('#loader').addClass('d-none');
                     console.error(error);
                 }
             });
         }
         // Function to fetch food items based on the selected vendor
         function fetchFoodItems(vendorId) {
-            debugger;
+            // Show loader
+            $('#loader').removeClass('d-none');
+
             $.ajax({
                 url: '/Customer/GetFoodItems',
                 method: 'GET',
                 data: { vendorId: vendorId },
                 dataType: 'json',
                 success: function (response) {
-                    debugger;
+                    // Hide loader
+                    $('#loader').addClass('d-none');
                     if (response.success) {
                         // Generate HTML content for food items dropdowns
                         $('#addFoodItem').hide();
@@ -297,7 +313,8 @@
                     }
                 },
                 error: function (error) {
-                    debugger;
+                    // Hide loader
+                    $('#loader').addClass('d-none');
                     console.error(error);
                 }
             });

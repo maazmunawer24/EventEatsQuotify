@@ -103,6 +103,13 @@
     </div>
 </div>
 
+<!-- Loader -->
+<div id="loader" class="d-none">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         $(document).ready(function () {
@@ -140,6 +147,9 @@
 
             // Handle save edit button click
             $('#saveEditBtn').click(function () {
+                // Show loader
+                $('#loader').removeClass('d-none');
+
                 var id = $('#itemId').val();
                 var name = $('#itemName').val();
                 var description = $('#itemDescription').val();
@@ -152,6 +162,8 @@
                     method: 'POST',
                     data: { id: id, name: name, description: description, price: price, category: category },
                     success: function (response) {
+                        // Hide loader
+                        $('#loader').addClass('d-none');
                         // Find the table row corresponding to the edited item
                         var editedRow = $('#menuItemsTable').find('input[value="' + id + '"]').closest('tr');
 
@@ -165,6 +177,8 @@
                         $('#editModal').modal('hide');
                     },
                     error: function (xhr, status, error) {
+                        // Hide loader
+                        $('#loader').addClass('d-none');
                         // Handle error
                         console.error(error);
                     }
@@ -173,6 +187,9 @@
 
             // Handle delete selected form submission
             $('#deleteForm').submit(function (e) {
+                // Show loader
+                $('#loader').removeClass('d-none');
+
                 e.preventDefault(); // Prevent default form submission
 
                 var selectedIds = $('input[name="selectedIds"]:checked').map(function () {
@@ -182,6 +199,8 @@
                 // Confirm deletion
                 if (selectedIds.length === 0) {
                     alert('Please select at least one item to delete.');
+                    // Hide loader
+                    $('#loader').addClass('d-none');
                     return;
                 }
 
@@ -192,15 +211,25 @@
                     data: { selectedIds: selectedIds },
                     traditional: true, // This ensures that the array is sent correctly
                     success: function (response) {
+                        // Hide loader
+                        $('#loader').addClass('d-none');
                         // Handle success, maybe refresh the page or update the table
                         location.reload(); // Reload the page to reflect changes
                     },
                     error: function (xhr, status, error) {
+                        // Hide loader
+                        $('#loader').addClass('d-none');
                         // Handle error
                         console.error(error);
                     }
                 });
             });
+
+            // Handle close button click
+            $('#editModal').on('click', '[data-dismiss="modal"]', function () {
+                $('#editModal').modal('hide');
+            });
+
         });
     </script>
 }
