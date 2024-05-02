@@ -77,6 +77,15 @@ namespace EventEatsQuotify.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Check if the new email already exists in the database
+                var existingUser = await _userManager.FindByEmailAsync(viewModel.ContactEmail);
+                if (existingUser != null && existingUser.Email == viewModel.ContactEmail)
+                {
+                    // Email already exists for another user
+                    ModelState.AddModelError("ContactEmail", "The email is already in use.");
+                    return View(viewModel);
+                }
+
                 var user = await _userManager.GetUserAsync(User);
 
                 user.Name = viewModel.Name;

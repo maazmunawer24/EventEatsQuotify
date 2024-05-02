@@ -111,7 +111,7 @@ namespace EventEatsQuotify.Controllers
                 {
                     Name = register.Name,
                     Email = register.Email,
-                    UserName = register.Email,
+                    UserName = register.Name,
                     RegistrationDate = DateTime.UtcNow
                 };
 
