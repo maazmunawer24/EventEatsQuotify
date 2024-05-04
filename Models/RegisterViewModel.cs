@@ -7,6 +7,9 @@ namespace EventEatsQuotify.Models
     public class RegisterViewModel
     {
         // Properties for basic registration fields
+
+        [Required(ErrorMessage = "Please enter your name.")]
+        [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Name can only contain letters or spaces.")]
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }

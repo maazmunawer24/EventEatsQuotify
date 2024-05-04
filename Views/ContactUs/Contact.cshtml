@@ -72,16 +72,21 @@
         </div>
     </div>
 
-    <!-- Include necessary scripts -->
-    <script>
+ 
+        <script>
         $(document).ready(function () {
-            // Check if TempData contains the Contact US message
-            var ContactUSMessage = "@TempData["ContactUSMessage"]";
-            if (ContactUSMessage) {
-                // Display the popup message
-                alert(ContactUSMessage);
+            // Check TempData for user role flag
+            var userRole = "@TempData["UserRole"]";
+
+            // Display appropriate message based on user role
+            if (userRole === "Vendor") {
+                alert("Thank you for contacting us, we'll get back to you soon.");
+            } else if (userRole === "Customer") {
+                alert("Thank you for your valuable feedback!");
             }
         });
     </script>
+
+
 </body>
 </html>

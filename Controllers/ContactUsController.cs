@@ -32,7 +32,25 @@ namespace EventEatsQuotify.Controllers
             {
                 try
                 {
-                    await _emailSender.SendEmailAsync(_adminEmail, "New Contact Form Submission", $"Name: {model.Name}<br/>Email: {model.Email}<br/>Message: {model.Message}");
+                    // Determine user's role
+                    string userRole = User.IsInRole("Vendor") ? "Vendor" : "Customer";
+                    string FormType = "";
+                    if (string.IsNullOrEmpty(userRole))
+                    {
+                        if (userRole == "Vendor")
+                        {
+                            FormType = "Contact";
+                        }
+                        else
+                        {
+                            FormType = "Feedback";
+                        }
+
+                    }
+                    // Set TempData flag to indicate user role
+                    TempData["UserRole"] = userRole;
+
+                    await _emailSender.SendEmailAsync(_adminEmail, "New"+ "${ FormType}"+" Form Submission", $"{userRole}: {model.Name}<br/>Email: {model.Email}<br/>Message: {model.Message}");
 
                     // For demonstration purposes, we'll just display the submitted data
                     TempData["ContactUSMessage"] = "Your Request has been submitted.";

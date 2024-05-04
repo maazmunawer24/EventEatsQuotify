@@ -49,11 +49,12 @@
     }
 
         .card-img img {
-            max-height: 200px;
-            width: auto;
-            height: auto;
-            max-width: 100%;
+            max-height: 200px; /* Limit the maximum height */
+            width: auto; /* Allow the width to adjust according to the aspect ratio */
+            height: auto; /* Allow the height to adjust according to the aspect ratio */
+            max-width: 100%; /* Ensure the image does not exceed the container width */
         }
+
 
     .card-footer {
         display: flex;
@@ -89,11 +90,10 @@
 </style>
 
 <h1>Admin Dashboard</h1>
-
 @if (Model.Any())
 {
     <div class="row">
-        <p class="no-requests">pending vendor registration requests.</p>
+        <p class="no-requests">Pending vendor registration requests.</p>
 
         @foreach (var vendor in Model)
         {
@@ -107,9 +107,9 @@
                         <p class="card-text"><strong>Role:</strong> @vendor.SelectedRole</p>
                         <div class="card-img">
                             <p class="card-text"><strong>CNIC Image: </strong></p>
-                            <img src="@vendor.CNICImagePath" alt="CNIC Image" class="img-fluid mb-2" />
+                            <img src="@vendor.CNICImagePath" alt="CNIC Image" class="card-img-top img-fluid mb-2" />
                             <p class="card-text"><strong>Billing Image: </strong></p>
-                            <img src="@vendor.BillingImagePath" alt="Billing Image" class="img-fluid" />
+                            <img src="@vendor.BillingImagePath" alt="Billing Image" class="card-img-top img-fluid" />
                         </div>
                     </div>
                     <div class="card-footer">
@@ -131,6 +131,7 @@ else
 {
     <p class="no-requests">No pending vendor registration requests.</p>
 }
+
 <script>
     $(document).ready(function () {
         // Check if TempData contains the Contact US message

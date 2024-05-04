@@ -95,10 +95,57 @@
             .custom-modal-footer .custom-btn {
                 margin-right: 0.5rem;
             }
+
+        .food-item-image-container {
+            width: 100%;
+            height: 200px; /* Adjust height as needed */
+            overflow: hidden;
+        }
+
+        .food-item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Maintain aspect ratio */
+        }
+
+        .modal-body {
+            max-height: 70vh; /* Adjust max height of modal body */
+            overflow-y: auto; /* Enable vertical scroll if content exceeds max height */
+        }
+
+        .custom-card-body {
+            padding: 1rem;
+        }
+
+        .custom-btn {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .custom-btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+            .custom-btn-primary:hover {
+                background-color: #0069d9;
+            }
+
+        .custom-btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+            .custom-btn-secondary:hover {
+                background-color: #5a6268;
+            }
+
     </style>
 </head>
 
-<h2 class="text-center mb-4">Welcome to the Customer Dashboard</h2>
+<h1 class="text-center mb-4">Welcome to the Customer Dashboard</h1>
 
 <div class="container">
     <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -208,7 +255,7 @@
                         var htmlContent = '';
                         $.each(response.data, function (index, item) {
                             htmlContent += '<div class="mb-3">';
-                            htmlContent += '<h6>' + (item.name || "") + '</h6>';
+                            htmlContent += '<h1>' + (item.name || "") + '</h1>';
                             htmlContent += '<p><strong>Description:</strong> ' + (item.description || "") + '</p>';
                             htmlContent += '<p><strong>Price:</strong> ' + (item.price || "") + '</p>';
                             htmlContent += '<img src="' + (item.foodPicturePath || '~/images/defaultimages/placeholder.png') + '" alt="' + (item.name || "Item") + '" class="img-fluid rounded">';

@@ -9,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using System;
+using System.Threading.Tasks;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -25,8 +28,11 @@ builder.Services.AddDbContext<EventEatsQuotifyDBContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
+    // Allow spaces in the username
+    options.User.AllowedUserNameCharacters += " ";
 })
-    .AddEntityFrameworkStores<EventEatsQuotifyDBContext>();
+    .AddEntityFrameworkStores<EventEatsQuotifyDBContext>()
+    .AddDefaultTokenProviders();
 
 // Register the VendorService as a scoped service
 builder.Services.AddScoped<VendorService>();
@@ -107,7 +113,7 @@ async Task SeedAdminAccountAsync(IServiceProvider serviceProvider)
     {
         var adminUser = new ApplicationUser
         {
-            UserName = "admin@EEQ.com",
+            UserName = "admin",
             Email = "admin@EEQ.com",
             // Add other properties as needed
         };

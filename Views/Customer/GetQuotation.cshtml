@@ -1,6 +1,8 @@
 ﻿@model EventEatsQuotify.Models.ApplicationUser;
 @* VendorID: @ViewBag.VendorId *@
 
+<h1 class="text-center mb-4">GET QUOTATION</h1>
+
 <div id="quotationFormContainer" class="container mt-5">
     <form id="quotationForm">
         <input type="hidden" name="vendorId" id="vendorIdInput" value="@ViewBag.VendorId" />
@@ -54,6 +56,13 @@
         var fetchedFoodItems = '';
         var quotationType = '';
 
+        // Function to handle the case when no food items are available for the selected vendor
+        function handleNoFoodItems() {
+            $('#foodItemsContainer').empty(); // Clear any existing food items
+            $('#foodItemsContainer').html('<div class="alert alert-warning" role="alert">There are no menu items uploaded by the vendor.</div>');
+            $('#addFoodItem').hide(); // Hide the "Add Food Item" button
+        }
+
         // Function to fetch food items based on the selected vendor
         function fetchFoodItems(vendorId) {
             $.ajax({
@@ -63,10 +72,16 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-                        // Store fetched data in variable
-                        fetchedFoodItems = response.data;
-                        // Show the "Add Food Item" button
-                        $('#addFoodItem').show();
+                        // Check if there are any food items
+                        if (response.data.length > 0) {
+                            // Store fetched data in variable
+                            fetchedFoodItems = response.data;
+                            // Show the "Add Food Item" button
+                            $('#addFoodItem').show();
+                        } else {
+                            // Handle case when no food items are available
+                            handleNoFoodItems();
+                        }
                     } else {
                         console.error(response.message);
                     }
@@ -76,6 +91,7 @@
                 }
             });
         }
+
 
         $('#addFoodItem').click(function () {
             // Check if fetched food items exist

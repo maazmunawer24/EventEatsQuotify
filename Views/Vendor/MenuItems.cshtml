@@ -1,6 +1,12 @@
 ﻿@model IEnumerable<EventEatsQuotify.Models.FoodItem>
 
 <div class="row mb-3">
+    <div class="col-md-12 text-center">
+        <h1>Menu Item Management</h1>
+    </div>
+</div>
+
+<div class="row mb-3">
     <div class="col-md-6">
         <form asp-action="MenuItems" asp-controller="Vendor" method="get">
             <input type="text" class="form-control" placeholder="Search..." name="searchString" value="@ViewBag.CurrentFilter" />

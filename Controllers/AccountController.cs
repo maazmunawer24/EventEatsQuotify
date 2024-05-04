@@ -85,7 +85,6 @@ namespace EventEatsQuotify.Controllers
             };
             return View(model);
         }
-
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel register)
         {
@@ -107,6 +106,16 @@ namespace EventEatsQuotify.Controllers
 
             if (ModelState.IsValid)
             {
+                // Check if the email address is already registered
+                var existingUser = await _userManager.FindByEmailAsync(register.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("", "Email address is already registered.");
+                    register.AvailableRoles = new List<string> { "Vendor", "Customer" };
+                    return View(register);
+                }
+
+                // Proceed with user creation
                 var user = new ApplicationUser()
                 {
                     Name = register.Name,
@@ -123,6 +132,23 @@ namespace EventEatsQuotify.Controllers
                     {
                         if (register.SelectedRole == "Vendor")
                         {
+                            // Check if CNIC number or Shop address already exists
+                            var vendors = await _userManager.GetUsersInRoleAsync("Vendor");
+                            if (vendors.Any(v => v.CNICNumber == register.CNICNumber))
+                            {
+                                ModelState.AddModelError("", "CNIC number is already registered.");
+                                register.AvailableRoles = new List<string> { "Vendor", "Customer" };
+                                return View(register);
+                            }
+
+                            if (vendors.Any(v => v.ShopAddress == register.ShopAddress))
+                            {
+                                ModelState.AddModelError("", "Shop address is already registered.");
+                                register.AvailableRoles = new List<string> { "Vendor", "Customer" };
+                                return View(register);
+                            }
+
+
                             try
                             {
                                 // Save CNIC image
@@ -153,10 +179,10 @@ namespace EventEatsQuotify.Controllers
                             }
                             catch (System.Net.Sockets.SocketException ex)
                             {
-                                 await _userManager.DeleteAsync(user);
+                                await _userManager.DeleteAsync(user);
 
                                 _logger.LogError(ex, "Error sending email: No such host is known.");
-                                ModelState.AddModelError(string.Empty,"An error occurred while sending the email(Check your internet connection). Please try again later.");
+                                ModelState.AddModelError(string.Empty, "An error occurred while sending the email(Check your internet connection). Please try again later.");
                             }
                             catch (Exception ex)
                             {
@@ -193,15 +219,7 @@ namespace EventEatsQuotify.Controllers
                 {
                     foreach (var error in result.Errors)
                     {
-                        // Check if the error is related to duplicate email
-                        if (error.Code == "DuplicateEmail")
-                        {
-                            ModelState.AddModelError("", "Email address is already registered.");
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("", error.Description);
-                        }
+                        ModelState.AddModelError("", error.Description);
                     }
                 }
             }

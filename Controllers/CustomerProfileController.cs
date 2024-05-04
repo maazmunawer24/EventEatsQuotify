@@ -77,20 +77,24 @@ namespace EventEatsQuotify.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Check if the new email already exists in the database
-                var existingUser = await _userManager.FindByEmailAsync(viewModel.ContactEmail);
-                if (existingUser != null && existingUser.Email == viewModel.ContactEmail)
-                {
-                    // Email already exists for another user
-                    ModelState.AddModelError("ContactEmail", "The email is already in use.");
-                    return View(viewModel);
-                }
-
                 var user = await _userManager.GetUserAsync(User);
+
+                // Check if the new email is different from the current email
+                if (viewModel.ContactEmail != user.Email)
+                {
+                    // Check if the new email already exists in the database
+                    var existingUser = await _userManager.FindByEmailAsync(viewModel.ContactEmail);
+                    if (existingUser != null)
+                    {
+                        // Email already exists for another user
+                        ModelState.AddModelError("ContactEmail", "The email is already in use.");
+                        return View(viewModel);
+                    }
+                }
 
                 user.Name = viewModel.Name;
                 user.Email = viewModel.ContactEmail;
-                user.PhoneNumber = viewModel.ContactPhone;          
+                user.PhoneNumber = viewModel.ContactPhone;
 
                 if (viewModel.ProfilePictureFile != null)
                 {
@@ -108,5 +112,6 @@ namespace EventEatsQuotify.Controllers
 
             return View(viewModel);
         }
+
     }
 }
