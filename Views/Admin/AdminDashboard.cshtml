@@ -53,6 +53,7 @@
             width: auto; /* Allow the width to adjust according to the aspect ratio */
             height: auto; /* Allow the height to adjust according to the aspect ratio */
             max-width: 100%; /* Ensure the image does not exceed the container width */
+            cursor: pointer; /* Add pointer cursor */
         }
 
 
@@ -105,12 +106,17 @@
                         <p class="card-text"><strong>CNIC Number:</strong> @vendor.CNICNumber</p>
                         <p class="card-text"><strong>Shop Address:</strong> @vendor.ShopAddress</p>
                         <p class="card-text"><strong>Role:</strong> @vendor.SelectedRole</p>
-                        <div class="card-img">
+                        <div class="card-img card-img-cnic">
                             <p class="card-text"><strong>CNIC Image: </strong></p>
                             <img src="@vendor.CNICImagePath" alt="CNIC Image" class="card-img-top img-fluid mb-2" />
-                            <p class="card-text"><strong>Billing Image: </strong></p>
+                        </div>
+
+                        <p class="card-text"><strong>Billing Image: </strong></p>
+                        <div class="card-img card-img-billing">
                             <img src="@vendor.BillingImagePath" alt="Billing Image" class="card-img-top img-fluid" />
                         </div>
+
+
                     </div>
                     <div class="card-footer">
                         <form asp-controller="Admin" asp-action="Approve" method="post">
@@ -131,6 +137,40 @@ else
 {
     <p class="no-requests">No pending vendor registration requests.</p>
 }
+<!-- Modal for CNIC Image -->
+<div class="modal fade" id="cnicModal" tabindex="-1" role="dialog" aria-labelledby="cnicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cnicModalLabel">CNIC Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <img id="cnicModalImage" src="#" class="img-fluid" alt="CNIC Image">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Billing Image -->
+<div class="modal fade" id="billingModal" tabindex="-1" role="dialog" aria-labelledby="billingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="billingModalLabel">Billing Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+            </div>
+            <div class="modal-body">
+                <img id="billingModalImage" src="#" class="img-fluid" alt="Billing Image">
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 <script>
     $(document).ready(function () {
@@ -140,5 +180,17 @@ else
             // Display the popup message
             alert(ContactUSMessage);
         }
+    });
+    $(document).ready(function () {
+        $('.card-img img').click(function () {
+            var src = $(this).attr('src');
+            if ($(this).parent().hasClass('card-img-cnic')) {
+                $('#cnicModalImage').attr('src', src);
+                $('#cnicModal').modal('show');
+            } else if ($(this).parent().hasClass('card-img-billing')) {
+                $('#billingModalImage').attr('src', src);
+                $('#billingModal').modal('show');
+            }
+        });
     });
 </script>
