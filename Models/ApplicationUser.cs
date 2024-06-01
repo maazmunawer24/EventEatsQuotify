@@ -42,6 +42,8 @@ namespace EventEatsQuotify.Models
         // Property for storing CNIC image path
         public string? CNICImagePath { get; set; }
 
+        public string? CNICBackImagePath { get; set; }
+
         // Property for storing billing image path
         public string? BillingImagePath { get; set; }
 

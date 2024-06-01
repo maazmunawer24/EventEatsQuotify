@@ -92,7 +92,9 @@ namespace EventEatsQuotify.Controllers
             if (register.SelectedRole == "Customer")
             {
                 ModelState.Remove("CNICImageFile");
+                ModelState.Remove("CNICBackImageFile");
                 ModelState.Remove("BillingImageFile");
+                ModelState.Remove("CNICBackImagePath");
                 ModelState.Remove("CNICImagePath");
                 ModelState.Remove("BillingImagePath");
                 ModelState.Remove("CNICNumber");
@@ -100,6 +102,7 @@ namespace EventEatsQuotify.Controllers
             }
             else if (register.SelectedRole == "Vendor")
             {
+                ModelState.Remove("CNICBackImagePath");
                 ModelState.Remove("CNICImagePath");
                 ModelState.Remove("BillingImagePath");
             }
@@ -153,6 +156,8 @@ namespace EventEatsQuotify.Controllers
                             {
                                 // Save CNIC image
                                 user.CNICImagePath = await SaveFile(register.CNICImageFile, "cnic_images");
+                                // Save CNIC image
+                                user.CNICBackImagePath = await SaveFile(register.CNICBackImageFile, "cnic_images");
 
                                 // Save Billing image
                                 user.BillingImagePath = await SaveFile(register.BillingImageFile, "billing_images");

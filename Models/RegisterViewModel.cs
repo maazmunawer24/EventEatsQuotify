@@ -19,7 +19,11 @@ namespace EventEatsQuotify.Models
         // Properties specific to vendors
         [Display(Name = "CNIC Image Path")]
         [RequiredIf("SelectedRole", "Vendor", ErrorMessage = "CNIC Image Path is required for vendor role")]
-        public string CNICImagePath { get; set; }
+        public string CNICImagePath { get; set; } 
+        
+        [Display(Name = "CNIC Back Image Path")]
+        [RequiredIf("SelectedRole", "Vendor", ErrorMessage = "CNIC Back Image Path is required for vendor role")]
+        public string CNICBackImagePath { get; set; }
 
         [Display(Name = "Billing Image Path")]
         [RequiredIf("SelectedRole", "Vendor", ErrorMessage = "Billing Image Path is required for vendor role")]
@@ -36,6 +40,10 @@ namespace EventEatsQuotify.Models
         [Display(Name = "CNIC Image")]
         [RequiredIf("SelectedRole", "Vendor", ErrorMessage = "CNIC image is required for vendor role")]
         public IFormFile CNICImageFile { get; set; }
+
+        [Display(Name = "CNIC BackImage")]
+        [RequiredIf("SelectedRole", "Vendor", ErrorMessage = "CNIC Back image is required for vendor role")]
+        public IFormFile CNICBackImageFile { get; set; }
 
         [Display(Name = "Billing Image")]
         [RequiredIf("SelectedRole", "Vendor", ErrorMessage = "Billing image is required for vendor role")]

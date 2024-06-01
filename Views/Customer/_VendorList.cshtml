@@ -1,0 +1,66 @@
+﻿@model List<EventEatsQuotify.Models.ApplicationUser>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var vendor in Model)
+    {
+        <div class="col">
+            <div class="custom-card h-100 shadow">
+                @if (vendor.ProfilePicture != null && vendor.ProfilePicture.Length > 0)
+                {
+                    <img src="data:image/png;base64,@Convert.ToBase64String(vendor.ProfilePicture)" class="custom-card-img-top" alt="Profile Image">
+                }
+                else
+                {
+                    <img src="~/images/defaultimages/user.png" class="custom-card-img-top" alt="Profile Image">
+                }
+                <div class="custom-card-body">
+                    <h5 class="custom-card-title">@vendor.Name</h5>
+                    <p class="custom-card-text">@vendor.Description</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <div>
+                        <button type="button" class="custom-btn custom-btn-primary" onclick="loadVendorProfile('@vendor.Id')">View Profile</button>
+                        <button type="button" class="custom-btn custom-btn-secondary" onclick="loadMenuItems('@vendor.Id')">View Menu Items</button>
+                    </div>
+                    <div>
+                        <a href="@Url.Action("GetQuotation", "Customer", new { vendorId = vendor.Id })" class="custom-btn btn-outline-primary btn-sm">Get Quotation</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modals for Vendor Profile and Menu -->
+        <div class="modal fade" id="vendorProfileModal-@vendor.Id" tabindex="-1" aria-labelledby="vendorProfileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="vendorProfileModalLabel">@vendor.Name Profile</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="vendorProfileModalContent-@vendor.Id"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="vendorMenuModal-@vendor.Id" tabindex="-1" aria-labelledby="vendorMenuModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="vendorMenuModalLabel">@vendor.Name Menu</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="vendorMenuModalContent-@vendor.Id"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="loader" class="d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+</div>

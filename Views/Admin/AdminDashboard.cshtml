@@ -38,11 +38,21 @@
         color: #333; /* Dark gray text */
     }
 
+   
     .card-text {
         font-size: 1rem;
         margin-bottom: 10px;
         color: #666; /* Gray text */
     }
+
+    .shop-address {
+        /* Set a fixed height for the shop address textbox */
+        height: 100px; /* Adjust the height as needed */
+        overflow-y: auto; /* Enable vertical scrolling if content exceeds the height */
+        border: 1px solid #ccc; /* Add a border around the textbox */
+        padding: 5px; /* Add padding to the textbox */
+    }
+
 
     .card-img {
         margin-top: 20px;
@@ -104,16 +114,20 @@
                         <h5 class="card-title">@vendor.Name</h5>
                         <p class="card-text"><strong>Email:</strong> @vendor.Email</p>
                         <p class="card-text"><strong>CNIC Number:</strong> @vendor.CNICNumber</p>
-                        <p class="card-text"><strong>Shop Address:</strong> @vendor.ShopAddress</p>
+                        <p class="card-text shop-address"><strong>Shop Address:</strong> @vendor.ShopAddress</p>
                         <p class="card-text"><strong>Role:</strong> @vendor.SelectedRole</p>
-                        <div class="card-img card-img-cnic">
-                            <p class="card-text"><strong>CNIC Image: </strong></p>
-                            <img src="@vendor.CNICImagePath" alt="CNIC Image" class="card-img-top img-fluid mb-2" />
+                        <div class="card-img card-img-cnic mt-2 mb-4" style="height: 250px;">
+                            <p class="card-text"><strong>CNIC Front Image: </strong></p>
+                            <img src="@vendor.CNICImagePath" alt="CNIC Image" class="card-img-top img-fluid mb-2"/>
+                        </div>
+                        <div class="card-img card-img-cnic mt-2 mb-4" style="height: 250px;">
+                            <p class="card-text"><strong>CNIC Back Image: </strong></p>
+                            <img src="@vendor.CNICBackImagePath" alt="CNIC Back Image" class="card-img-top img-fluid mb-2" />
                         </div>
 
                         <p class="card-text"><strong>Billing Image: </strong></p>
-                        <div class="card-img card-img-billing">
-                            <img src="@vendor.BillingImagePath" alt="Billing Image" class="card-img-top img-fluid" />
+                        <div class="card-img card-img-billing mt-2 mb-4" style="height: 250px;">
+                            <img src="@vendor.BillingImagePath" alt="Billing Image" class="card-img-top img-fluid"/>
                         </div>
 
 

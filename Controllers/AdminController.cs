@@ -49,6 +49,7 @@ namespace EventEatsQuotify.Controllers
                     ShopAddress = u.ShopAddress,
                     SelectedRole = "Vendor",
                     CNICImagePath = u.CNICImagePath,
+                    CNICBackImagePath = u.CNICBackImagePath,
                     BillingImagePath = u.BillingImagePath,
                 }).ToList();
 

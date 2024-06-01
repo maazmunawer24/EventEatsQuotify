@@ -1,4 +1,6 @@
-﻿@model List<EventEatsQuotify.Models.ApplicationUser>
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@model List<EventEatsQuotify.Models.ApplicationUser>
 
 @{
     ViewData["Title"] = "Customer Dashboard";
@@ -146,88 +148,20 @@
 </head>
 
 <h1 class="text-center mb-4">Welcome to the Customer Dashboard</h1>
-
-<div class="container">
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var vendor in Model)
-        {
-            <div class="col">
-                <div class="custom-card h-100 shadow">
-                    @if (vendor.ProfilePicture != null && vendor.ProfilePicture.Length > 0)
-                    {
-                        <img src="data:image/png;base64,@Convert.ToBase64String(vendor.ProfilePicture)" class="custom-card-img-top" alt="Profile Image">
-                    }
-                    else
-                    {
-                        <img src="~/images/defaultimages/user.png" class="custom-card-img-top" alt="Profile Image">
-                    }
-                    <div class="custom-card-body">
-                        <h5 class="custom-card-title">@vendor.Name</h5>
-                        <p class="custom-card-text">@vendor.Description</p>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between align-items-center">
-                        <div>
-                            <!-- View Vendor Profile Modal Button -->
-                            <button type="button" class="custom-btn custom-btn-primary" onclick="loadVendorProfile('@vendor.Id')">View Profile</button>
-
-                            <!-- View Vendor Menu Modal Button -->
-                            <button type="button" class="custom-btn custom-btn-secondary" onclick="loadMenuItems('@vendor.Id')">View Menu Items</button>
-                        </div>
-                        <div>
-                            <!-- Request Quotation Modal Button -->
-                            @* <button type="button" class="custom-btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#requestQuotationModal-@vendor.Id" onclick="loadMenuItems('@vendor.Id')">Get Quotation</button> *@
-                            <a href="@Url.Action("GetQuotation", "Customer", new { vendorId = vendor.Id })" class="custom-btn btn-outline-primary btn-sm">Get Quotation</a>
-                            @* <a href="@Url.Action("UploadMenuItem", "Vendor")" class="btn btn-primary">Upload New Menu Item</a> *@
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Vendor Profile Modal -->
-            <div class="modal fade" id="vendorProfileModal-@vendor.Id" tabindex="-1" aria-labelledby="vendorProfileModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title" id="vendorProfileModalLabel">@vendor.Name Profile</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Vendor Profile Details Here -->
-                            <div id="vendorProfileModalContent-@vendor.Id">
-                                <!-- Content will be loaded here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Vendor Menu Modal -->
-            <div class="modal fade" id="vendorMenuModal-@vendor.Id" tabindex="-1" aria-labelledby="vendorMenuModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header bg-success text-white">
-                            <h5 class="modal-title" id="vendorMenuModalLabel">@vendor.Name Menu</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Vendor Menu Details Here -->
-                            <div id="vendorMenuModalContent-@vendor.Id">
-                                <!-- Content will be loaded here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="loader" class="d-none">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        }
+<div class="row mt-2 mb-4">
+    <div class="col">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search vendors">
+    </div>
+    <div class="col-auto">
+        <button id="toggleSearchType" class="btn btn-secondary">Search by Food Item</button>
     </div>
 </div>
 
+<div class="container">
+    <div id="vendorContainer">
+        @Html.Partial("_VendorList", Model)
+    </div>
+</div>
 
 @section Scripts {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -236,22 +170,67 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
-       
-        function loadMenuItems(vendorId) {
-            // Show loader
-            $('#loader').removeClass('d-none');
+        var searchType = "vendor"; // Default search type
 
-            console.log(vendorId);
+        // Debounce function to limit the rate at which a function can fire.
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+
+        // Function to perform the AJAX search request
+        function performSearch(searchQuery) {
+            $.ajax({
+                url: '@Url.Action("CustomerDashboard", "Customer")',
+                method: 'GET',
+                data: { searchQuery: searchQuery, searchType: searchType },
+                success: function (response) {
+                    $('#vendorContainer').html(response);
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        // Debounced version of the performSearch function
+        const debouncedSearch = debounce(function () {
+            const searchQuery = $('#searchInput').val();
+            performSearch(searchQuery);
+        }, 300); // Adjust the delay as needed
+
+        $(document).ready(function () {
+            $('#searchInput').on('input', function () {
+                debouncedSearch();
+            });
+
+            $('#toggleSearchType').on('click', function () {
+                if (searchType === 'vendor') {
+                    searchType = 'fooditem';
+                    $(this).text('Search by Vendor');
+                    $('#searchInput').attr('placeholder', 'Search food items');
+                } else {
+                    searchType = 'vendor';
+                    $(this).text('Search by Food Item');
+                    $('#searchInput').attr('placeholder', 'Search vendors');
+                }
+            });
+        });
+
+        function loadMenuItems(vendorId) {
+            $('#loader').removeClass('d-none');
             $.ajax({
                 url: '/Customer/GetMenuItems',
                 method: 'GET',
                 data: { vendorId: vendorId },
                 dataType: 'json',
                 success: function (response) {
-                    // Hide loader
                     $('#loader').addClass('d-none');
                     if (response.success) {
-                        // Generate HTML content for menu items
                         var htmlContent = '';
                         $.each(response.data, function (index, item) {
                             htmlContent += '<div class="mb-3">';
@@ -268,7 +247,6 @@
                     }
                 },
                 error: function (error) {
-                    // Hide loader
                     $('#loader').addClass('d-none');
                     console.error(error);
                 }
@@ -276,123 +254,92 @@
         }
 
         function loadVendorProfile(vendorId) {
-            // Show loader
             $('#loader').removeClass('d-none');
-
-            console.log('Vendor ID for Profile:', vendorId);
             $.ajax({
                 url: '/Customer/GetVendorProfile',
                 method: 'GET',
                 data: { vendorId: vendorId },
                 dataType: 'json',
                 success: function (response) {
-                    // Hide loader
                     $('#loader').addClass('d-none');
                     if (response.success) {
                         var vendor = response.data;
-                        var profileImageSrc = vendor.ProfilePicture ? 'data:image/png;base64,' + vendor.ProfilePicture : '~/images/defaultimages/user.png';
-                        var specialties = vendor.specialties || "";
-                        var menuHighlights = vendor.menuHighlights || "";
-                        var customerReviews = vendor.customerReviews || "";
-
+                        var profileImageSrc = vendor && vendor.profilePicture ? 'data:image/png;base64,' + vendor.profilePicture : '/images/defaultimages/user.png';
                         var htmlContent = `
-                            <img src="${profileImageSrc}" class="img-fluid rounded">
-                            <p><strong>Name:</strong> ${vendor.name || ""}</p>
-                            <p><strong>Description:</strong> ${vendor.description || ""}</p>
-                            <p><strong>Address:</strong> ${vendor.shopAddress || ""}</p>
-                            <p><strong>Website:</strong> <a href="${vendor.website || "#"}" target="_blank">${vendor.website || ""}</a></p>
-                            <p><strong>Specialties:</strong> ${specialties}</p>
-                            <p><strong>Menu Highlights:</strong> ${menuHighlights}</p>
-                            <p><strong>Customer Reviews:</strong> ${customerReviews}</p>
-                        `;
+                                    <img src="${profileImageSrc}" class="img-fluid rounded" style="width: 150px; height: 150px;">
+                                    <p><strong>Name:</strong> ${vendor.name || ""}</p>
+                                    <p><strong>Description:</strong> ${vendor.description || ""}</p>
+                                    <p><strong>Address:</strong> ${vendor.shopAddress || ""}</p>
+                                    <p><strong>Website:</strong> <a href="${vendor.website || "#"}" target="_blank">${vendor.website || ""}</a></p>
+                                    <p><strong>Specialties:</strong> ${vendor.specialties || ""}</p>
+                                    <p><strong>Menu Highlights:</strong> ${vendor.menuHighlights || ""}</p>
+                                    <div id="reviews-${vendor.id}">
+                                        <h4>Customer Reviews:</h4>
+                                        <div id="reviewList-${vendor.id}"></div>
+                                        <textarea id="reviewContent-${vendor.id}" placeholder="Write a review..."></textarea>
+                                        <button onclick="submitReview('${vendor.id}')">Submit Review</button>
+                                    </div>
+                                `;
                         $('#vendorProfileModalContent-' + vendorId).html(htmlContent);
+                        loadReviews(vendorId);
                         $('#vendorProfileModal-' + vendorId).modal('show');
                     } else {
                         console.error(response.message);
                     }
                 },
                 error: function (error) {
-                    // Hide loader
                     $('#loader').addClass('d-none');
                     console.error(error);
                 }
             });
         }
-        // Function to fetch food items based on the selected vendor
-        function fetchFoodItems(vendorId) {
-            // Show loader
-            $('#loader').removeClass('d-none');
 
+        function loadReviews(vendorId) {
             $.ajax({
-                url: '/Customer/GetFoodItems',
+                url: '/Customer/GetReviews',
                 method: 'GET',
                 data: { vendorId: vendorId },
-                dataType: 'json',
                 success: function (response) {
-                    // Hide loader
-                    $('#loader').addClass('d-none');
                     if (response.success) {
-                        // Generate HTML content for food items dropdowns
-                        $('#addFoodItem').hide();
-                        var htmlContent = '';
-                        $.each(response.data, function (index, item) {
-                            htmlContent += '<div class="mb-3 food-item">';
-                            htmlContent += '<label for="foodItem' + index + '" class="form-label">Food Item</label>';
-                            htmlContent += '<select class="form-select" name="foodItem[]" id="foodItem' + index + '">';
-                            // Populate options for food items
-                            $.each(item.foodItems, function (i, food) {
-                                htmlContent += '<option value="' + food.id + '">' + food.name + '</option>';
-                            });
-                            htmlContent += '</select>';
-                            // Add quantity input based on quotation type
-                            if ($('#quotationOptions').val() === 'quantity') {
-                                htmlContent += '<label for="quantity' + index + '" class="form-label">Quantity (kg)</label>';
-                                htmlContent += '<input type="text" class="form-control" name="quantity[]" id="quantity' + index + '">';
-                            } else {
-                                htmlContent += '<label for="noOfPersons' + index + '" class="form-label">No of Persons</label>';
-                                htmlContent += '<input type="text" class="form-control" name="noOfPersons[]" id="noOfPersons' + index + '">';
-                            }
-                            htmlContent += '</div>';
+                        var reviewsHtml = '';
+                        $.each(response.data, function (index, review) {
+                            reviewsHtml += `<p><strong>${review.customerName}</strong>: ${review.content}</p>`;
                         });
-                        $('#foodItemsContainer').html(htmlContent);
+                        $('#reviewList-' + vendorId).html(reviewsHtml);
                     } else {
                         console.error(response.message);
                     }
                 },
                 error: function (error) {
-                    // Hide loader
-                    $('#loader').addClass('d-none');
                     console.error(error);
                 }
             });
         }
 
-        // Event handler for quotation type change
-        $('#quotationOptions').change(function () {
-            debugger;
-            console.log("quotation option triggered");
-            var quotationType = $(this).val();
-            if (quotationType) {
-                // Show the "+ Add Food Item" button
-                $('#addFoodItem').show();
-            } else {
-                // Hide the "+ Add Food Item" button if no quotation type is selected
-                $('#addFoodItem').hide();
+        function submitReview(vendorId) {
+            var content = $('#reviewContent-' + vendorId).val();
+            if (!content) {
+                alert("Please enter a review.");
+                return;
             }
-        });
-
-        // Event handler for adding a food item
-        $('#addFoodItem').click(function () {
-            // Clone the food item dropdown and quantity input fields
-            var newFoodItem = $('#foodItemsContainer .food-item').first().clone();
-            // Clear the selected value of the cloned food item dropdown
-            newFoodItem.find('select').val('');
-            // Append the cloned fields to the food items container
-            $('#foodItemsContainer').append(newFoodItem);
-        });
-
-
+            $.ajax({
+                url: '/Customer/AddReview',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ VendorId: vendorId, Content: content, CustomerId: '@User.FindFirstValue(ClaimTypes.NameIdentifier)', CustomerName: '@User.Identity.Name' }),
+                success: function (response) {
+                    if (response.success) {
+                        loadReviews(vendorId);
+                        $('#reviewContent-' + vendorId).val('');
+                    } else {
+                        console.error(response.message);
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
 
     </script>
-
 }

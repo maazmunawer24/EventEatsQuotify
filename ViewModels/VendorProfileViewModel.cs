@@ -38,7 +38,7 @@ namespace EventEatsQuotify.ViewModels
         public string? MenuHighlights { get; set; }
 
         [Display(Name = "Customer Reviews")]
-        public string? CustomerReviews { get; set; }
+        public List<Review> CustomerReviews { get; set; } = new List<Review>();
 
         [Display(Name = "Profile Picture")]
         public byte[]? ProfilePicture { get; set; }

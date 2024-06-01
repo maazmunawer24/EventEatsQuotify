@@ -50,7 +50,7 @@ namespace EventEatsQuotify.Controllers
                     // Set TempData flag to indicate user role
                     TempData["UserRole"] = userRole;
 
-                    await _emailSender.SendEmailAsync(_adminEmail, "New"+ "${ FormType}"+" Form Submission", $"{userRole}: {model.Name}<br/>Email: {model.Email}<br/>Message: {model.Message}");
+                    await _emailSender.SendEmailAsync(_adminEmail, "New"+ $"{FormType}"+" Form Submission", $"{userRole}: {model.Name}<br/>Email: {model.Email}<br/>Message: {model.Message}");
 
                     // For demonstration purposes, we'll just display the submitted data
                     TempData["ContactUSMessage"] = "Your Request has been submitted.";

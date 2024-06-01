@@ -53,7 +53,20 @@
 
                 <hr class="my-4 border-primary">
                 <h4 class="text-primary mb-3">Customer Reviews</h4>
-                <p class="lead">@Model.CustomerReviews</p>
+                @if (Model.CustomerReviews != null && Model.CustomerReviews.Any())
+                {
+                    foreach (var review in Model.CustomerReviews)
+                    {
+                        <div class="mb-3">
+                            <p><strong>@review.CustomerName</strong> <span class="text-muted">@review.CreatedAt.ToString("yyyy-MM-dd")</span></p>
+                            <p>@review.Content</p>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="lead text-muted">No reviews yet.</p>
+                }
 
                 <div class="text-center mt-4">
                     <a asp-action="Edit" class="btn btn-primary btn-lg rounded-pill">Edit Profile</a>

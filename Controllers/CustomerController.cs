@@ -25,21 +25,43 @@ public class CustomerController : Controller
         _emailSender = emailSender;
     }
 
-    public async Task<IActionResult> CustomerDashboard()
+
+    public async Task<IActionResult> CustomerDashboard(string? searchQuery = null, string searchType = "vendor")
     {
         try
         {
-            // Fetch all users
             var allUsers = await _dbContext.Users.ToListAsync();
-
-            // Filter approved vendors in memory
             var approvedVendors = allUsers
                 .Where(u => u.IsApproved &&
                             !_userManager.IsInRoleAsync(u, "Customer").Result &&
-                            !_userManager.IsInRoleAsync(u, "Admin").Result)
-                .ToList();
+                            !_userManager.IsInRoleAsync(u, "Admin").Result);
 
-            return View(approvedVendors);
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                searchQuery = searchQuery.ToLower(); // Normalize the search query to lower case
+
+                if (searchType == "vendor")
+                {
+                    approvedVendors = approvedVendors.Where(v => v.Name.ToLower().Contains(searchQuery)).ToList();
+                }
+                else if (searchType == "fooditem")
+                {
+                    var foodItems = await _dbContext.FoodItems
+                        .Where(fi => fi.Name.ToLower().Contains(searchQuery))
+                        .Select(fi => fi.VendorId)
+                        .Distinct()
+                        .ToListAsync();
+
+                    approvedVendors = approvedVendors.Where(v => foodItems.Contains(v.Id)).ToList();
+                }
+            }
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_VendorList", approvedVendors.ToList());
+            }
+
+            return View(approvedVendors.ToList());
         }
         catch (Exception ex)
         {
@@ -47,6 +69,8 @@ public class CustomerController : Controller
             return View("Error");
         }
     }
+
+
 
     [HttpGet]
     public JsonResult GetVendorProfile(string vendorId)
@@ -107,6 +131,8 @@ public class CustomerController : Controller
             return Json(new { success = false, message = "An error occurred while fetching the menu items." });
         }
     }
+
+
     [HttpGet]
     public JsonResult GetFoodItems(string vendorId)
     {
@@ -252,6 +278,39 @@ public class CustomerController : Controller
         {
             // Log the error and handle it gracefully
             throw new Exception("An unexpected error occurred while sending the quotation request email. Please try again later.", ex);
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddReview([FromBody] Review review)
+    {
+        try
+        {
+            review.Id = Guid.NewGuid().ToString();
+            review.CreatedAt = DateTime.UtcNow;
+            _dbContext.Reviews.Add(review);
+            await _dbContext.SaveChangesAsync();
+            return Json(new { success = true });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding review: {ex.Message}");
+            return Json(new { success = false, message = "An error occurred while adding the review." });
+        }
+    }
+
+    [HttpGet]
+    public JsonResult GetReviews(string vendorId)
+    {
+        try
+        {
+            var reviews = _dbContext.Reviews.Where(r => r.VendorId == vendorId).OrderByDescending(r => r.CreatedAt).ToList();
+            return Json(new { success = true, data = reviews });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching reviews: {ex.Message}");
+            return Json(new { success = false, message = "An error occurred while fetching the reviews." });
         }
     }
 

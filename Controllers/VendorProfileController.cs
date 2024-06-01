@@ -33,7 +33,9 @@ namespace EventEatsQuotify.Controllers
                 // If the user is not approved by the admin, redirect to a page indicating pending approval
                 return RedirectToAction("PendingApproval", "Home");
             }
-
+            var reviews = await _context.Reviews
+                               .Where(r => r.VendorId == user.Id)
+                               .ToListAsync();
             var viewModel = new VendorProfileViewModel
             {
                 BusinessName = user.Name,
@@ -44,7 +46,7 @@ namespace EventEatsQuotify.Controllers
                 Specialties = user.Specialties,
                 Description = user.Description,
                 MenuHighlights = user.MenuHighlights,
-                CustomerReviews = user.CustomerReviews,
+                CustomerReviews = reviews,
                 ProfilePicture = user.ProfilePicture,
                 RegistrationDate = user.RegistrationDate
             };
@@ -62,6 +64,9 @@ namespace EventEatsQuotify.Controllers
                 // If the user is not approved by the admin, redirect to a page indicating pending approval
                 return RedirectToAction("PendingApproval", "Home");
             }
+            var reviews = await _context.Reviews
+                                           .Where(r => r.VendorId == user.Id)
+                                           .ToListAsync();
 
             var viewModel = new VendorProfileViewModel
             {
@@ -73,7 +78,7 @@ namespace EventEatsQuotify.Controllers
                 Specialties = user.Specialties,
                 Description = user.Description,
                 MenuHighlights = user.MenuHighlights,
-                CustomerReviews = user.CustomerReviews,
+                CustomerReviews = reviews,
                 ProfilePicture = user.ProfilePicture
             };
 
@@ -101,13 +106,13 @@ namespace EventEatsQuotify.Controllers
                     }
                 }
 
+
                 user.Name = viewModel.BusinessName;
                 user.PhoneNumber = viewModel.ContactPhone;
                 user.ShopAddress = viewModel.Location;
                 user.Website = viewModel.Website;
                 user.Description = viewModel.Description;
                 user.Specialties = viewModel.Specialties;
-                user.CustomerReviews = viewModel.CustomerReviews;
                 user.MenuHighlights = viewModel.MenuHighlights;
                 user.Email = viewModel.ContactEmail;
 
