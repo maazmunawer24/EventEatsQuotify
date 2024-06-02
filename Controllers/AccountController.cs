@@ -117,6 +117,22 @@ namespace EventEatsQuotify.Controllers
                     register.AvailableRoles = new List<string> { "Vendor", "Customer" };
                     return View(register);
                 }
+                // Check if CNIC number or Shop address already exists
+                var vendors = await _userManager.GetUsersInRoleAsync("Vendor");
+                if (vendors.Any(v => v.CNICNumber == register.CNICNumber))
+                {
+                    ModelState.AddModelError("", "CNIC number is already registered.");
+                    register.AvailableRoles = new List<string> { "Vendor", "Customer" };
+                    return View(register);
+                }
+
+                if (vendors.Any(v => v.ShopAddress == register.ShopAddress))
+                {
+                    ModelState.AddModelError("", "Shop address is already registered.");
+                    register.AvailableRoles = new List<string> { "Vendor", "Customer" };
+                    return View(register);
+                }
+
 
                 // Proceed with user creation
                 var user = new ApplicationUser()
@@ -135,22 +151,6 @@ namespace EventEatsQuotify.Controllers
                     {
                         if (register.SelectedRole == "Vendor")
                         {
-                            // Check if CNIC number or Shop address already exists
-                            var vendors = await _userManager.GetUsersInRoleAsync("Vendor");
-                            if (vendors.Any(v => v.CNICNumber == register.CNICNumber))
-                            {
-                                ModelState.AddModelError("", "CNIC number is already registered.");
-                                register.AvailableRoles = new List<string> { "Vendor", "Customer" };
-                                return View(register);
-                            }
-
-                            if (vendors.Any(v => v.ShopAddress == register.ShopAddress))
-                            {
-                                ModelState.AddModelError("", "Shop address is already registered.");
-                                register.AvailableRoles = new List<string> { "Vendor", "Customer" };
-                                return View(register);
-                            }
-
 
                             try
                             {

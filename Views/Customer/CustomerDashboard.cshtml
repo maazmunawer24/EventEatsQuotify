@@ -150,10 +150,12 @@
 <h1 class="text-center mb-4">Welcome to the Customer Dashboard</h1>
 <div class="row mt-2 mb-4">
     <div class="col">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search vendors">
-    </div>
-    <div class="col-auto">
-        <button id="toggleSearchType" class="btn btn-secondary">Search by Food Item</button>
+        <div style="position: relative;">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search vendors" style="padding-right: 120px;">
+            <button id="toggleSearchType" class="btn btn-secondary" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border-radius: 25px;">
+                Search by Food Item
+            </button>
+        </div>
     </div>
 </div>
 
