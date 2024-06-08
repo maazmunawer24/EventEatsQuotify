@@ -35,7 +35,7 @@ namespace EventEatsQuotify.Controllers
                     // Determine user's role
                     string userRole = User.IsInRole("Vendor") ? "Vendor" : "Customer";
                     string FormType = "";
-                    if (string.IsNullOrEmpty(userRole))
+                    if (!string.IsNullOrEmpty(userRole))
                     {
                         if (userRole == "Vendor")
                         {

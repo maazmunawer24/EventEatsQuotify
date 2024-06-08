@@ -121,6 +121,16 @@ namespace EventEatsQuotify.Controllers
             {
                 try
                 {
+                    // Check if the food item already exists
+                    bool foodItemExists = _dbContext.FoodItems
+                        .Any(f => f.Name == model.Name && f.VendorId == model.VendorId);
+
+                    if (foodItemExists)
+                    {
+                        ModelState.AddModelError("", "A food item with this name already exists.");
+                        return View(model);
+                    }
+
                     if (photo != null && photo.Length > 0)
                     {
                         string uploadsFolder = Path.Combine(_environment.WebRootPath, "images/Foods/");
@@ -128,7 +138,7 @@ namespace EventEatsQuotify.Controllers
                         string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
-                            photo.CopyTo(stream);
+                            await photo.CopyToAsync(stream);
                         }
                         model.FoodPicturePath = "/images/Foods/" + uniqueFileName;
                     }
@@ -136,10 +146,8 @@ namespace EventEatsQuotify.Controllers
                     // Retrieve the vendor's ID (you need to implement this logic)
                     model.VendorId = await GetVendorId(); // Implement this method to retrieve the vendor's ID
 
-                   
-
                     _dbContext.FoodItems.Add(model);
-                    _dbContext.SaveChanges();
+                    await _dbContext.SaveChangesAsync();
 
                     // Redirect to a success page or return a success message
                     return RedirectToAction("MenuItems");
