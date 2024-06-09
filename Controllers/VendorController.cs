@@ -204,9 +204,8 @@ namespace EventEatsQuotify.Controllers
         }
 
 
-        // Add this action method to handle AJAX request for updating a menu item
         [HttpPost]
-        public IActionResult UpdateMenuItem(int id, string name, string description, decimal price, string category)
+        public async Task<IActionResult> UpdateMenuItem(int id, string name, string description, decimal price, string category, IFormFile imageFile)
         {
             try
             {
@@ -220,6 +219,20 @@ namespace EventEatsQuotify.Controllers
                     existingMenuItem.Description = description;
                     existingMenuItem.Price = price;
                     existingMenuItem.Category = category;
+
+                    if (imageFile != null && imageFile.Length > 0)
+                    {
+                        string uploadsFolder = Path.Combine(_environment.WebRootPath, "images/Foods/");
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await imageFile.CopyToAsync(stream);
+                        }
+
+                        // Update the image path in the database
+                        existingMenuItem.FoodPicturePath = "/images/Foods/" + uniqueFileName;
+                    }
 
                     // Save the changes to the database
                     _dbContext.SaveChanges();
@@ -238,7 +251,7 @@ namespace EventEatsQuotify.Controllers
             }
         }
 
-        // Add this action method to handle deletion of individual menu items
+       // Add this action method to handle deletion of individual menu items
         [HttpPost]
         public IActionResult DeleteMenuItem(int id)
         {
