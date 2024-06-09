@@ -121,9 +121,12 @@ namespace EventEatsQuotify.Controllers
             {
                 try
                 {
-                    // Check if the food item already exists
+                    // Retrieve the vendor's ID (you need to implement this logic)
+                    model.VendorId = await GetVendorId(); // Implement this method to retrieve the vendor's ID
+
+                    // Check if the food item already exists (case-insensitive using ToLower())
                     bool foodItemExists = _dbContext.FoodItems
-                        .Any(f => f.Name == model.Name && f.VendorId == model.VendorId);
+                        .Any(f => f.Name.ToLower() == model.Name.ToLower() && f.VendorId == model.VendorId);
 
                     if (foodItemExists)
                     {
@@ -143,9 +146,6 @@ namespace EventEatsQuotify.Controllers
                         model.FoodPicturePath = "/images/Foods/" + uniqueFileName;
                     }
 
-                    // Retrieve the vendor's ID (you need to implement this logic)
-                    model.VendorId = await GetVendorId(); // Implement this method to retrieve the vendor's ID
-
                     _dbContext.FoodItems.Add(model);
                     await _dbContext.SaveChangesAsync();
 
@@ -161,6 +161,7 @@ namespace EventEatsQuotify.Controllers
             // If the model state is not valid, return the upload form with validation errors
             return View(model);
         }
+
 
         [HttpPost]
         public IActionResult EditMenuItem(FoodItem model)
@@ -214,6 +215,15 @@ namespace EventEatsQuotify.Controllers
 
                 if (existingMenuItem != null)
                 {
+                    // Check if the new name already exists for the same vendor (case-insensitive)
+                    bool nameExists = _dbContext.FoodItems
+                        .Any(f => f.Name.ToLower() == name.ToLower() && f.VendorId == existingMenuItem.VendorId && f.Id != id);
+
+                    if (nameExists)
+                    {
+                        return BadRequest("A food item with this name already exists.");
+                    }
+
                     // Update the properties of the existing menu item with the edited values
                     existingMenuItem.Name = name;
                     existingMenuItem.Description = description;
@@ -251,7 +261,7 @@ namespace EventEatsQuotify.Controllers
             }
         }
 
-       // Add this action method to handle deletion of individual menu items
+        // Add this action method to handle deletion of individual menu items
         [HttpPost]
         public IActionResult DeleteMenuItem(int id)
         {

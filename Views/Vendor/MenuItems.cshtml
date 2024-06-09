@@ -83,6 +83,7 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div class="alert alert-danger d-none" id="editError"></div> <!-- Validation message container -->
                 <input type="hidden" id="itemId" />
                 <div class="form-group">
                     <label for="itemName">Name</label>
@@ -152,10 +153,12 @@
                 $('#itemPrice').val(price);
                 $('#itemCategory').val(category);
 
+                // Clear previous error message
+                $('#editError').addClass('d-none').text('');
+
                 // Show modal
                 $('#editModal').modal('show');
             });
-
             $('#saveEditBtn').click(function () {
                 // Show loader
                 $('#loader').removeClass('d-none');
@@ -187,22 +190,19 @@
                     success: function (response) {
                         // Hide loader
                         $('#loader').addClass('d-none');
-                        // Find the table row corresponding to the edited item
-                        var editedRow = $('#menuItemsTable').find('input[value="' + id + '"]').closest('tr');
-
-                        // Update the content of the table row with the new values
-                        editedRow.find('.item-name').text(name);
-                        editedRow.find('.item-description').text(description);
-                        editedRow.find('.item-price').text(price);
-                        editedRow.find('.item-category').text(category);
 
                         // Hide the modal
                         $('#editModal').modal('hide');
+
+                        // Reload the window
+                        window.location.reload();
                     },
                     error: function (xhr, status, error) {
                         // Hide loader
                         $('#loader').addClass('d-none');
                         // Handle error
+                        var errorMessage = xhr.responseText;
+                        $('#editError').removeClass('d-none').text(errorMessage);
                         console.error(error);
                     }
                 });
@@ -252,7 +252,7 @@
             $('#editModal').on('click', '[data-dismiss="modal"]', function () {
                 $('#editModal').modal('hide');
             });
-
         });
+
     </script>
 }

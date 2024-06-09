@@ -6,6 +6,12 @@
 {
     @Html.AntiForgeryToken()
 
+    @Html.HiddenFor(model => model.VendorId) <!-- Add this hidden field -->
+    <!-- Validation Summary to display model-level errors -->
+    <div class="col-12">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    </div>
+
     <div class="col-md-6">
         @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "form-label" })
         @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
