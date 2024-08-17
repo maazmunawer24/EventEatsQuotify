@@ -1,0 +1,61 @@
+﻿@model IEnumerable<EventEatsQuotify.Models.QuotationRequest>
+
+<h2>Received Quotation Requests</h2>
+
+@if (Model != null && Model.Any())
+{
+    foreach (var quotation in Model)
+    {
+        <div class="quotation-request">
+            <h3>Customer: @quotation.CustomerName</h3>
+            <p>Status: @quotation.Status</p>
+            <p>Request Date: @quotation.RequestDate.ToString("dd/MM/yyyy")</p>
+            <h4>Food Items:</h4>
+            <ul>
+                @foreach (var item in quotation.QuotationFoodItems)
+                {
+                    <li>@item.Name - @item.QuantityType: @item.QuantityOrPersons</li>
+                }
+            </ul>
+            <hr />
+            <form asp-action="ApproveQuotation" method="post">
+                <input type="hidden" name="quotationId" value="@quotation.Id" />
+                <div class="form-group">
+                    <label for="message">Approval Message (Optional):</label>
+                    <textarea name="message" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Approve</button>
+            </form>
+         
+
+        </div>
+  
+    }
+}
+else
+{
+    <p>No quotations received yet.</p>
+}
+
+<!-- Loader outside the loop -->
+<div id="loader" class="d-none">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-+bh3QNp5q/IsJLwhXKmnMzVDl9yo0hU1mPoL0b+UkAQ=" crossorigin="anonymous"></script>
+
+    <script src="https://kit.fontawesome.com/c58416c086.js" crossorigin="anonymous"></script>
+    <script src="~/js/common.js" asp-append-version="true"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+ 
+
+}
+
+     

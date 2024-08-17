@@ -13,20 +13,11 @@
             <button type="submit" class="btn btn-primary mt-2">Search</button>
         </form>
     </div>
-    <div class="col-md-6">
-        @using (Html.BeginForm("DeleteSelectedMenuItems", "Vendor", FormMethod.Post, new { id = "deleteForm" }))
-        {
-            <button type="submit" class="btn btn-danger">Delete Selected</button>
-        }
-    </div>
 </div>
 
 <table class="table" id="menuItemsTable">
     <thead>
         <tr>
-            <th>
-                <input type="checkbox" id="selectAll" />
-            </th>
             <th>
                 <a asp-action="MenuItems" asp-route-sortOrder="@ViewBag.NameSortParam">Name</a>
             </th>
@@ -43,9 +34,6 @@
         @foreach (var menuItem in Model)
         {
             <tr>
-                <td>
-                    <input type="checkbox" name="selectedIds" value="@menuItem.Id" />
-                </td>
                 <td class="item-name">@menuItem.Name</td>
                 <td class="item-description">@menuItem.Description</td>
                 <td class="item-price">@menuItem.Price</td>
@@ -60,11 +48,10 @@
                         <span>No Photo Available</span>
                     }
                 </td>
-
                 <td>
                     <button type="button" class="btn btn-primary edit-btn">Edit</button>
+                    <button type="button" class="btn btn-danger delete-btn" data-id="@menuItem.Id">Delete</button>
                 </td>
-
             </tr>
         }
     </tbody>
@@ -114,7 +101,6 @@
     </div>
 </div>
 
-
 <!-- Loader -->
 <div id="loader" class="d-none">
     <div class="spinner-border text-primary" role="status">
@@ -125,22 +111,10 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // Handle select all checkbox
-            $('#selectAll').change(function () {
-                var isChecked = $(this).prop('checked');
-                $('input[name="selectedIds"]').prop('checked', isChecked);
-            });
-
-            // Handle individual checkbox change
-            $('input[name="selectedIds"]').change(function () {
-                var allChecked = $('input[name="selectedIds"]:checked').length === $('input[name="selectedIds"]').length;
-                $('#selectAll').prop('checked', allChecked);
-            });
-
             // Handle edit button click
             $('#menuItemsTable').on('click', '.edit-btn', function () {
                 var row = $(this).closest('tr');
-                var id = row.find('input[name="selectedIds"]').val();
+                var id = row.find('.delete-btn').data('id');
                 var name = row.find('.item-name').text();
                 var description = row.find('.item-description').text();
                 var price = row.find('.item-price').text();
@@ -159,6 +133,38 @@
                 // Show modal
                 $('#editModal').modal('show');
             });
+
+            // Handle delete button click
+            $('#menuItemsTable').on('click', '.delete-btn', function () {
+                var itemId = $(this).data('id');
+                var confirmDelete = confirm('Are you sure you want to delete this item?');
+
+                if (confirmDelete) {
+                    // Show loader
+                    $('#loader').removeClass('d-none');
+
+                    // Perform AJAX request to delete the item
+                    $.ajax({
+                        url: '/Vendor/DeleteMenuItem',
+                        method: 'POST',
+                        data: { id: itemId },
+                        success: function (response) {
+                            // Hide loader
+                            $('#loader').addClass('d-none');
+
+                            // Reload the page to reflect changes
+                            location.reload();
+                        },
+                        error: function (xhr, status, error) {
+                            // Hide loader
+                            $('#loader').addClass('d-none');
+                            // Handle error
+                            console.error(error);
+                        }
+                    });
+                }
+            });
+
             $('#saveEditBtn').click(function () {
                 // Show loader
                 $('#loader').removeClass('d-none');
@@ -208,51 +214,10 @@
                 });
             });
 
-            // Handle delete selected form submission
-            $('#deleteForm').submit(function (e) {
-                // Show loader
-                $('#loader').removeClass('d-none');
-
-                e.preventDefault(); // Prevent default form submission
-
-                var selectedIds = $('input[name="selectedIds"]:checked').map(function () {
-                    return $(this).val();
-                }).get(); // Get array of selected IDs
-
-                // Confirm deletion
-                if (selectedIds.length === 0) {
-                    alert('Please select at least one item to delete.');
-                    // Hide loader
-                    $('#loader').addClass('d-none');
-                    return;
-                }
-
-                // Perform AJAX request to delete selected items
-                $.ajax({
-                    url: '/Vendor/DeleteSelectedMenuItems',
-                    method: 'POST',
-                    data: { selectedIds: selectedIds },
-                    traditional: true, // This ensures that the array is sent correctly
-                    success: function (response) {
-                        // Hide loader
-                        $('#loader').addClass('d-none');
-                        // Handle success, maybe refresh the page or update the table
-                        location.reload(); // Reload the page to reflect changes
-                    },
-                    error: function (xhr, status, error) {
-                        // Hide loader
-                        $('#loader').addClass('d-none');
-                        // Handle error
-                        console.error(error);
-                    }
-                });
-            });
-
             // Handle close button click
             $('#editModal').on('click', '[data-dismiss="modal"]', function () {
                 $('#editModal').modal('hide');
             });
         });
-
     </script>
 }
