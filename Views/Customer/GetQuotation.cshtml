@@ -43,7 +43,10 @@
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
+<input type="hidden" name="CustomerName" id="CustomerNameInput" value="@User.Identity.Name" />
+<input type="hidden" name="VendorName" id="VendorNameInput" value="@ViewBag.VendorName" />
 </div>
+
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-+bh3QNp5q/IsJLwhXKmnMzVDl9yo0hU1mPoL0b+UkAQ=" crossorigin="anonymous"></script>
@@ -219,6 +222,8 @@
             // Prepare data object to send to the server-side endpoint
             var data = {
                 VendorId: $('#vendorIdInput').val(),
+                CustomerName: $('#CustomerNameInput').val(), // Ensure this is being passed
+                VendorName: $('#VendorNameInput').val(), // Ensure this is being passed
                 QuotationOption: $('#quotationOptions').val(),
                 AdditionalInstructions: $('#additionalInstructions').val(),
                 FoodItems: [] // Populate this array with food items as needed
@@ -236,7 +241,7 @@
                     Id: foodId,
                     Name: foodName,
                     QuantityOrPersons: quantityOrPersons,
-                    QuantityType: quantityType // Add the quotation type
+                    QuantityType: quantityType, // Add the quotation type
                 };
 
                 // Add food item to the FoodItems array

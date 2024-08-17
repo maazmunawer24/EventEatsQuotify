@@ -5,6 +5,9 @@
     {
         <div class="col">
             <div class="custom-card h-100 shadow">
+                <div class="card-header">
+                    <input type="checkbox" class="vendor-checkbox" data-vendor-id="@vendor.Id">
+                </div>
                 @if (vendor.ProfilePicture != null && vendor.ProfilePicture.Length > 0)
                 {
                     <img src="data:image/png;base64,@Convert.ToBase64String(vendor.ProfilePicture)" class="custom-card-img-top" alt="Profile Image">

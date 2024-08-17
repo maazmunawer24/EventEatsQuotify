@@ -157,10 +157,17 @@ public class CustomerController : Controller
         }
     }
     [HttpGet]
-    public IActionResult GetQuotation(string vendorId)
+    public async Task<IActionResult> GetQuotation(string vendorId)
     {
-        // Your action logic here
-        ViewBag.VendorId = vendorId; // Pass vendorId to the view
+        var vendor = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == vendorId);
+        if (vendor == null)
+        {
+            return NotFound("Vendor not found");
+        }
+
+        ViewBag.VendorId = vendor.Id;
+        ViewBag.VendorName = vendor.Name; // Assuming "Name" is a property of your vendor model
+
         return View();
     }
 
@@ -169,7 +176,6 @@ public class CustomerController : Controller
     {
         try
         {
-            // Validate the model
             if (string.IsNullOrEmpty(model.QuotationOption) || model.FoodItems == null || model.FoodItems.Count == 0)
             {
                 ModelState.AddModelError("", "Please select a quotation type and add at least one food item.");
@@ -186,33 +192,49 @@ public class CustomerController : Controller
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                // You can log these errors or return them in the response for debugging
+                return BadRequest(new { errors });
             }
 
-            // Retrieve the vendor's email address
+
             var vendor = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == model.VendorId);
             if (vendor == null)
             {
                 return NotFound("Vendor not found");
             }
 
-            // Construct the email message
+            var quotationRequest = new QuotationRequest
+            {
+                CustomerId = _userManager.GetUserId(User),
+                VendorId = model.VendorId,
+                CustomerName = model.CustomerName,
+                VendorName = model.VendorName,
+                Status = "Pending",
+                RequestDate = DateTime.UtcNow
+            };
+
+            foreach (var foodItem in model.FoodItems)
+            {
+                quotationRequest.QuotationFoodItems.Add(new QuotationFoodItem
+                {
+                    FoodItemId = foodItem.Id,
+                    Name = foodItem.Name,
+                    QuantityType = foodItem.QuantityType,
+                    QuantityOrPersons = foodItem.QuantityOrPersons
+                });
+            }
+
+            _dbContext.QuotationRequests.Add(quotationRequest);
+            await _dbContext.SaveChangesAsync();
+
             var emailContent = @"
 <html>
 <head>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; }
+        th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
@@ -231,27 +253,24 @@ public class CustomerController : Controller
                 var quantity = foodItem.QuantityType.ToLower() == "quantity" ? $"{foodItem.QuantityOrPersons} KG" : "";
                 var noOfPersons = foodItem.QuantityType.ToLower() == "persons" ? foodItem.QuantityOrPersons.ToString() : "";
                 var quotationType = foodItem.QuantityType;
-                emailContent += @"
+                emailContent += $@"
         <tr>
-            <td>" + foodItem.Name + @"</td>
-            <td>" + quantity + @"</td>
-            <td>" + noOfPersons + @"</td>
-            <td>" + quotationType + @"</td>
+            <td>{foodItem.Name}</td>
+            <td>{quantity}</td>
+            <td>{noOfPersons}</td>
+            <td>{quotationType}</td>
         </tr>";
             }
 
-            emailContent += @"
+            emailContent += $@"
     </table>
     <h3>Additional Instructions : </h3>
-    <p>" + model.AdditionalInstructions + @"</p>
+    <p>{model.AdditionalInstructions}</p>
 </body>
 </html>";
 
-
-            // Send the email
             await SendQuotationEmailAsync("maaz.munawer@outlook.com", "Quotation Request", emailContent);
 
-            // Return a JSON response indicating success
             return Ok(new { success = true, message = "Quotation request sent successfully" });
         }
         catch (Exception ex)
@@ -260,7 +279,6 @@ public class CustomerController : Controller
             return StatusCode(500, "An error occurred while sending the quotation request");
         }
     }
-
 
     private async Task SendQuotationEmailAsync(string emailAddress, string subject, string htmlMessage)
     {
@@ -313,6 +331,72 @@ public class CustomerController : Controller
             return Json(new { success = false, message = "An error occurred while fetching the reviews." });
         }
     }
+    [HttpPost]
+    public IActionResult CompareVendors(List<string> vendorIds)
+    {
+        try
+        {
+            // Fetch vendors
+            var vendors = _dbContext.Users
+                .Where(u => vendorIds.Contains(u.Id))
+                .ToList();
+
+            // Fetch food items
+            var foodItems = _dbContext.FoodItems
+                .Where(fi => vendorIds.Contains(fi.VendorId))
+                .AsEnumerable() // Bring data into memory
+                .GroupBy(fi => fi.Name)
+                .Select(group => new FoodItemComparison
+                {
+                    FoodItemName = group.Key,
+                    VendorPrices = group.ToDictionary(fi => fi.VendorId, fi => fi.Price)
+                })
+                .ToList();
+
+            // Create view model
+            var viewModel = new VendorComparisonViewModel
+            {
+                Vendors = vendors.Select(vendor => new VendorComparisonItem
+                {
+                    Id = vendor.Id,
+                    Name = vendor.Name,
+                    Description = vendor.Description,
+                    ProfilePicture = vendor.ProfilePicture,
+                    ShopAddress = vendor.ShopAddress,
+                    Website = vendor.Website,
+                    Specialties = vendor.Specialties,
+                    MenuHighlights = vendor.MenuHighlights,
+                    CustomerReviews = vendor.CustomerReviews
+                }).ToList(),
+                FoodItems = foodItems
+            };
+
+            // Return partial view
+            return PartialView("_VendorComparison", viewModel);
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions
+            return Json(new { success = false, message = "An error occurred while comparing the vendors." });
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ViewQuotations()
+    {
+        var customerId = _userManager.GetUserId(User);
+
+        var quotations = await _dbContext.QuotationRequests
+            .Where(q => q.CustomerId == customerId)
+            .Include(q => q.QuotationFoodItems)
+            .ThenInclude(qf => qf.FoodItem) // Include the related FoodItems through QuotationFoodItems
+            .ToListAsync();
+
+        // Pass the quotations to the view or partial view, including the RequestDate
+        return PartialView("_ViewQuotationRequest", quotations);
+    }
+
+
 
 
 

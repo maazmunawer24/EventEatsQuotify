@@ -39,6 +39,7 @@ namespace EventEatsQuotify.Migrations
                     RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsApproved = table.Column<bool>(type: "bit", nullable: false),
                     CNICImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CNICBackImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BillingImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CNICNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -59,6 +60,40 @@ namespace EventEatsQuotify.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuotationRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VendorId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VendorName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuotationRequests", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    VendorId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -177,7 +212,10 @@ namespace EventEatsQuotify.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     VendorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    FoodPicture = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FoodPicturePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    QuantityOrPersons = table.Column<int>(type: "int", nullable: false),
+                    QuantityType = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -189,15 +227,64 @@ namespace EventEatsQuotify.Migrations
                         principalColumn: "Id");
                 });
 
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "1893fa83-c9cb-47a1-ad62-91dcf67cb2e9", "0fb6bcf0-a4b0-4aa6-9306-28f183c9e723", "Customer", "CUSTOMER" });
+            migrationBuilder.CreateTable(
+                name: "Photos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FoodItemId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Photos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Photos_FoodItems_FoodItemId",
+                        column: x => x.FoodItemId,
+                        principalTable: "FoodItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuotationFoodItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FoodItemId = table.Column<int>(type: "int", nullable: false),
+                    QuotationRequestId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    QuantityOrPersons = table.Column<int>(type: "int", nullable: false),
+                    QuantityType = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuotationFoodItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_QuotationFoodItems_FoodItems_FoodItemId",
+                        column: x => x.FoodItemId,
+                        principalTable: "FoodItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuotationFoodItems_QuotationRequests_QuotationRequestId",
+                        column: x => x.QuotationRequestId,
+                        principalTable: "QuotationRequests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "6768a3f4-d5e5-4202-9f67-3092d2949d0e", "95238f8c-1731-4ed0-8e83-f6204fa41d49", "Vendor", "VENDOR" });
+                values: new object[] { "458f5664-2089-4699-924f-8813a2296078", "46288933-9b31-4a9c-86ee-06909a9e7c49", "Vendor", "VENDOR" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "8520904e-d6dd-424c-8f0e-e5ce6f7dfee1", "1fae2cac-c3e0-4060-b473-44d95b16919a", "Customer", "CUSTOMER" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -242,6 +329,21 @@ namespace EventEatsQuotify.Migrations
                 name: "IX_FoodItems_VendorId",
                 table: "FoodItems",
                 column: "VendorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Photos_FoodItemId",
+                table: "Photos",
+                column: "FoodItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuotationFoodItems_FoodItemId",
+                table: "QuotationFoodItems",
+                column: "FoodItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuotationFoodItems_QuotationRequestId",
+                table: "QuotationFoodItems",
+                column: "QuotationRequestId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -262,10 +364,22 @@ namespace EventEatsQuotify.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "FoodItems");
+                name: "Photos");
+
+            migrationBuilder.DropTable(
+                name: "QuotationFoodItems");
+
+            migrationBuilder.DropTable(
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "FoodItems");
+
+            migrationBuilder.DropTable(
+                name: "QuotationRequests");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

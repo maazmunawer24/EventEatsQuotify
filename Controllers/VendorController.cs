@@ -1,5 +1,7 @@
 ﻿using EventEatsQuotify.ContextDBConfig;
+using EventEatsQuotify.Interfaces;
 using EventEatsQuotify.Models;
+using EventEatsQuotify.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,12 +21,14 @@ namespace EventEatsQuotify.Controllers
         private readonly IWebHostEnvironment _environment;
         private readonly EventEatsQuotifyDBContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public VendorController(IWebHostEnvironment environment, EventEatsQuotifyDBContext dbContext, UserManager<ApplicationUser> userManager)
+        public VendorController(IWebHostEnvironment environment, EventEatsQuotifyDBContext dbContext, UserManager<ApplicationUser> userManager, IEmailSender emailSender)
         {
             _environment = environment;
             _dbContext = dbContext;
             _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         public IActionResult VendorDashboard()
@@ -375,5 +379,81 @@ namespace EventEatsQuotify.Controllers
                 throw new Exception("User is not authenticated.");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewReceivedQuotations()
+        {
+            var vendorId = _userManager.GetUserId(User);
+
+            var quotations = await _dbContext.QuotationRequests
+                .Where(q => q.VendorId == vendorId && q.Status == "Pending")
+                .Include(q => q.QuotationFoodItems)
+                .ToListAsync();
+
+            return View(quotations);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ApproveQuotation(int quotationId, string message)
+        {
+            var quotation = await _dbContext.QuotationRequests
+                .FirstOrDefaultAsync(q => q.Id == quotationId);
+
+            if (quotation == null)
+            {
+                return Json(new { success = false, error = "Quotation not found." });
+            }
+
+            // Approve the quotation request
+            quotation.Status = "Approved";
+            await _dbContext.SaveChangesAsync();
+
+            var customer = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == quotation.CustomerId);
+            if (customer == null)
+            {
+                return Json(new { success = false, error = "Customer not found." });
+            }
+
+            var customerEmail = customer.Email;
+            var vendorName = User.Identity.Name;
+            var subject = $"Quotation Approved by {vendorName}";
+            var body = $"Dear {customer.UserName},\n\n" +
+                       $"Your quotation request for {quotation.QuotationFoodItems.Count} items has been approved by {vendorName}.\n\n" +
+                       $"Message from the vendor: {message}\n\n" +
+                       $"Best regards,\n{vendorName}";
+
+            try
+            {
+                await SendQuotationEmailAsync(customerEmail, subject, body);
+                return RedirectToAction("ViewReceivedQuotations"); // Redirect to reload the view
+          
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while approvng the quotation request");
+
+            }
+        }
+
+        private async Task SendQuotationEmailAsync(string emailAddress, string subject, string htmlMessage)
+        {
+            try
+            {
+                // Send the email with the HTML-formatted message body
+                await _emailSender.SendEmailAsync(emailAddress, subject, htmlMessage);
+            }
+            catch (System.Net.Sockets.SocketException ex)
+            {
+                // Log the error and handle it gracefully
+                throw new Exception("An error occurred while sending the email. Please try again later.", ex);
+            }
+            catch (Exception ex)
+            {
+                // Log the error and handle it gracefully
+                throw new Exception("An unexpected error occurred while sending the email. Please try again later.", ex);
+            }
+        }
+
     }
 }

@@ -1,0 +1,20 @@
+﻿@model IEnumerable<EventEatsQuotify.Models.QuotationRequest>
+
+<h2>Your Quotation Requests</h2>
+
+@foreach (var quotation in Model)
+{
+    <div>
+        <h3>Vendor: @quotation.VendorName</h3>
+        <p>Status: @quotation.Status</p>
+        <p>Request Date: @quotation.RequestDate.ToString("MMMM dd, yyyy")</p>
+        <h4>Food Items:</h4>
+        <ul>
+            @foreach (var item in quotation.QuotationFoodItems)
+            {
+                <li>@item.Name - @item.QuantityType: @item.QuantityOrPersons</li>
+            }
+        </ul>
+        <hr />
+    </div>
+}

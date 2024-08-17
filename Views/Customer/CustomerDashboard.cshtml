@@ -1,4 +1,8 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿
+
+
+
+@using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
 @model List<EventEatsQuotify.Models.ApplicationUser>
 
@@ -124,6 +128,7 @@
                 pointer-events: none;
                 color: #555;
             }
+
         .food-item-image-container {
             width: 100%;
             height: 200px; /* Adjust height as needed */
@@ -170,6 +175,37 @@
                 background-color: #5a6268;
             }
 
+        .comparison-container {
+            margin-top: 30px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+            .comparison-table th, .comparison-table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }
+
+            .comparison-table th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
+
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .comparison-header .custom-btn {
+                margin-right: 10px;
+            }
+
     </style>
 </head>
 
@@ -185,22 +221,129 @@
         </div>
     </div>
 </div>
-
-
+<!-- Vendor Comparison Section -->
+<div class="comparison-header">
+    @* <h2>Compare Vendors</h2> *@
+    <div>
+        <button class="custom-btn custom-btn-primary" id="viewQuotationsButton">View Quotations</button>
+        <input type="checkbox" id="selectAllCheckbox"> Select All
+        <button class="custom-btn custom-btn-primary" id="compareVendorsButton">Compare Selected Vendors</button>
+    </div>
+</div>
 
 <div class="container">
     <div id="vendorContainer">
         @Html.Partial("_VendorList", Model)
     </div>
+
+    
+
+    <!-- Modal to Display Comparison -->
+    <div class="modal fade" id="vendorComparisonModal" tabindex="-1" role="dialog" aria-labelledby="vendorComparisonModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content custom-modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="vendorComparisonModalLabel">Vendor Comparison</h5>
+                    @* <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button> *@
+
+                </div>
+                <div class="modal-body" id="vendorComparisonContainer">
+                    <!-- Content will be loaded here dynamically -->
+                </div>
+           @*      <div class="modal-footer custom-modal-footer">
+                    <button type="button" class="btn btn-secondary custom-btn" data-dismiss="modal">Close</button>
+                </div> *@
+            </div>
+        </div>
+    </div>
+    <!-- Modal to Display Quoatation History -->
+    <div class="modal fade" id="quotationHistoryModal" tabindex="-1" role="dialog" aria-labelledby="quotationHistoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content custom-modal-content">
+                <div class="modal-header custom-modal-header">
+                    <h5 class="modal-title" id="quotationHistoryModalLabel">Quotation History</h5>
+                    @* <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button> *@
+
+                </div>
+                <div class="modal-body" id="quotationHistoryContainer">
+                    <!-- Content will be loaded here dynamically -->
+                </div>
+                @*      <div class="modal-footer custom-modal-footer">
+                <button type="button" class="btn btn-secondary custom-btn" data-dismiss="modal">Close</button>
+                </div> *@
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 @section Scripts {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/c58416c086.js" crossorigin="anonymous"></script>
+    <script src="~/js/common.js" asp-append-version="true"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
+
+        $(document).ready(function () {
+            // Select All functionality
+            $('#selectAllCheckbox').change(function () {
+                $('.vendor-checkbox').prop('checked', this.checked);
+            });
+
+            // Compare Selected Vendors button click event
+            $('#compareVendorsButton').click(function () {
+                var selectedVendors = [];
+                $('.vendor-checkbox:checked').each(function () {
+                    var vendorId = $(this).data('vendor-id');
+                    selectedVendors.push(vendorId);
+                });
+
+                if (selectedVendors.length < 2) {
+                    alert('Please select at least two vendors to compare.');
+                    return;
+                }
+
+                // Send selected vendor IDs to the server for comparison
+                $.ajax({
+                    url: '@Url.Action("CompareVendors", "Customer")',
+                    method: 'POST',
+                    data: { vendorIds: selectedVendors },
+                    success: function (response) {
+                        // Display comparison results in modal
+                        $('#vendorComparisonContainer').html(response);
+                        $('#vendorComparisonModal').modal('show');
+                        rebindComparisonTableFilters(); // Rebind filters after loading content
+                    },
+                    error: function (error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+            // View Quotations button click event
+            $('#viewQuotationsButton').click(function () {
+                $.ajax({
+                    url: '@Url.Action("ViewQuotations", "Customer")',
+                    method: 'GET',
+                    success: function (response) {
+                        debugger
+                        // Display the quotations in a modal or on a new page
+                        $('#quotationHistoryContainer').html(response);
+                        $('#quotationHistoryModal').modal('show');
+                    },
+                    error: function (error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+
+
+
         var searchType = $("searchType").val();
 
         // Debounce function to limit the rate at which a function can fire.
@@ -371,5 +514,9 @@
             });
         }
 
+  
+
     </script>
-}
+
+
+    }

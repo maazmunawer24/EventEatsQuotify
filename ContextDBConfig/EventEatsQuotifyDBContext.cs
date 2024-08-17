@@ -10,6 +10,8 @@ namespace EventEatsQuotify.ContextDBConfig
         public DbSet<FoodItem> FoodItems { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Review> Reviews { get; set; } // Add this line
+        public DbSet<QuotationRequest> QuotationRequests { get; set; }
+        public DbSet<QuotationFoodItem> QuotationFoodItems { get; set; }
 
         public EventEatsQuotifyDBContext(DbContextOptions<EventEatsQuotifyDBContext> options) : base(options)
         {

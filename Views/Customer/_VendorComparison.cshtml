@@ -1,0 +1,90 @@
+﻿@model VendorComparisonViewModel
+<style>
+    .comparison-container {
+        margin: 20px;
+    }
+
+    .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .comparison-table th {
+            background-color: #f2f2f2;
+        }
+
+    .filter-container {
+        margin-bottom: 20px;
+    }
+
+        .filter-container label {
+            margin-right: 15px;
+        }
+</style>
+
+<div class="comparison-container">
+    @* <h3>Vendor Comparison</h3> *@
+
+    <!-- Vendor Filter Checkboxes -->
+    <div class="filter-container">
+        <h4>Filter by Vendor</h4>
+        @* <label><input type="checkbox" class="vendor-filter" value="all" checked> All Vendors</label> *@
+        @foreach (var vendor in Model.Vendors)
+        {
+            <label><input type="checkbox" class="vendor-filter" value="@vendor.Id" checked> @vendor.Name</label>
+        }
+    </div>
+
+    <!-- Food Item Filter Checkboxes -->
+    <div class="filter-container">
+        <h4>Filter by Food Item</h4>
+        @* <label><input type="checkbox" class="food-filter" value="all" checked> All Food Items</label> *@
+        @foreach (var item in Model.FoodItems)
+        {
+            <label><input type="checkbox" class="food-filter" value="@item.FoodItemName" checked> @item.FoodItemName</label>
+        }
+    </div>
+
+    <!-- Comparison Table -->
+    <table class="comparison-table">
+        <thead>
+            <tr>
+                <th>Food Item</th>
+                @foreach (var vendor in Model.Vendors)
+                {
+                    <th class="vendor-column" data-vendor-id="@vendor.Id">@vendor.Name</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.FoodItems)
+            {
+                <tr class="food-row" data-food-item="@item.FoodItemName">
+                    <td>@item.FoodItemName</td>
+                    @foreach (var vendor in Model.Vendors)
+                    {
+                        <td class="vendor-column" data-vendor-id="@vendor.Id">
+                            @((item.VendorPrices != null && item.VendorPrices.ContainsKey(vendor.Id)) ? item.VendorPrices[vendor.Id].ToString("C", new System.Globalization.CultureInfo("en-PK")) : "N/A")
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/c58416c086.js" crossorigin="anonymous"></script>
+    <script src="~/js/common.js" asp-append-version="true"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+}

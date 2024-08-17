@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventEatsQuotify.Migrations
 {
     [DbContext(typeof(EventEatsQuotifyDBContext))]
-    [Migration("20240322145418_fooditem_model_updated")]
-    partial class fooditem_model_updated
+    [Migration("20240815001540_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,6 +33,9 @@ namespace EventEatsQuotify.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("BillingImagePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CNICBackImagePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CNICImagePath")
@@ -155,6 +158,12 @@ namespace EventEatsQuotify.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("QuantityOrPersons")
+                        .HasColumnType("int");
+
+                    b.Property<string>("QuantityType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("VendorId")
                         .HasColumnType("nvarchar(450)");
 
@@ -163,6 +172,126 @@ namespace EventEatsQuotify.Migrations
                     b.HasIndex("VendorId");
 
                     b.ToTable("FoodItems");
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.Photo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FoodItemId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodItemId");
+
+                    b.ToTable("Photos");
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.QuotationFoodItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("FoodItemId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QuantityOrPersons")
+                        .HasColumnType("int");
+
+                    b.Property<string>("QuantityType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QuotationRequestId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodItemId");
+
+                    b.HasIndex("QuotationRequestId");
+
+                    b.ToTable("QuotationFoodItems");
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.QuotationRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RequestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VendorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VendorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("QuotationRequests");
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.Review", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VendorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -194,15 +323,15 @@ namespace EventEatsQuotify.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "975354b4-d8c0-49a5-8c30-4e75dfb0065f",
-                            ConcurrencyStamp = "4bc79bf3-452b-4079-872a-f2d2896cfb23",
+                            Id = "458f5664-2089-4699-924f-8813a2296078",
+                            ConcurrencyStamp = "46288933-9b31-4a9c-86ee-06909a9e7c49",
                             Name = "Vendor",
                             NormalizedName = "VENDOR"
                         },
                         new
                         {
-                            Id = "9fe3828d-2151-43e1-8179-8ac42db32253",
-                            ConcurrencyStamp = "4549d532-518c-4bcd-bf1b-18a1bd158877",
+                            Id = "8520904e-d6dd-424c-8f0e-e5ce6f7dfee1",
+                            ConcurrencyStamp = "1fae2cac-c3e0-4060-b473-44d95b16919a",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -323,6 +452,36 @@ namespace EventEatsQuotify.Migrations
                     b.Navigation("Vendor");
                 });
 
+            modelBuilder.Entity("EventEatsQuotify.Models.Photo", b =>
+                {
+                    b.HasOne("EventEatsQuotify.Models.FoodItem", "FoodItem")
+                        .WithMany("Photos")
+                        .HasForeignKey("FoodItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FoodItem");
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.QuotationFoodItem", b =>
+                {
+                    b.HasOne("EventEatsQuotify.Models.FoodItem", "FoodItem")
+                        .WithMany()
+                        .HasForeignKey("FoodItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EventEatsQuotify.Models.QuotationRequest", "QuotationRequest")
+                        .WithMany("QuotationFoodItems")
+                        .HasForeignKey("QuotationRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FoodItem");
+
+                    b.Navigation("QuotationRequest");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -372,6 +531,16 @@ namespace EventEatsQuotify.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.FoodItem", b =>
+                {
+                    b.Navigation("Photos");
+                });
+
+            modelBuilder.Entity("EventEatsQuotify.Models.QuotationRequest", b =>
+                {
+                    b.Navigation("QuotationFoodItems");
                 });
 #pragma warning restore 612, 618
         }
