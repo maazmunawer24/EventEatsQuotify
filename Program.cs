@@ -115,16 +115,16 @@ async Task SeedAdminAccountAsync(IServiceProvider serviceProvider)
     }
 
     // Check if admin user exists, if not, create it
-    if (await userManager.FindByEmailAsync("admin@EEQ.com") == null)
+    if (await userManager.FindByEmailAsync("") == null)//admin email
     {
         var adminUser = new ApplicationUser
         {
-            UserName = "admin",
-            Email = "admin@EEQ.com",
+            UserName = "",//admin username
+            Email = "",//admin email
             // Add other properties as needed
         };
 
-        var result = await userManager.CreateAsync(adminUser, "Admin@123");
+        var result = await userManager.CreateAsync(adminUser, "");//admin password
 
         if (result.Succeeded)
         {
