@@ -52,7 +52,13 @@ builder.Services.AddAuthorization(options =>
 });
 
 // Register the IEmailSender service and its implementation
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.Configure<EmailSettings>(options =>
+{
+    builder.Configuration.GetSection("EmailSettings").Bind(options);
+    // Override with environment variables if available
+    options.UserName = Environment.GetEnvironmentVariable("EMAIL_USER") ?? options.UserName;
+    options.Password = Environment.GetEnvironmentVariable("EMAIL_PASSWORD") ?? options.Password;
+});
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 // Create the application

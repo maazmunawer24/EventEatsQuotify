@@ -36,7 +36,6 @@ namespace EventEatsQuotify.Services
             {
                 Text = htmlMessage
             };
-           
 
             using (var client = new SmtpClient())
             {
@@ -48,7 +47,8 @@ namespace EventEatsQuotify.Services
                 }
                 catch (Exception ex)
                 {
-                    // Handle SMTP errors
+                    // Log error if email sending fails
+                    Console.WriteLine($"Failed to send email: {ex.Message}");
                     throw new InvalidOperationException($"Error sending email: {ex.Message}", ex);
                 }
                 finally
