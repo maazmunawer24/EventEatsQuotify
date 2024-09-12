@@ -1,20 +1,56 @@
 ﻿@model IEnumerable<EventEatsQuotify.Models.QuotationRequest>
 
-<h2>Your Quotation Requests</h2>
+    <h4 class="px-3" >Your Quotation Requests</h5>
 
-@foreach (var quotation in Model)
-{
-    <div>
-        <h3>Vendor: @quotation.VendorName</h3>
-        <p>Status: @quotation.Status</p>
-        <p>Request Date: @quotation.RequestDate.ToString("MMMM dd, yyyy")</p>
-        <h4>Food Items:</h4>
-        <ul>
-            @foreach (var item in quotation.QuotationFoodItems)
-            {
-                <li>@item.Name - @item.QuantityType: @item.QuantityOrPersons</li>
-            }
-        </ul>
-        <hr />
-    </div>
-}
+<div class="row g-2 px-3">
+    @foreach (var quotation in Model)
+    {
+        <div class=" col-md-6 p-2">
+          <div class="bg-dark rounded p-3">
+                <h5 class="bg-black text-center text-light p-2 mb-3"> @quotation.VendorName</h5>
+             
+                <h5 class="text-light fs-5">Food Items:</h5>
+                
+                    @foreach (var item in quotation.QuotationFoodItems)
+                    {
+                        <div class=" px-3 mb-2" style="list-style:none;width: 92%">
+                            <div class="bg-dark  ">
+                                <div class="row ">
+                                    <div class="col-4 text-dark bg-light text-center">
+                                        @item.Name
+                                    </div>
+                                    <div class="col-4 bg-pink-menu text-light text-center">
+
+                                        @item.QuantityType
+                                    </div>
+                                    <div class="col-4 bg-light text-dark text-center">
+                                        @if (item.QuantityType == "quantity")
+                                        {
+                                            @($"{item.QuantityOrPersons} KG")
+                                        }
+                                        else
+                                        {
+                                            @($"{item.QuantityOrPersons} each")
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                <p class="text-light fs-6"> <span class="fs-5 fw-bold text-light">Status:</span> @quotation.Status</p>
+                <p class=" text-light fs-6"><span class="fs-5 fw-bold text-light">Date:</span>  @quotation.RequestDate.ToString("MMMM dd, yyyy")</p>
+                    <div class="form-group">
+                        <label for="message" class="text-light mb-3"> Addditional Instruction (Optional):</label>
+                        <textarea name="message" placeholder="nothing to display..." class="form-control" rows="3" readonly>@quotation.AdditionalInstructions</textarea>
+                        <label for="message" class="text-light mb-3"> Vendor Response Message :</label>
+
+                    <textarea name="message" placeholder="nothing to display..." class="form-control" rows="3" readonly>@quotation.VendorMessage</textarea>
+                    </div>
+                
+            </div>
+           
+        </div>
+    }
+
+</div>

@@ -3,43 +3,44 @@
 }
 
 <div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-lg rounded">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="card-title"><i class="fas fa-store"></i> EventEats Quotify - Vendor Dashboard</h3>
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-12 animate__animated animate__backInLeft">
+            <div class="main-section shadow-lg rounded">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="card-title"><i class="fas fa-store mx-2"></i> EventEats Quotify - Vendor Dashboard</h3>
                 </div>
 
                 <div class="card-body">
-                    <p class="lead">Welcome to the Vendor Dashboard. This is the place where vendors can manage their food items and pricing.</p>
+                    <p class="lead text-light">Welcome to the Vendor Dashboard. This is the place where vendors can manage their food items and pricing.</p>
+                 
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row mt-4">
-        <div class="col-lg-6">
-            <div class="card shadow rounded">
-                <div class="card-header bg-success text-white">
-                    <h4 class="card-title"><i class="fas fa-utensils"></i> Menu Item Management</h4>
+        <div class="col-lg-6 animate__animated animate__backInLeft">
+            <div class="main-section shadow rounded">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="card-title"><i class="fas fa-utensils mx-2"></i> Menu Item Management</h4>
                 </div>
 
                 <div class="card-body">
-                    <p class="card-text">Manage your menu items here.</p>
-                    <a href="@Url.Action("MenuItems", "Vendor")" class="btn btn-success btn-block">Manage Menu Items</a>
+                    <p class="card-text text-light" style="font-size: large">Manage your menu items here.</p>
+                    <a href="@Url.Action("MenuItems", "Vendor")" class="btn btn-dark bg-pink-menu btn-block">Manage Menu Items</a>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-6">
-            <div class="card shadow rounded">
-                <div class="card-header bg-info text-white">
-                    <h4 class="card-title"><i class="fas fa-images"></i> Quotation Management</h4>
+        <div class="col-lg-6 animate__animated animate__backInRight">
+            <div class="main-section shadow rounded">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="card-title"><i class="fas fa-quote-left mx-2"></i> Quotation Management</h4>
                 </div>
 
                 <div class="card-body">
-                    <p class="card-text">Manage Quotations for each Customer.</p>
-                    <a href="@Url.Action("ViewReceivedQuotations", "Vendor")" class="btn btn-info btn-block">View Received Quotations</a>
+                    <p class="card-text text-light" style="font-size: large">Manage Quotations for each Customer.</p>
+                    <a href="@Url.Action("ViewReceivedQuotations", "Vendor")" class="btn btn-dark bg-pink-menu btn-block">View Received Quotations</a>
 
                 </div>
             </div>

@@ -189,7 +189,6 @@ public class CustomerController : Controller
 
                 
             }
-
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
@@ -211,7 +210,9 @@ public class CustomerController : Controller
                 CustomerName = model.CustomerName,
                 VendorName = model.VendorName,
                 Status = "Pending",
-                RequestDate = DateTime.UtcNow
+                RequestDate = DateTime.UtcNow,
+               AdditionalInstructions =model.AdditionalInstructions,
+                VendorMessage = ""
             };
 
             foreach (var foodItem in model.FoodItems)

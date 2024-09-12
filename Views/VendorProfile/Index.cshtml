@@ -1,65 +1,72 @@
 ﻿@model EventEatsQuotify.ViewModels.VendorProfileViewModel
 
-<div class="container mt-5">
-    <div class="row">
+<div class=" my-5 d-flex justify-content-center align-items-center">
+    <div class="customerprofile main-section">
         <!-- Profile Image -->
-        <div class="col-md-4">
-            <div class="card text-center p-4 border border-primary rounded-3 shadow">
+        <div class="">
+            <div class=" text-center p-4  rounded-3 shadow">
                 @if (Model.ProfilePicture != null)
                 {
-                    <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProfilePicture)" alt="Profile Image" class="img-fluid rounded-circle mb-3">
+                    <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProfilePicture)" alt="Profile Image" class="img-fluid rounded-circle mb-3 w-50">
                 }
                 else
                 {
-                    <img src="~/images/defaultimages/user.png" alt="Default Profile Image" class="img-fluid rounded-circle mb-3">
+                    <img src="~/images/defaultimages/user.png" alt="Default Profile Image" class="img-fluid rounded-circle mb-3 w-50">
                 }
 
-                <p class="lead text-muted fs-6">Vendor since: [@Model.RegistrationDate.ToString("yyyy-MM-dd")]</p>
+                <p class="lead text-pink-menu fs-6"><b class="text-light">Vendor since:</b> <br /> @Model.RegistrationDate.ToString("dd-MM-yyyy")</p>
             </div>
         </div>
 
         <!-- Profile Details -->
-        <div class="col-md-8">
-            <div class="card shadow p-4 border-0 rounded-3">
-                <h1 class="display-4 text-primary mb-4">@Model.BusinessName</h1>
+        <div class="">
+            <div class="card bg-dark shadow p-4 border-0 rounded-3">
+                <div class=" d-flex align-items-end ">
+                    <h6 class="display-5 text-pink-menu fw-bold mb-4">
+                        @Model.BusinessName <a asp-action="Edit" class="btn btn-success btn-sm rounded-circle"><i class="fas fa-edit"></i></a>
+                      </h6>
+                  
+                    
+                </div>
                 <dl class="row g-4">
-                    <dt class="col-sm-3 text-muted">Contact Email:</dt>
-                    <dd class="col-sm-9">@Model.ContactEmail</dd>
+                    <dt class="col-sm-4 text-muted">Contact Email:</dt>
+                    <dd class="col-sm-8 text-light">@Model.ContactEmail</dd>
 
-                    <dt class="col-sm-3 text-muted">Contact Phone:</dt>
-                    <dd class="col-sm-9">@Model.ContactPhone</dd>
+                    <dt class="col-sm-4 text-muted">Contact Phone:</dt>
+                    <dd class="col-sm-8 text-light">@Model.ContactPhone</dd>
 
                     <!-- Additional properties -->
-                    <dt class="col-sm-3 text-muted">Location:</dt>
-                    <dd class="col-sm-9">@Model.Location</dd>
+                    <dt class="col-sm-4 text-muted">Location:</dt>
+                    <dd class="col-sm-8 text-light">@Model.Location</dd>
 
-                    <dt class="col-sm-3 text-muted">Website:</dt>
-                    <dd class="col-sm-9"><a href="@Model.Website" target="_blank" class="text-decoration-none text-primary">@Model.Website</a></dd>
+                    <dt class="col-sm-4 text-muted">Website:</dt>
+                    <dd class="col-sm-8 text-light"><a href="@Model.Website" target="_blank" class="text-decoration-none text-primary">@Model.Website</a></dd>
 
-                    <dt class="col-sm-3 text-muted">Specialties:</dt>
-                    <dd class="col-sm-9">@Model.Specialties</dd>
+                    <dt class="col-sm-4 text-muted">Specialties:</dt>
+                    <dd class="col-sm-8 text-light">@Model.Specialties</dd>
                 </dl>
 
 
                 <hr class="my-4 border-primary">
 
-                <h4 class="text-primary mb-3">About Us</h4>
-                <p class="lead">@Model.Description</p>
+                <h5 class="text-pink-menu mb-3">About Us</h5>
+                <p class=" text-light">@Model.Description</p>
 
                 <!-- Additional sections -->
                 <hr class="my-4 border-primary">
-                <h4 class="text-primary mb-3">Menu Highlights</h4>
+                <h5 class="text-pink-menu mb-3">Menu Highlights</h5>
                 <p class="lead">@Model.MenuHighlights</p>
 
-                <hr class="my-4 border-primary">
-                <h4 class="text-primary mb-3">Customer Reviews</h4>
+              
+                <h5 class="text-pink-menu mb-3">Customer Reviews</h5>
                 @if (Model.CustomerReviews != null && Model.CustomerReviews.Any())
                 {
                     foreach (var review in Model.CustomerReviews)
                     {
-                        <div class="mb-3">
-                            <p><strong>@review.CustomerName</strong> <span class="text-muted">@review.CreatedAt.ToString("yyyy-MM-dd")</span></p>
-                            <p>@review.Content</p>
+                        <div class="mb-3 main-section rounded">
+                            <span class="text-pink-menu ">@review.CreatedAt.ToString("dd-MM-yyyy")</span>
+                            <h5 class="text-light text-muted mt-2 ">@review.CustomerName </h5>
+                            <p class="text-light " style="font-size: 14px">@review.Content</p>
                         </div>
                     }
                 }
@@ -68,9 +75,7 @@
                     <p class="lead text-muted">No reviews yet.</p>
                 }
 
-                <div class="text-center mt-4">
-                    <a asp-action="Edit" class="btn btn-primary btn-lg rounded-pill">Edit Profile</a>
-                </div>
+                
             </div>
         </div>
     </div>

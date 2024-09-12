@@ -1,52 +1,54 @@
 ﻿@model EventEatsQuotify.Models.ApplicationUser;
 @* VendorID: @ViewBag.VendorId *@
+<div class="main-section py-5">
 
-<h1 class="text-center mb-4">GET QUOTATION</h1>
+    <h1 class="text-center text-light mb-2">GET QUOTATION</h1>
 
-<div id="quotationFormContainer" class="container mt-5">
-    <form id="quotationForm">
-        <input type="hidden" name="vendorId" id="vendorIdInput" value="@ViewBag.VendorId" />
+    <div id="quotationFormContainer" class="container ">
+        <form id="quotationForm">
+            <input type="hidden" name="vendorId" id="vendorIdInput" value="@ViewBag.VendorId" />
 
-        <!-- Quotation Type Selection -->
-        <div class="mb-3">
-            <label for="quotationOption" class="form-label">Select Quotation Type</label>
-            <select class="form-select" name="quotationOption" id="quotationOptions">
-                <option value="" disabled selected>Select Quotation Type</option>
-                <option value="quantity">Food Quantity</option>
-                <option value="persons">No of Persons</option>
-            </select>
-            <!-- Validation Error Message -->
-            <div id="quotationOptionError" class="invalid-feedback"></div>
+            <!-- Quotation Type Selection -->
+            <div class="mb-3">
+                <label for="quotationOption" class="form-label text-light">Select Quotation Type</label>
+                <select class="form-select" name="quotationOption" id="quotationOptions">
+                    <option value="" disabled selected>Select Quotation Type</option>
+                    <option value="quantity">Food Quantity</option>
+                    <option value="persons">No of Persons</option>
+                </select>
+                <!-- Validation Error Message -->
+                <div id="quotationOptionError" class="invalid-feedback"></div>
+            </div>
+
+            <!-- Food Items and Quantities/No of Persons -->
+            <div id="foodItemsContainer" class="row p-3">
+                <!-- This will be populated based on the selected quotation type -->
+            </div>
+
+            <!-- Add Food Item Button -->
+            <button type="button" class="btn btn-dark bg-pink-menu mb-3" id="addFoodItem">Add Food Item</button>
+
+            <!-- Additional Instructions -->
+            <div class="mb-3">
+                <label for="additionalInstructions" class="form-label text-light">Additional Instructions</label>
+                <textarea class="form-control" name="additionalInstructions" id="additionalInstructions" rows="3"></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="button" class="btn btn-dark bg-pink-menu" id="sendQuotationRequest">Get Quotation</button>
+        </form>
+
+        <!-- Loader -->
+        <div id="loader" class="d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
         </div>
-
-        <!-- Food Items and Quantities/No of Persons -->
-        <div id="foodItemsContainer">
-            <!-- This will be populated based on the selected quotation type -->
-        </div>
-
-        <!-- Add Food Item Button -->
-        <button type="button" class="btn btn-outline-secondary mb-3" id="addFoodItem">Add Food Item</button>
-
-        <!-- Additional Instructions -->
-        <div class="mb-3">
-            <label for="additionalInstructions" class="form-label">Additional Instructions</label>
-            <textarea class="form-control" name="additionalInstructions" id="additionalInstructions" rows="3"></textarea>
-        </div>
-
-        <!-- Submit Button -->
-        <button type="button" class="btn btn-primary" id="sendQuotationRequest">Get Quotation</button>
-    </form>
-
-    <!-- Loader -->
-    <div id="loader" class="d-none">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
+        <input type="hidden" name="CustomerName" id="CustomerNameInput" value="@User.Identity.Name" />
+        <input type="hidden" name="VendorName" id="VendorNameInput" value="@ViewBag.VendorName" />
     </div>
-<input type="hidden" name="CustomerName" id="CustomerNameInput" value="@User.Identity.Name" />
-<input type="hidden" name="VendorName" id="VendorNameInput" value="@ViewBag.VendorName" />
-</div>
 
+</div>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-+bh3QNp5q/IsJLwhXKmnMzVDl9yo0hU1mPoL0b+UkAQ=" crossorigin="anonymous"></script>
@@ -100,9 +102,9 @@
             // Check if fetched food items exist
             if (fetchedFoodItems && fetchedFoodItems.length > 0) {
                 // Generate HTML content for a single food item dropdown and textbox
-                var htmlContent = '<div class="mb-3 row food-item border p-3">';
-                htmlContent += '<div class="col">';
-                htmlContent += '<label for="foodItem" class="form-label">Food Item</label>';
+                var htmlContent = '<div class=" col-md-4 food-item  border p-3">';
+                htmlContent += '<div class="">';
+                htmlContent += '<label for="foodItem" class="form-label text-light">Food Item</label>';
                 htmlContent += '<select class="form-select food-dropdown" name="foodItem[]" id="foodItem" data-quotation-option="' + $('#quotationOptions').val() + '">';
                 htmlContent += '<option value="" selected disabled>Select Food Item</option>'; // Placeholder option
 
@@ -117,17 +119,17 @@
                 htmlContent += '<div class="col">';
                 // Add quantity input based on quotation type
                 if ($('#quotationOptions').val() === 'quantity') {
-                    htmlContent += '<label for="quantity" class="form-label">Quantity (kg)</label>';
+                    htmlContent += '<label for="quantity" class="form-label text-light">Quantity (kg)</label>';
                     htmlContent += '<input type="text" class="form-control quantity-input" name="quantity[]" id="quantity">';
                 } else {
-                    htmlContent += '<label for="noOfPersons" class="form-label">No of Persons</label>';
+                    htmlContent += '<label for="noOfPersons" class="form-label text-light">No of Persons</label>';
                     htmlContent += '<input type="text" class="form-control persons-input" name="noOfPersons[]" id="noOfPersons">';
                 }
                 htmlContent += '</div>';
 
                 htmlContent += '<div class="col-auto">';
                 // Add remove item button
-                htmlContent += '<button type="button" class="btn btn-danger remove-item mt-2">Remove Item</button>';
+                htmlContent += '<button type="button"  class="btn btn-danger remove-item mt-2">Remove Item</button>';
                 htmlContent += '</div>';
 
                 htmlContent += '</div>';
@@ -162,6 +164,7 @@
 
         // Event handler for sending quotation request
         $('#sendQuotationRequest').click(function () {
+            
             // Show loader
             $('#loader').removeClass('d-none');
 
@@ -260,6 +263,10 @@
                     if (response.success) {
                         // Show success message or perform any other action
                         alert('Quotation request sent successfully!');
+                        // Redirect to the index page after a short delay
+                        setTimeout(function () {
+                            window.location.href = '/Home/Index';
+                        }, 1000); // 1-second delay
                     } else {
                         // Show error message or handle errors
                         alert('Failed to send quotation request. Please try again later.');

@@ -1,45 +1,75 @@
 ﻿@model IEnumerable<EventEatsQuotify.Models.QuotationRequest>
 
-<h2>Received Quotation Requests</h2>
-
 @if (Model != null && Model.Any())
 {
-    foreach (var quotation in Model)
+    <div class="quotation-request main-section p-5">
+        <h2 class="text-light text-center mb-4">Received Quotation Requests</h2>
+          <div class="row ">
+    @foreach (var quotation in Model)
     {
-        <div class="quotation-request">
-            <h3>Customer: @quotation.CustomerName</h3>
-            <p>Status: @quotation.Status</p>
-            <p>Request Date: @quotation.RequestDate.ToString("dd/MM/yyyy")</p>
-            <h4>Food Items:</h4>
-            <ul>
-                @foreach (var item in quotation.QuotationFoodItems)
-                {
-                    <li>@item.Name - @item.QuantityType: @item.QuantityOrPersons</li>
-                }
-            </ul>
-            <hr />
-            <form asp-action="ApproveQuotation" method="post">
-                <input type="hidden" name="quotationId" value="@quotation.Id" />
-                <div class="form-group">
-                    <label for="message">Approval Message (Optional):</label>
-                    <textarea name="message" class="form-control" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Approve</button>
-            </form>
-         
+   
+                <div class="col-md-4 p-1">
+                    <div class="bg-dark p-4 rounded">
 
+
+
+                        <h5 class="text-light bg-black p-2 text-center rounded">@quotation.CustomerName</h5>
+
+                        @* <h5 class="text-light bg-black p-2 text-center rounded"><i class="text-pink-menu">Customer:</i> @quotation.CustomerName</h5> *@
+                        <h5 class="text-light fs-5">Food Items:</h5>
+                       
+              
+                        @foreach (var item in quotation.QuotationFoodItems)
+                        {
+                                <div class="row bg-light mx-1 mb-3">
+                                    <div class="col-5 text-dark text-center">
+                                        @item.Name
+                                    </div>
+                                    <div class="col-4 bg-pink-menu text-light text-uppercase text-center">
+
+                                        @item.QuantityType
+                                    </div>
+                                    <div class="col-3 bg-light text-dark text-center">
+
+                                        @item.QuantityOrPersons
+                                    </div>
+                                </div>
+                        }
+                        <p class="text-light"><span class="text-light fw-bold fs-5">Status:</span> @quotation.Status</p>
+                        <p class="text-light"><span class="text-light fw-bold fs-5">Request Date:</span> @quotation.RequestDate.ToString("dd/MM/yyyy")</p>
+                        <label for="message" class="text-light mb-3"> Addditional Instructions From Customer :</label>
+                        <textarea name="message" placeholder="nothing to display..." class="form-control" rows="3" readonly>@quotation.AdditionalInstructions</textarea>
+
+
+
+                        <form asp-action="HandleQuotation" method="post">
+                            <input type="hidden" name="quotationId" value="@quotation.Id" />
+                            <div class="form-group">
+                                <label for="message" class="text-light mb-3">Message (Optional):</label>
+                                <textarea name="message" placeholder="Write Your Message...." class="form-control" rows="3"></textarea>
+                            </div>
+                            <button type="submit" name="action" value="approve" class="btn btn-secondary">Approve</button>
+                            <button type="submit" name="action" value="reject" class="btn btn-danger mx-3">Reject</button>
+                        </form>
+
+
+                    </div>
+                </div>
+
+
+    }
+          </div>
         </div>
   
-    }
 }
 else
 {
-    <p>No quotations received yet.</p>
+    <p class=" bg-dark p-3 text-center text-pink-menu p-4">No quotations received yet.</p>
 }
 
 <!-- Loader outside the loop -->
 <div id="loader" class="d-none">
-    <div class="spinner-border text-primary" role="status">
+    <div class="spinner-border text-danger" role="status">
         <span class="visually-hidden">Loading...</span>
     </div>
 </div>

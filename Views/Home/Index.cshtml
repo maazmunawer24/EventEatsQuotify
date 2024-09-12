@@ -1,117 +1,68 @@
-﻿@{
+﻿
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
+<div class="main-section p-4 animate__animated animate__backInRight">
+
 <div class="container">
-    <div class="row-carousel row shadow rounded">
-        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-            <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="/images/carouselImages/p1.jpg" class="d-block w-100" style="height: 400px;" alt="Logo">
-                    </div>
-                 @*    <div class="carousel-item">
-                        <img src="/images/carouselImages/pakwan2.jpg" class="d-block w-100" style="height: 400px;" alt="Pizza">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="/images/carouselimages/img3.jpg" class="d-block w-100" style="height: 400px;" alt="Pizza">
-                    </div> *@
+    <div class="row">
+        <div class="col-md-6 text-light d-flex flex-column justify-content-center slideronne">
+                <h1 class="text-light" style=" font-family: 'Merienda', cursive;">EventEats Quotify</h1>
+                <p class="fs-5 ">Best Caterers In Pakistan</p>
+             <p class="text-grey">At EventEats Quotify, we deliver exceptional culinary experiences tailored to your event. From intimate gatherings to grand celebrations, our expert team crafts exquisite dishes with fresh ingredients and a passion for excellence. Trust us to make your occasion unforgettable.</p>
+            <div>
+                  @*   <a  class="btn btn-dark bg-pink-menu" asp-controller="Account" asp-action="Login">Order Now</a> *@
                 </div>
-            </div>
-
         </div>
-        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-            @* <div class="mb-3">
-                <h2>
-                    Get the Best Pizza From the best in the Market
-                </h2>
-            </div>
-            <div class="mb-3 p-3">
-                <span class="fs-5 text-dark">arabic ranch</span>
-            </div>
-            <div class="mb-3 p-3">
-                <span class="fs-5 text-dark">arabic ranch</span>
-            </div>
-                        <div class="mb-3 p-3">
-                <span class="fs-5 text-dark">arabic ranch</span>
-            </div> *@
-            <div class="text-center fs-5" style="margin-top: 20%;">
-                <b>
-                    "EventEats Quotify: Your Culinary Journey Begins Here"
-                </b>
-                <br />
-                Explore a world of delightful flavors tailored for your events. From exquisite appetizers to mouthwatering main courses, we're here to make your occasions memorable.
-                Join us and experience the convenience of online event food ordering and instant quotations. Your event, your way!
-            </div>
-
-
-        </div>
+         <div class="col-md-6 d-flex flex-column justify-content-center">
+             <div id="carouselExample" class="carousel slide">
+                  <div class="carousel-inner">
+                    <div class="carousel-item active ">
+                      <img src="~/images/productone.png" class="d-block w-50 mx-auto"  alt="...">
+                    </div>
+                    <div class="carousel-item ">
+                      <img src="~/images/biryani.png " class="d-block w-50 mx-auto" alt="...">
+                    </div>
+                    <div class="carousel-item ">
+                      <img src="~/images/productone.png" class="d-block w-50 mx-auto" alt="...">
+                    </div>
+                  </div>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
+                </div>
+         </div>
     </div>
+</div>
 
-  @*   <div class="row mt-3">
-        <div class="col-lg-12 mb-3">
-            <h2 class="text-dark fst-italic">
-                Today's Special
-            </h2>
-            <div id="todaySpecial" class="row">
-                <div class="col-sm-4 col-md-4 col-lg-4 col">
-                    <div class="card dishCard">
-                        <img class="card-img-top img-fluid" src="/images/carouselImages/pakwan1.png" alt="Karachi Pakwan House" style="height: 200px; object-fit: cover;" />
-                        <div class="card-body">
-                            <p class="card-title">Karachi Pakwan House</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4 col-md-4 col-lg-4 col">
-                    <div class="card dishCard">
-                        <img class="card-img-top img-fluid" src="/images/carouselImages/pakwan3.jpg" alt="Delicious Pakwan" style="height: 200px; object-fit: cover;" />
-                        <div class="card-body">
-                            <p class="card-title">Delicious Pakwan</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4 col-md-4 col-lg-4 col">
-                    <div class="card dishCard">
-                        <img class="card-img-top img-fluid" src="/images/carouselImages/pakwan4.jpg" alt="New Pakwan Center" style="height: 200px; object-fit: cover;" />
-                        <div class="card-body">
-                            <p class="card-title">New Pakwan Center</p>
-                        </div>
-                    </div>
-                </div>
+</div>
 
-            </div>
-
-          
-
-        </div>
-    </div>
- *@
-
+<div class="lowersection py-3">
     <div class="container">
-        <div class="row mt-3">
-            <div class="col-lg-12 mb-3">
-                <h2 class="text-dark fst-italic">
-                    Today's Special
-                </h2>
-                <div id="vendorCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner" id="vendorCards">
-                        <!-- Dynamic vendor cards will be appended here -->
+        <div class="row ">
+            <div class="col-md-12  main-section    animate__animated animate__backInLeft">
+                <h5 class="text-light mb-3 text-center text-menu-pink">Our Top Vendors</h5>
+           
+                <section class="splide" aria-label="Splide Basic HTML Example">
+                    <div class="splide__track px-5" >
+                        <ul class="splide__list " id="vendorCards">
+                          
+                        
+                        </ul>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#vendorCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#vendorCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
+                </section>
             </div>
+           
+            
         </div>
     </div>
-
-
-
 </div>
 
 @section Scripts {
@@ -134,49 +85,36 @@
                     vendorCardsContainer.empty();
 
                     if (data && data.length > 0) {
-                        var carouselInner = $('<div class="carousel-inner"></div>');
-                        var vendorsPerSlide = 3; // Number of vendors to display per slide
-                        var totalSlides = Math.ceil(data.length / vendorsPerSlide);
-                        var active = true;
+                        var slideHtml = '';
 
-                        for (var i = 0; i < totalSlides; i++) {
-                            var slideStartIndex = i * vendorsPerSlide;
-                            var slideEndIndex = Math.min((i + 1) * vendorsPerSlide, data.length);
-                            var slideItems = data.slice(slideStartIndex, slideEndIndex);
+                        data.forEach(function (vendor) {
+                            var name = vendor.name || 'Name not available';
+                            var address = vendor.shopAddress || 'Address not available';
+                            var profilePicturePath = vendor.profilePicture ?
+                                "data:image/png;base64," + vendor.profilePicture :
+                                '/images/defaultimages/user.png';
 
-                            var slideHtml = `
-                                <div class="carousel-item ${active ? 'active' : ''}">
-                                    <div class="row">`;
-
-                            slideItems.forEach(function (vendor) {
-                                var name = vendor.name || 'Name not available';
-                                var address = vendor.shopAddress || 'Address not available';
-                                var profilePicturePath = '';
-
-                                if (vendor.profilePicture == null) {
-                                    profilePicturePath = '/images/defaultimages/user.png';
-                                } else {
-                                    profilePicturePath = "data:image/png;base64," + vendor.profilePicture;
-                                }
-
-                                var cardHtml = `
-                                    <div class="col-sm-4">
-                                        <div class="card dishCard">
-                                            <img class="card-img-top img-fluid" src="${profilePicturePath}" alt="${name}" style="height: 200px; object-fit: cover;" />
-                                            <div class="card-body">
-                                                <p class="card-title" style="font-size: 20px; font-weight: bold; color: #333;">${name}</p>
+                            var cardHtml = `
+                                        <li class="splide__slide">
+                                            <div class="p-2 d-flex flex-column justify-content-center align-items-center">
+                                                <img src="${profilePicturePath}" class="mb-2" width="40%" alt="${name}" />
+                                                <p class="text-light">${name}</p>
                                             </div>
-                                        </div>
-                                    </div>`;
-                                slideHtml += cardHtml;
-                            });
+                                        </li>`;
+                            slideHtml += cardHtml;
+                        });
 
-                            slideHtml += `</div></div>`;
-                            carouselInner.append(slideHtml);
-                            active = false;
-                        }
+                        vendorCardsContainer.append(slideHtml);
 
-                        vendorCardsContainer.append(carouselInner);
+                        // Initialize Splide after appending slides
+                        var splide = new Splide('.splide', {
+                            type: 'loop',
+                            perPage: 5,
+                            perMove: 1,
+                            autoplay: true,
+                        });
+
+                        splide.mount();
                     } else {
                         vendorCardsContainer.append('<p>No vendors found.</p>');
                     }
@@ -187,6 +125,8 @@
                 }
             });
         }
+
+        
 
 
         $(document).ready(function () {

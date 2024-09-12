@@ -16,20 +16,32 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/EventEatsQuotify.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/splidejs/4.1.4/css/splide.min.css" integrity="sha512-KhFXpe+VJEu5HYbJyKQs9VvwGB+jQepqb4ZnlhUF/jQGxYJcjdxOTf6cr445hOc791FFLs18DKVpfrQnONOB1g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/splidejs/4.1.4/js/splide.min.js" integrity="sha512-4TcjHXQMLM7Y6eqfiasrsnRCc8D/unDeY1UGKGgfwyLUCTsHYMxF7/UHayjItKQKIoP6TTQ6AMamb9w2GMAvNg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="~/favicon.png">
 
     <style>
+        .nav-link:hover{
+               color: white !important;
 
+        }
     </style>
 </head>
 <body>
-    <header class="position-sticky top-0 custom-navbar">
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <marquee behavior="" direction="" class="bg-pink-menu fs-6 text-dark fw-bold p-2">Your Favorite Meals, Delivered with a Friendly Welcome</marquee>
+    <header class="position-sticky top-0">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm bg-dark border-bottom box-shadow ">
             <!-- Navbar content -->
-            <div class="container-fluid">
-                <a class="navbar-brand text-danger fw-bold fs-4" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" asp-area="" asp-controller="Home" asp-action="Index">EventEats Quotify</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+            <div class="container">
+                <a class="navbar-brand text-white  fw-bold fs-4" style=" font-family: Merienda, cursive;" asp-area="" asp-controller="Home" asp-action="Index">EventEats Quotify</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style=" border: none;">
+                    <span class="navbar-toggler-icon "> <i class="fa fa-navicon" style="color:#fff; font-size:28px;"></i></span>
                 </button>
+
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         @if (!User.IsInRole("Admin"))
@@ -37,19 +49,19 @@
                             @if (User.IsInRole("Vendor"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vendor" asp-action="VendorDashboard"><i class="fas fa-home"></i> Home</a>
+                                    <a class="nav-link text-light" asp-area="" asp-controller="Vendor" asp-action="VendorDashboard"><i class="fas fa-home text-pink-menu"></i> Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="ContactUs" asp-action="Contact"><i class="fas fa-envelope"></i> Contact</a>
+                                    <a class="nav-link text-light" asp-area="" asp-controller="ContactUs" asp-action="Contact"><i class="fas fa-envelope text-pink-menu"></i> Contact</a>
                                 </li>
                             }
                             else if (User.IsInRole("Customer"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="CustomerDashboard"><i class="fas fa-home"></i> Home</a>
+                                    <a class="nav-link text-light" asp-area="" asp-controller="Customer" asp-action="CustomerDashboard"><i class="fas fa-home text-pink-menu"></i> Home</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="ContactUs" asp-action="Contact"><i class="fas fa-envelope"></i> Feedback</a>
+                                    <a class="nav-link text-light" asp-area="" asp-controller="ContactUs" asp-action="Contact"><i class="fas fa-envelope text-pink-menu"></i> Feedback</a>
                                 </li>
                             }
 
@@ -67,8 +79,10 @@
                     </ul>
                     @if (!User.Identity.IsAuthenticated)
                     {
-                        <div>
-                            <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="Login"><i class="fas fa-sign-in-alt"></i> LogIn/SignUp</a>
+                        <div class="d-flex">
+
+                            <a class=" btn btn-light btn-sm" asp-controller="Account" asp-action="Register">signup</a>
+                            <a class=" mx-2 btn  bg-pink-menu btn-sm text-light " asp-controller="Account" asp-action="Login">login</a>
                         </div>
                     }
                     else
@@ -76,22 +90,22 @@
                         @if (User.IsInRole("Vendor"))
                         {
                             <div class="d-flex align-items-center">
-                                <a class="nav-link vendor-link text-dark" asp-controller="VendorProfile" asp-action="Index">Hi, @User.Identity.Name! <i class="fas fa-user"></i></a>
-                                <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="LogOut"><i class="fas fa-sign-out-alt"></i> SignOut</a>
+                                <a class="nav-link vendor-link text-light" asp-controller="VendorProfile" asp-action="Index">Hi, @User.Identity.Name! <i class="fas fa-user  text-pink-menu"></i></a>
+                                <a class="btn btn-dark bg-pink-menu btn-sm" asp-controller="Account" asp-action="LogOut"><i class="fas fa-sign-out-alt"></i> SignOut</a>
                             </div>
                         }
                         else if (User.IsInRole("Customer"))
                         {
                             <div class="d-flex align-items-center">
-                                <a class="nav-link customer-link text-dark" asp-controller="CustomerProfile" asp-action="Index">Hi, @User.Identity.Name! <i class="fas fa-user"></i></a>
-                                <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="LogOut"><i class="fas fa-sign-out-alt"></i> SignOut</a>
+                                <a class="nav-link customer-link text-light" asp-controller="CustomerProfile" asp-action="Index">Hi, @User.Identity.Name! <i class="fas fa-user  text-pink-menu"></i></a>
+                                <a class="btn btn-dark  bg-pink-menu btn-sm" asp-controller="Account" asp-action="LogOut"><i class="fas fa-sign-out-alt"></i> SignOut</a>
                             </div>
                         }
                         else
                         {
                             <div class="d-flex align-items-center">
-                                <a class="nav-link customer-link text-dark" asp-controller="Admin" asp-action="AdminDashboard">Hi, @User.Identity.Name! <i class="fas fa-user"></i></a>
-                                <a class="nav-link fw-bold text-pink-menu" asp-controller="Account" asp-action="LogOut"><i class="fas fa-sign-out-alt"></i> SignOut</a>
+                                <a class="nav-link customer-link text-light" asp-controller="Admin" asp-action="AdminDashboard">Hi, @User.Identity.Name! <i class="fas fa-user text-pink-menu"></i></a>
+                                <a class="btn btn-dark  bg-pink-menu btn-sm" asp-controller="Account" asp-action="LogOut"><i class="fas fa-sign-out-alt"></i> SignOut</a>
                             </div>
                         }
                     }
@@ -100,47 +114,27 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" >
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top bg-light py-5 custom-footer">
+    <footer class=" bg-dark pt-3 ">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h4 class="mb-4 footer-heading">EventEats Quotify</h4>
-                    <p class="text-muted">Your go-to platform for event catering and quotations.</p>
+          <div class="row">
+              <div class="col-md-8 col-sm-12">
+                    <p class="text-secondary footertext">© Copyright <a href="#" class="text-pink-menu">Eventeats.com</a>. All Rights Reserved</p>
                 </div>
-                <div class="col-md-4">
-                    <h4 class="mb-4 footer-heading">Contact Us</h4>
-                    <ul class="list-unstyled">
-                        <li>
-                            <i class="fab fa-instagram me-2 text-primary"></i>
-                            <a href="#">Instagram</a>
-                        </li>
-                        <li>
-                            <i class="fab fa-whatsapp me-2 text-success"></i>
-                            <a href="#">WhatsApp</a>
-                        </li>
-                        <li>
-                            <i class="fab fa-facebook me-2 text-primary"></i>
-                            <a href="#">Facebook</a>
-                        </li>
-                        <li>
-                            <i class="far fa-envelope me-2 text-secondary"></i>
-                            <a href="#">Mail</a>
-                        </li>
-                    </ul>
+                <div class="col-md-4 d-flex fsml">
+                     <h6 class="text-light mx-3">Social Media Links:</h6>
+                    <div class="w-25  d-flex justify-content-between">
+ 
+                     <a href="#"><i class="fa fa-facebook"></i></a>
+                    <a href="#"><i class="fa fa-whatsapp text-success"></i></a>
+                    <a href="#"><i class="fa fa-instagram text-danger"></i></a>
+                    <a href="#"><i class="fa fa-twitter text-secondary"></i></a>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <h4 class="mb-4 footer-heading">Address</h4>
-                    <address class="text-muted">XYZ, Block A, Karachi, Pakistan</address>
-                </div>
-            </div>
-            <div class="mt-4 text-center">
-                <p class="mb-0">© 2024 EventEats Quotify. All rights reserved.</p>
-                <p class="mb-0">Powered By <strong class="text-primary">CATERINGEXPERTS</strong></p>
             </div>
         </div>
     </footer>
@@ -162,6 +156,11 @@
                     });
                 }
             });
+
+
+
+
+           
     </script>
 </body>
 </html>

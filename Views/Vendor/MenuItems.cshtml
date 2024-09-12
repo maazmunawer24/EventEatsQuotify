@@ -1,101 +1,109 @@
 ﻿@model IEnumerable<EventEatsQuotify.Models.FoodItem>
 
-<div class="row mb-3">
-    <div class="col-md-12 text-center">
-        <h1>Menu Item Management</h1>
-    </div>
-</div>
+    <div class="main-section p-5">
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <form asp-action="MenuItems" asp-controller="Vendor" method="get">
-            <input type="text" class="form-control" placeholder="Search..." name="searchString" value="@ViewBag.CurrentFilter" />
-            <button type="submit" class="btn btn-primary mt-2">Search</button>
-        </form>
+    <div class="row mb-3">
+        <div class="col-md-12 text-center">
+            <h3 class="text-light">Menu Item Management</h3>
+        </div>
     </div>
-</div>
 
-<table class="table" id="menuItemsTable">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="MenuItems" asp-route-sortOrder="@ViewBag.NameSortParam">Name</a>
-            </th>
-            <th>Description</th>
-            <th>
-                <a asp-action="MenuItems" asp-route-sortOrder="@ViewBag.PriceSortParam">Price</a>
-            </th>
-            <th>Category</th>
-            <th>Photo</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var menuItem in Model)
-        {
+    <div class="row mb-3 d-flex justify-content-center align-items-center">
+        <div class="col-md-6">
+            <form asp-action="MenuItems" asp-controller="Vendor" method="get" class="d-flex flex-column justify-content-center align-items-center w-100">
+                <input type="text" class="form-control " placeholder="Search..." name="searchString" value="@ViewBag.CurrentFilter" />
+                <button type="submit" class="btn btn-dark bg-pink-menu my-4">Search Menu</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="text-light mb-3">Menu Items</h4>
+    <a href="@Url.Action("UploadMenuItem", "Vendor")" class="btn btn-secondary">Upload New Menu Item</a>
+    </div>
+    <table class="table table-dark table-bordered border-danger mb-5" id="menuItemsTable">
+        <thead>
             <tr>
-                <td class="item-name">@menuItem.Name</td>
-                <td class="item-description">@menuItem.Description</td>
-                <td class="item-price">@menuItem.Price</td>
-                <td class="item-category">@menuItem.Category</td>
-                <td class="item-photo">
-                    @if (!string.IsNullOrEmpty(menuItem.FoodPicturePath))
-                    {
-                        <img src="@menuItem.FoodPicturePath" alt="Item Photo" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" />
-                    }
-                    else
-                    {
-                        <span>No Photo Available</span>
-                    }
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary edit-btn">Edit</button>
-                    <button type="button" class="btn btn-danger delete-btn" data-id="@menuItem.Id">Delete</button>
-                </td>
+                <th>
+                    <a asp-action="MenuItems" asp-route-sortOrder="@ViewBag.NameSortParam" class="text-pink-menu">Name</a>
+                </th>
+                <th>Description</th>
+                <th>
+                    <a asp-action="MenuItems" asp-route-sortOrder="@ViewBag.PriceSortParam" class="text-pink-menu">Price</a>
+                </th>
+                <th>Category</th>
+                <th>Photo</th>
+                <th>Action</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var menuItem in Model)
+            {
+                <tr>
+                    <td class="item-name p-1">@menuItem.Name</td>
+                    <td class="item-description ">@menuItem.Description</td>
+                    <td class="item-price">@menuItem.Price</td>
+                    <td class="item-category">@menuItem.Category</td>
+                    <td class="item-photo">
+                        @if (!string.IsNullOrEmpty(menuItem.FoodPicturePath))
+                        {
+                            <img src="@menuItem.FoodPicturePath" alt="Item Photo" class="img-thumbnail" style="max-width: 50px; max-height: 50px;" />
+                        }
+                        else
+                        {
+                            <span>No Photo Available</span>
+                        }
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success btn-sm edit-btn"><i class="fas text-light fa-edit"></i></button>
+                        <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="@menuItem.Id"><i class="fas text-light fa-trash"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<a href="@Url.Action("UploadMenuItem", "Vendor")" class="btn btn-primary">Upload New Menu Item</a>
+    
+
+</div>
 
 <!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
+<div class="modal fade " id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog bg-dark" role="document">
+        <div class="modal-content bg-dark">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Edit Menu Item</h5>
+                <h5 class="modal-title text-pink-menu" id="editModalLabel">Edit Menu Item</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body bg-light">
                 <div class="alert alert-danger d-none" id="editError"></div> <!-- Validation message container -->
                 <input type="hidden" id="itemId" />
                 <div class="form-group">
-                    <label for="itemName">Name</label>
+                    <label for="itemName" class="fw-bold mb-2">Name</label>
                     <input type="text" class="form-control" id="itemName" />
                 </div>
                 <div class="form-group">
-                    <label for="itemDescription">Description</label>
+                    <label for="itemDescription"  class="fw-bold mb-2">Description</label>
                     <textarea class="form-control" id="itemDescription"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="itemPrice">Price</label>
+                    <label for="itemPrice"  class="fw-bold mb-2">Price</label>
                     <input type="text" class="form-control" id="itemPrice" />
                 </div>
                 <div class="form-group">
-                    <label for="itemCategory">Category</label>
+                    <label for="itemCategory"  class="fw-bold mb-2">Category</label>
                     <input type="text" class="form-control" id="itemCategory" />
                 </div>
                 <div class="form-group">
-                    <label for="itemImage">Image</label>
+                    <label for="itemImage"  class="fw-bold mb-2">Image</label>
                     <input type="file" class="form-control" id="itemImage" />
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="saveEditBtn">Save changes</button>
+                <button type="button" class="btn btn-dark bg-pink-menu" id="saveEditBtn">Save changes</button>
             </div>
         </div>
     </div>

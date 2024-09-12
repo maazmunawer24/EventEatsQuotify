@@ -235,6 +235,10 @@ namespace EventEatsQuotify.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("AdditionalInstructions")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -251,6 +255,10 @@ namespace EventEatsQuotify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VendorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VendorMessage")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -321,15 +329,15 @@ namespace EventEatsQuotify.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "458f5664-2089-4699-924f-8813a2296078",
-                            ConcurrencyStamp = "46288933-9b31-4a9c-86ee-06909a9e7c49",
+                            Id = "7905f0e1-18f7-44fa-b27c-17497cd6fa52",
+                            ConcurrencyStamp = "e209b000-52d5-4cb6-b79e-7b9605ac698e",
                             Name = "Vendor",
                             NormalizedName = "VENDOR"
                         },
                         new
                         {
-                            Id = "8520904e-d6dd-424c-8f0e-e5ce6f7dfee1",
-                            ConcurrencyStamp = "1fae2cac-c3e0-4060-b473-44d95b16919a",
+                            Id = "15df1ef7-bb94-4a93-b297-54c0e096838f",
+                            ConcurrencyStamp = "4f9f2e49-afb8-4ffa-bc67-eeee76a2a188",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });

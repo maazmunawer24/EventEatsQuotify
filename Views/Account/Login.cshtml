@@ -4,38 +4,34 @@
     ViewData["Title"] = "LogIn";
 }
 
-<div class="container-fluid">
-    <div class="row shadow rounded login-carousel mt-5">
-        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
-            <div>
-                <img src="~/images/carouselImages/p1.jpg" class="w-100" />
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
-            <form autocomplete="on" method="post" class="m-3 p-3" action="/Account/Login">
-                <div class="mb-3">
-                    <h2 class="text-pink fst-italic">LogIn</h2>
-                    <span class="fst-italic text-muted">LogIn into your account </span>
+<div class="d-flex flex-column justify-content-center align-items-center " style="height: 80vh">
+    <div class="row shadow rounded loginmobile " style="width: 500px">
+       
+        <div class="col-sm-12 col-md-12 col-lg-12  main-section">
+            <form autocomplete="on" method="post" class=" p-3 d-flex flex-column justify-content-center align-items-center " action="/Account/Login">
+                <div class="">
+                    <h2 class="text-light text-center fst-italic">Login</h2>
+                    <span class="fst-italic text-center text-muted">LogIn into your account </span>
                 </div>
-                <div class="mb-3">
+                <div class="mb-2">
                     @Html.ValidationSummary()
                 </div>
-                <div class="form-floating mb-3">
+                <div class="form-floating w-75   mb-3">
                     @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email" })
                     <label for="Email">Email</label>
                 </div>
-                <div class="form-floating mb-3 password-input-container">
-                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control", placeholder = "Password", type = "password", id = "password" })
-                    <label for="Password">Password</label>
+                <div class="form-floating mb-3  w-75 password-input-container ">
+                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control ", placeholder = "Password", type = "password", id = "password" })
+                    <label for="Password" class="text-dark">Password</label>
                     <span class="password-toggle-icon" onclick="togglePasswordVisibility()"><i id="toggleIcon" class="far fa-eye"></i></span>
                 </div>
                 <div class="mb-3">
-                    <button class="btn btn-sm btn-dark w-100 p-2 shadow rounded" type="submit">LogIn</button>
+                    <button class="btn btn-sm bg-pink-menu  text-light  px-4 shadow rounded" type="submit">Login</button>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 text-light">
                     <span>Don't have an account?</span>
                     <a asp-controller="account" asp-action="Register"
-                       class="text-decoration-none text-dark">Register here</a>
+                       class="text-decoration-none  text-pink-menu">Register here</a>
                 </div>
             </form>
         </div>

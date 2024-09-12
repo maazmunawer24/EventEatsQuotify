@@ -28,12 +28,12 @@
         }
 </style>
 
-<div class="comparison-container">
-    @* <h3>Vendor Comparison</h3> *@
+<div class="comparison-container  px-3">
 
+    <h4 class="mb-3 text-dark fw-bold">Vendor Comparison By Filters</h4>
     <!-- Vendor Filter Checkboxes -->
     <div class="filter-container">
-        <h4>Filter by Vendor</h4>
+        <h5 class="text-pink-menu">Filter by Vendor</h5>
         @* <label><input type="checkbox" class="vendor-filter" value="all" checked> All Vendors</label> *@
         @foreach (var vendor in Model.Vendors)
         {
@@ -43,7 +43,7 @@
 
     <!-- Food Item Filter Checkboxes -->
     <div class="filter-container">
-        <h4>Filter by Food Item</h4>
+        <h5 class="text-pink-menu">Filter by Food Item</h5>
         @* <label><input type="checkbox" class="food-filter" value="all" checked> All Food Items</label> *@
         @foreach (var item in Model.FoodItems)
         {
@@ -52,13 +52,13 @@
     </div>
 
     <!-- Comparison Table -->
-    <table class="comparison-table">
+    <table class="table table-dark   table-bordered border-danger">
         <thead>
             <tr>
-                <th>Food Item</th>
+                <th class="bg-black">Food Item</th>
                 @foreach (var vendor in Model.Vendors)
                 {
-                    <th class="vendor-column" data-vendor-id="@vendor.Id">@vendor.Name</th>
+                    <th class="vendor-column bg-black" data-vendor-id="@vendor.Id">@vendor.Name</th>
                 }
             </tr>
         </thead>
@@ -66,17 +66,32 @@
             @foreach (var item in Model.FoodItems)
             {
                 <tr class="food-row" data-food-item="@item.FoodItemName">
-                    <td>@item.FoodItemName</td>
+                    <td class="border border-danger">@item.FoodItemName </td>
                     @foreach (var vendor in Model.Vendors)
                     {
                         <td class="vendor-column" data-vendor-id="@vendor.Id">
-                            @((item.VendorPrices != null && item.VendorPrices.ContainsKey(vendor.Id)) ? item.VendorPrices[vendor.Id].ToString("C", new System.Globalization.CultureInfo("en-PK")) : "N/A")
+                            @{
+                                if (item.VendorPrices != null && item.VendorPrices.ContainsKey(vendor.Id))
+                                {
+                                    // Convert the price to an integer and format it as required.
+                                    int price = Convert.ToInt32(item.VendorPrices[vendor.Id]);
+                                    string formattedPrice = $"Rs {price}"; // Single space between "Rs" and the number.
+                                    @formattedPrice
+                                }
+                                else
+                                {
+                                    @:N/A
+                                }
+                            }
                         </td>
                     }
+
                 </tr>
             }
         </tbody>
     </table>
+
+
 </div>
 @section Scripts {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

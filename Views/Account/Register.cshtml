@@ -1,4 +1,20 @@
-﻿@model EventEatsQuotify.Models.RegisterViewModel
+﻿
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@model EventEatsQuotify.Models.RegisterViewModel
 @{
     ViewData["Title"] = "Register";
 }
@@ -20,14 +36,15 @@
 
 </head>
 <body>
-    <div class="container">
-        <div class="row justify-content-center my-5">
-            <div class="col-md-8">
+    <div class="registerpage d-flex justify-content-center align-items-center my-4">
+        <div class="row justify-content-center align-items-center p-3" style="height: 80vh; width: 500px">
+            <div class="main-section " style="width:100%">
                 <!-- Adjust width of the form -->
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="text-center text-pink mb-4">Register</h2>
-                        <form autocomplete="on" method="post" class="p-4" action="/Account/Register" enctype="multipart/form-data">
+                <div class=" ">
+                    <div class="pt-3   d-flex flex-column justify-content-center align-items-center">
+                        <h1 class="text-center text-light mb-2">Register</h1>
+                        <p class="w-75 text-secondary text-center">Welcome! To create an account, please fill out the form below. All fields  are required.</p>
+                        <form autocomplete="on" method="post" class="p-3 " action="/Account/Register" enctype="multipart/form-data">
                             @if (ViewData.ModelState.IsValid == false)
                             {
                                 <div class="alert alert-danger" role="alert">
@@ -40,8 +57,8 @@
                                 </div>
                             }
                             
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Name" required name="Name" />
+                            <div class="form-group ">
+                                <input type="text" class="form-control " placeholder="Name" required name="Name" />
                                 <div class="invalid-feedback">Please enter your name.</div>
                             </div>
                             <div class="form-group">
@@ -68,36 +85,41 @@
                             </div>
 
                             <div id="vendorFields" style="display: none;">
-                                <h4 class="text-center text-muted mb-3">Additional Information for Vendors</h4>
+                                <h4 class="text-center text-pink-menu mb-3">Additional Information for Vendors</h4>
 
                                 <div class="form-group">
-                                    <h5>UPLOAD CNIC FRONT IMAGE: </h5>
+                                    <h5 class="text-light">UPLOAD CNIC FRONT IMAGE: </h5>
                                     <input type="file" class="form-control" name="CNICImageFile" />
                                     <div class="invalid-feedback">Please upload CNIC image file.</div>
                                 </div>
                                 <div class="form-group">
-                                    <h5>UPLOAD CNIC BACK IMAGE: </h5>
+                                    <h5 class="text-light">UPLOAD CNIC BACK IMAGE: </h5>
                                     <input type="file" class="form-control" name="CNICBackImageFile" />
                                     <div class="invalid-feedback">Please upload CNIC Back image file.</div>
                                 </div>
                                 <div class="form-group">
                                     <input type="text" class="form-control" placeholder="CNIC Number" name="CNICNumber" />
-                                    <div class="invalid-feedback">Please enter CNIC number.</div>
+                                    <div class="invalid-feedback text-light">Please enter CNIC number.</div>
                                 </div>
 
                                 <div class="form-group">
-                                    <h5>UPLOAD BILLING IMAGE: </h5>
+                                    <h5 class="text-light">UPLOAD BILLING IMAGE: </h5>
                                     <input type="file" class="form-control" name="BillingImageFile" />
                                     <div class="invalid-feedback">Please upload billing image file.</div>
                                 </div>
 
                                 <div class="form-group">
                                     <input type="text" class="form-control" placeholder="Shop Address" name="ShopAddress" />
-                                    <div class="invalid-feedback">Please enter shop address.</div>
+                                    <div class="invalid-feedback text-light">Please enter shop address.</div>
                                 </div>
                             </div>
-                            <div class="form-group text-center mt-4">
-                                <button type="submit" class="btn btn-dark btn-block">Register</button>
+                            <div class="form-group text-center mt-2">
+                                <button type="submit" class="btn bg-pink-menu text-light btn-block">Register</button>
+                            </div>
+                            <div class="mb-1 text-light text-center">
+                                <span>Already have an account?</span>
+                                <a asp-controller="account" asp-action="Login"
+                                   class="text-decoration-none  text-pink-menu">Login</a>
                             </div>
                         </form>
 

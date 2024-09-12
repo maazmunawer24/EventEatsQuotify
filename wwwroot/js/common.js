@@ -1,10 +1,5 @@
-﻿// common.js
-function rebindComparisonTableFilters() {
-    $(document).on('change', '.vendor-filter, .food-filter', function () {
-        filterComparisonTable();
-    });
-    filterComparisonTable(); // Ensure the table is filtered correctly
-}
+﻿ //common.js
+
 
 $(document).ready(function () {
     // Function to handle filter changes
@@ -97,7 +92,12 @@ $(document).ready(function () {
             form.find('button[type="submit"]').prop('disabled', false); // Re-enable the button on failure
         });
     });
-
+    function rebindComparisonTableFilters() {
+        $(document).on('change', '.vendor-filter, .food-filter', function () {
+            filterComparisonTable();
+        });
+        filterComparisonTable(); // Ensure the table is filtered correctly
+    }
 
 
 });

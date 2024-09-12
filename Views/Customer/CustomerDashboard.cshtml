@@ -12,15 +12,21 @@
 
 <head>
     <style>
+        <style >
         body {
             font-family: Arial, sans-serif;
         }
+        marquee{
+            display: none;
+        }
 
         .custom-card {
+            background-color:black;
             border: none;
             border-radius: 5px;
             overflow: hidden;
             transition: transform 0.3s ease-in-out;
+margin:10px 0px;
         }
 
             .custom-card:hover {
@@ -28,8 +34,9 @@
             }
 
         .custom-card-img-top {
-            width: 100%;
-            height: 200px;
+            width: 50%;
+            
+            
             object-fit: cover;
         }
 
@@ -49,32 +56,32 @@
         }
 
         .custom-btn {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
+
             padding: 0.5rem 1rem;
+            border: none;
+            
             border-radius: 2rem;
             transition: background-color 0.3s ease-in-out;
         }
 
-            .custom-btn:hover {
-                background-color: #e8e8e8;
-            }
-
         .custom-btn-primary {
-            background-color: #007bff;
+            background-color: #007bff; /* Blue color */
             color: #fff;
         }
 
             .custom-btn-primary:hover {
-                background-color: #0069d9;
+                background-color: #0056b3; /* Darker blue on hover */
             }
 
         .custom-btn-secondary {
-            background-color: #6c757d;
+            background-color: #007bff; /* Blue color */
             color: #fff;
+            margin-top: 25px;
         }
 
             .custom-btn-secondary:hover {
-                background-color: #5a6268;
+                background-color: #0056b3; /* Darker blue on hover */
             }
 
         .custom-modal {
@@ -146,35 +153,6 @@
             overflow-y: auto; /* Enable vertical scroll if content exceeds max height */
         }
 
-        .custom-card-body {
-            padding: 1rem;
-        }
-
-        .custom-btn {
-            font-size: 0.9rem;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            transition: background-color 0.3s ease-in-out;
-        }
-
-        .custom-btn-primary {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-            .custom-btn-primary:hover {
-                background-color: #0069d9;
-            }
-
-        .custom-btn-secondary {
-            background-color: #6c757d;
-            color: #fff;
-        }
-
-            .custom-btn-secondary:hover {
-                background-color: #5a6268;
-            }
-
         .comparison-container {
             margin-top: 30px;
         }
@@ -205,34 +183,51 @@
             .comparison-header .custom-btn {
                 margin-right: 10px;
             }
+ 
 
     </style>
 </head>
 
-<h1 class="text-center mb-4">Welcome to the Customer Dashboard</h1>
-<div class="row mt-3 mb-5">
-    <div class="col">
-        <div class="input-group">
-            <input type="text" id="searchInput" class="form-control" placeholder="Search vendors" style="border-radius: 25px;width:66%;">
-            <select id="searchType" class="form-select" style="max-width: 200px;width:34%; margin-left: 10px;border-radius: 25px;">
-                <option value="vendor" selected>By Vendor</option>
-                <option value="fooditem">By Food Item</option>
-            </select>
+<div class="dashboard py-2 ">
+    <div class="row">
+        <div class="col-md-12">
+
+
+<div class="main-section p-5 d-flex cdb">
+    <div class="row mt-3 mb-5 w-80">
+                <h3 class="fw-bold text-light mb-4">Welcome to the <span class="text-pink-menu">Customer Dashboard</span> </h3>
+        <div class="col">
+                        <h5 class="text-light">Search Vendor</h5>
+            <div class="d-flex flex-column w-100">
+                <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search vendors"">
+                <select id="searchType" class="form-select mb-3" >
+                    <option value="vendor" selected>By Vendor</option>
+                    <option value="fooditem">By Food Item</option>
+                </select>
+             
+            </div>
         </div>
     </div>
-</div>
-<!-- Vendor Comparison Section -->
-<div class="comparison-header">
-    @* <h2>Compare Vendors</h2> *@
-    <div>
-        <button class="custom-btn custom-btn-primary" id="viewQuotationsButton">View Quotations</button>
-        <input type="checkbox" id="selectAllCheckbox"> Select All
-        <button class="custom-btn custom-btn-primary" id="compareVendorsButton">Compare Selected Vendors</button>
+    <!-- Vendor Comparison Section -->
+    <div class="comparison-header ">
+        <div class="d-flex flex-column">
+            <h5 class="text-light">Filters</h5>
+            <div class="mb-3">
+            <input type="checkbox" id="selectAllCheckbox"> <span class="text-light "> Select All </span>
+            </div>
+            <button class="custom-btn btn-secondary custom-btn-black" id="compareVendorsButton">Compare Selected Vendors</button>
+            <hr class="bg-danger">
+                        <h5 class="text-light mb-3">Features</h5>
+
+                        <button class="custom-btn btn btn-secondary custom-btn-black" id="viewQuotationsButton">View Quotations</button>
+        </div>
     </div>
+              
+
 </div>
 
-<div class="container">
-    <div id="vendorContainer">
+<div class="">
+      <div id="vendorContainer">
         @Html.Partial("_VendorList", Model)
     </div>
 
@@ -242,9 +237,9 @@
     <div class="modal fade" id="vendorComparisonModal" tabindex="-1" role="dialog" aria-labelledby="vendorComparisonModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content custom-modal-content">
-                <div class="modal-header custom-modal-header">
-                    <h5 class="modal-title" id="vendorComparisonModalLabel">Vendor Comparison</h5>
-                    @* <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button> *@
+                            <div class="modal-header   bg-dark text-light">
+                                <h5 class="modal-title " id="quotationHistoryModalLabel">Vendor Comparison</h5>
+                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 
                 </div>
                 <div class="modal-body" id="vendorComparisonContainer">
@@ -260,12 +255,12 @@
     <div class="modal fade" id="quotationHistoryModal" tabindex="-1" role="dialog" aria-labelledby="quotationHistoryModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content custom-modal-content">
-                <div class="modal-header custom-modal-header">
-                    <h5 class="modal-title" id="quotationHistoryModalLabel">Quotation History</h5>
-                    @* <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button> *@
+                <div class="modal-header bg-dark text-light">
+                    <h5 class="modal-title " id="quotationHistoryModalLabel">Quotation History</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 
                 </div>
-                <div class="modal-body" id="quotationHistoryContainer">
+                <div class="modal-body p-3" id="quotationHistoryContainer">
                     <!-- Content will be loaded here dynamically -->
                 </div>
                 @*      <div class="modal-footer custom-modal-footer">
@@ -274,17 +269,21 @@
             </div>
         </div>
     </div>
+        </div>
+        </div>
+    </div>
 
 
 </div>
 
 @section Scripts {
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+ <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/c58416c086.js" crossorigin="anonymous"></script>
     <script src="~/js/common.js" asp-append-version="true"></script>
 
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script> 
+
 
     <script>
 
@@ -344,7 +343,7 @@
 
 
 
-        var searchType = $("searchType").val();
+        var searchType = $("#searchType").val();
 
         // Debounce function to limit the rate at which a function can fire.
         function debounce(func, wait) {
@@ -406,11 +405,13 @@
                     if (response.success) {
                         var htmlContent = '';
                         $.each(response.data, function (index, item) {
-                            htmlContent += '<div class="mb-3">';
+                            htmlContent += '<div class="col-md-6">';
+                            htmlContent += '<div class="mb-3 card  mx-1 d-flex flex-column justify-content-center align-items-center p-3">';
+                            htmlContent += '<img src="' + (item.foodPicturePath || '~/images/defaultimages/placeholder.png') + '" alt="' + (item.name || "Item") + '" class="img-fluid rounded w-50">';
                             htmlContent += '<h1>' + (item.name || "") + '</h1>';
-                            htmlContent += '<p><strong>Description:</strong> ' + (item.description || "") + '</p>';
-                            htmlContent += '<p><strong>Price:</strong> ' + (item.price || "") + '</p>';
-                            htmlContent += '<img src="' + (item.foodPicturePath || '~/images/defaultimages/placeholder.png') + '" alt="' + (item.name || "Item") + '" class="img-fluid rounded">';
+                            htmlContent += '<p class="text-center"><strong>Description:</strong> <br> ' + (item.description || "") + '</p>';
+                            htmlContent += '<p  class="text-center fw-bold fs-4"><strong class="fs-6">Price:</strong> <br> ' + (item.price || "") + '/=</p>';
+                            htmlContent += '</div>';
                             htmlContent += '</div>';
                         });
                         $('#vendorMenuModalContent-' + vendorId).html(htmlContent);
@@ -439,19 +440,28 @@
                         var vendor = response.data;
                         var profileImageSrc = vendor && vendor.profilePicture ? 'data:image/png;base64,' + vendor.profilePicture : '/images/defaultimages/user.png';
                         var htmlContent = `
-                                    <img src="${profileImageSrc}" class="img-fluid rounded" style="width: 150px; height: 150px;">
-                                    <p><strong>Name:</strong> ${vendor.name || ""}</p>
-                                    <p><strong>Description:</strong> ${vendor.description || ""}</p>
-                                    <p><strong>Address:</strong> ${vendor.shopAddress || ""}</p>
-                                    <p><strong>Website:</strong> <a href="${vendor.website || "#"}" target="_blank">${vendor.website || ""}</a></p>
-                                    <p><strong>Specialties:</strong> ${vendor.specialties || ""}</p>
-                                    <p><strong>Menu Highlights:</strong> ${vendor.menuHighlights || ""}</p>
-                                    <div id="reviews-${vendor.id}">
-                                        <h4>Customer Reviews:</h4>
-                                        <div id="reviewList-${vendor.id}"></div>
-                                        <textarea id="reviewContent-${vendor.id}" placeholder="Write a review..."></textarea>
-                                        <button onclick="submitReview('${vendor.id}')">Submit Review</button>
-                                    </div>
+                                     <div class="d-flex feedback justify-content-evenly">
+                                    <img src="${profileImageSrc}" class="img-fluid rounded mb-3" style="width: 150px; height: 150px;">
+                                   <div class="d-flex ">
+                                            <div class="px-3">
+                                                      <h5 class='text-pink-menu'>Customer Info:</h5>
+                                                       <p><strong>Name:</strong> ${vendor.name || ""}</p>
+                                                    <p><strong>Description:</strong> ${vendor.description || ""}</p>
+                                                    <p><strong>Address:</strong> ${vendor.shopAddress || ""}</p>
+                                                    <p><strong>Website:</strong> <a href="${vendor.website || "#"}" target="_blank">${vendor.website || ""}</a></p>
+                                                    <p><strong>Specialties:</strong> ${vendor.specialties || ""}</p>
+                                                    <p><strong>Menu Highlights:</strong> ${vendor.menuHighlights || ""}</p>
+                                            </div>
+                                            <div class="d-flex flex-column mx-3" id="reviews-${vendor.id}">
+                                                        <h5 class='text-pink-menu'>Customer Reviews:</h5>
+                                                <div id="reviewList-${vendor.id}"></div>
+                                                <textarea class="form-control mb-3 w-100" id="reviewContent-${vendor.id}" rows="3" placeholder="Write a review..."></textarea>
+                                                <div>
+                                                <button class="btn text-light bg-pink-menu btn-sm" onclick="submitReview('${vendor.id}')">Submit Review</button>
+                                            </div>
+                                                </div>
+                                                        </div>
+                                   </div>
                                 `;
                         $('#vendorProfileModalContent-' + vendorId).html(htmlContent);
                         loadReviews(vendorId);
@@ -513,9 +523,103 @@
                 }
             });
         }
+        // Function to handle filter changes
+        function filterComparisonTable() {
+            var selectedVendors = [];
+            var selectedFoodItems = [];
 
-  
+            // Get selected vendors
+            $('.vendor-filter:checked').each(function () {
+                var vendorId = $(this).val();
+                if (vendorId !== 'all') {
+                    selectedVendors.push(vendorId);
+                }
+            });
 
+            // Get selected food items
+            $('.food-filter:checked').each(function () {
+                var foodItemName = $(this).val();
+                if (foodItemName !== 'all') {
+                    selectedFoodItems.push(foodItemName);
+                }
+            });
+
+            // Show or hide rows based on selected food items
+            $('.food-row').each(function () {
+                var foodItemName = $(this).data('food-item');
+                if (selectedFoodItems.length === 0 || selectedFoodItems.includes(foodItemName)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            // Show or hide columns based on selected vendors
+            $('.vendor-column').each(function () {
+                var vendorId = $(this).data('vendor-id');
+                if (selectedVendors.length === 0 || selectedVendors.includes(vendorId)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            // Hide vendor header columns if the corresponding vendor columns are hidden
+            $('th[data-vendor-id]').each(function () {
+                var vendorId = $(this).data('vendor-id');
+                if (selectedVendors.length === 0 || selectedVendors.includes(vendorId)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+
+        // Use event delegation to handle the change event for vendor and food item filter checkboxes
+        $(document).on('change', '.vendor-filter, .food-filter', function () {
+            filterComparisonTable();
+        });
+
+        // Trigger the initial filtering to ensure the table is correctly displayed on page load
+        filterComparisonTable();
+        $(document).on('submit', '.approve-quotation-form', function (e) {
+            console.log("hi");
+            $('#loader').removeClass('d-none');
+            e.preventDefault();
+
+            var form = $(this);
+            var url = form.attr('action');
+            var formData = form.serialize();
+
+            // Disable the submit button to prevent multiple submissions
+            form.find('button[type="submit"]').prop('disabled', true);
+
+            $.post(url, formData, function (response) {
+                $('#loader').addClass('d-none');
+
+                // Enable the submit button again (optional, depending on your flow)
+                form.find('button[type="submit"]').prop('disabled', false);
+
+                // Assuming you're redirecting after success, the loader may remain visible until the page reloads
+                if (response.success) {
+                    window.location.href = '@Url.Action("ViewReceivedQuotations")';
+                }
+                else {
+                    alert('Failed to approve the quotation. Please try again later.');
+                }
+            }).fail(function () {
+                $('#loader').addClass('d-none');
+                alert('An error occurred while processing your request.');
+                form.find('button[type="submit"]').prop('disabled', false); // Re-enable the button on failure
+            });
+        });
+
+        function rebindComparisonTableFilters() {
+           $(document).on('change', '.vendor-filter, .food-filter', function () {
+               filterComparisonTable();
+           });
+           filterComparisonTable(); // Ensure the table is filtered correctly
+        }
     </script>
 
 

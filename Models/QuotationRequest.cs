@@ -20,6 +20,11 @@ namespace EventEatsQuotify.Models
         [Required]
         public string VendorName { get; set; }
 
+        public string VendorMessage { get; set; }
+
+        public string AdditionalInstructions { get; set; }
+
+
         public string Status { get; set; } = "Pending";
 
         public ICollection<QuotationFoodItem> QuotationFoodItems { get; set; } = new List<QuotationFoodItem>();

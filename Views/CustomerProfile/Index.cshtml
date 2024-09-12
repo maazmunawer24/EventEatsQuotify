@@ -1,42 +1,43 @@
 ﻿@model EventEatsQuotify.ViewModels.CustomerProfiileViewModel
 
-<div class="container mt-5">
-    <div class="row">
+<div class="  d-flex justify-content-center align-items-center my-5">
+    <div class=" customerprofile ">
+        <div class="d-flex main-section  flex-column">
+            <h2 class=" text-light text-center mb-3">Customer Profile</h2>
+            <!-- Profile Image -->
+            <div class="">
+                <div class=" text-center p-4  rounded-3 shadow">
+                    @if (Model.ProfilePicture != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProfilePicture)" alt="Profile Image" width="50%" class="img-fluid rounded-circle mb-3">
+                    }
+                    else
+                    {
+                        <img src="~/images/team/teamone.jpg" alt="Default Profile Image" width="50%" class="img-fluid rounded-circle mb-3">
+                    }
 
-        <!-- Profile Image -->
-        <div class="col-md-4">
-            <div class="card text-center p-4 border border-primary rounded-3 shadow">
-                @if (Model.ProfilePicture != null)
-                {
-                    <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProfilePicture)" alt="Profile Image" class="img-fluid rounded-circle mb-3">
-                }
-                else
-                {
-                    <img src="~/images/defaultimages/user.png" alt="Default Profile Image" class="img-fluid rounded-circle mb-3">
-                }
-
-                <p class="lead text-muted fs-6">Customer since: [@Model.RegistrationDate.ToString("yyyy-MM-dd")]</p>
+                    <p class="lead text-light fs-6">Customer since: <br /> <span class="text-pink-menu ">@Model.RegistrationDate.ToString("yyyy-MM-dd")</span></p>
+                </div>
             </div>
-        </div>
 
-        <!-- Profile Details -->
-        <div class="col-md-8">
-            <div class="card shadow p-4 border-0 rounded-3">
-                <h1 class="display-4 text-primary mb-4">@Model.Name</h1>
+            <!-- Profile Details -->
+            <div class="">
+                <div class="card bg-dark shadow p-4 border-0 rounded-3">
+                    <h6 class="display-5 text-pink-menu fw-bold mb-4">
+                        @Model.Name <a asp-action="Edit" class="btn btn-success btn-sm rounded-circle"><i class="fas fa-edit"></i></a>
+                    </h6>
 
-                <dl class="row">
-                    <dt class="col-sm-3 text-muted">Contact Email:</dt>
-                    <dd class="col-sm-9">@Model.ContactEmail</dd>
+                    <dl class="row">
+                        <dt class="col-sm-3 text-muted">Email:</dt>
+                        <dd class="col-sm-9 text-light">@Model.ContactEmail</dd>
 
-                    <dt class="col-sm-3 text-muted">Contact Phone:</dt>
-                    <dd class="col-sm-9">@Model.ContactPhone</dd>
-                   
-                </dl>
+                        <dt class="col-sm-3 text-muted">Phone:</dt>
+                        <dd class="col-sm-9 text-light">@Model.ContactPhone</dd>
 
-                <hr class="my-4 border-primary">
+                    </dl>
 
-                <div class="text-center mt-4">
-                    <a asp-action="Edit" class="btn btn-primary btn-lg rounded-pill">Edit Profile</a>
+                
+
                 </div>
             </div>
         </div>

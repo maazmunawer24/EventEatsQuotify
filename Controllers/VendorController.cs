@@ -394,45 +394,69 @@ namespace EventEatsQuotify.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ApproveQuotation(int quotationId, string message)
+        public async Task<IActionResult> HandleQuotation(int quotationId, string message, string action)
         {
-            var quotation = await _dbContext.QuotationRequests
-                .FirstOrDefaultAsync(q => q.Id == quotationId);
-
-            if (quotation == null)
-            {
-                return Json(new { success = false, error = "Quotation not found." });
-            }
-
-            // Approve the quotation request
-            quotation.Status = "Approved";
-            await _dbContext.SaveChangesAsync();
-
-            var customer = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == quotation.CustomerId);
-            if (customer == null)
-            {
-                return Json(new { success = false, error = "Customer not found." });
-            }
-
-            var customerEmail = customer.Email;
-            var vendorName = User.Identity.Name;
-            var subject = $"Quotation Approved by {vendorName}";
-            var body = $"Dear {customer.UserName},\n\n" +
-                       $"Your quotation request for {quotation.QuotationFoodItems.Count} items has been approved by {vendorName}.\n\n" +
-                       $"Message from the vendor: {message}\n\n" +
-                       $"Best regards,\n{vendorName}";
-
             try
             {
-                await SendQuotationEmailAsync(customerEmail, subject, body);
-                return RedirectToAction("ViewReceivedQuotations"); // Redirect to reload the view
-          
+                var quotation = await _dbContext.QuotationRequests.FirstOrDefaultAsync(q => q.Id == quotationId);
 
+                if (quotation == null)
+                {
+                    return Json(new { success = false, error = "Quotation not found." });
+                }
+
+                if (action == "approve")
+                {
+                    // Approve the quotation
+                    quotation.Status = "Approved";
+                    quotation.VendorMessage = message;
+
+                    var customer = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == quotation.CustomerId);
+                    if (customer == null)
+                    {
+                        return Json(new { success = false, error = "Customer not found." });
+                    }
+
+                    var customerEmail = customer.Email;
+                    var vendorName = User.Identity.Name;
+                    var subject = $"Quotation Approved by {vendorName}";
+                    var body = $"Dear {customer.UserName},\n\n" +
+                               $"Your quotation request for {quotation.QuotationFoodItems.Count} items has been approved by {vendorName}.\n\n" +
+                               $"Message from the vendor: {message}\n\n" +
+                               $"Best regards,\n{vendorName}";
+
+                    await SendQuotationEmailAsync(customerEmail, subject, body);
+                }
+                else if (action == "reject")
+                {
+                    // Reject the quotation
+                    quotation.Status = "Rejected";
+                    quotation.VendorMessage = message;
+
+                    var customer = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == quotation.CustomerId);
+                    if (customer == null)
+                    {
+                        return Json(new { success = false, error = "Customer not found." });
+                    }
+
+                    var customerEmail = customer.Email;
+                    var vendorName = User.Identity.Name;
+                    var subject = $"Quotation Rejected by {vendorName}";
+                    var body = $"Dear {customer.UserName},\n\n" +
+                               $"Your quotation request has been rejected by {vendorName}.\n\n" +
+                               $"Message from the vendor: {message}\n\n" +
+                               $"Best regards,\n{vendorName}";
+
+                    await SendQuotationEmailAsync(customerEmail, subject, body);
+                }
+
+                await _dbContext.SaveChangesAsync();
+
+                return RedirectToAction("ViewReceivedQuotations");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while approvng the quotation request");
-
+                return StatusCode(500, "An error occurred while processing the quotation request.");
             }
         }
 

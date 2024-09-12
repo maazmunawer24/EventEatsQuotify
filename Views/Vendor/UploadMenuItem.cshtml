@@ -1,50 +1,55 @@
 ﻿@model EventEatsQuotify.Models.FoodItem
+<div class="d-flex justify-content-center align-items-center">
+    <div class="main-section col-md-6 my-4 p-4">
+        <h1 class="text-light">Upload New Menu Item</h1>
 
-<h1>Upload New Menu Item</h1>
+        @using (Html.BeginForm("UploadMenuItem", "Vendor", FormMethod.Post, new { enctype = "multipart/form-data", @class = "row g-3" }))
+        {
+            @Html.AntiForgeryToken()
 
-@using (Html.BeginForm("UploadMenuItem", "Vendor", FormMethod.Post, new { enctype = "multipart/form-data", @class = "row g-3" }))
-{
-    @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.VendorId) <!-- Add this hidden field -->
+            <!-- Validation Summary to display model-level errors -->
+            <div class="col-12">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            </div>
 
-    @Html.HiddenFor(model => model.VendorId) <!-- Add this hidden field -->
-    <!-- Validation Summary to display model-level errors -->
-    <div class="col-12">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    </div>
+            <div class="col-md-6">
+                <label class="form-label text-light">Upload Photo</label>
+                <input type="file" name="photo" class="form-control" />
+            </div>
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "form-label text-light" })
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+          
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "form-label text-light" })
+                @Html.TextBoxFor(model => model.Price, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "form-label text-light" })
+                @Html.DropDownListFor(model => model.Category, new SelectList(new[]
+                         {
+            new SelectListItem { Text = "Starter", Value = "Starter" },
+            new SelectListItem { Text = "Main Course", Value = "Main Course" },
+            new SelectListItem { Text = "Dessert", Value = "Dessert" },
+            new SelectListItem { Text = "Beverages", Value = "Beverages" }
+            }, "Value", "Text"), "Select Category", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-12">
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "form-label text-light" })
+                @Html.TextBoxFor(model => model.Description, new { @class = "form-control h-50" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-12 d-flex">
+                <input type="submit" value="Upload" class="btn btn-dark bg-pink-menu " />
+                <a href="@Url.Action("MenuItems", "Vendor")" class="btn btn-dark  mx-2">Back to Menu Items</a>
+            </div>
+        }
 
-    <div class="col-md-6">
-        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "form-label" })
-        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
     </div>
-    <div class="col-md-6">
-        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "form-label" })
-        @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-    </div>
-    <div class="col-md-6">
-        @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "form-label" })
-        @Html.TextBoxFor(model => model.Price, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
-    </div>
-    <div class="col-md-6">
-        @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "form-label" })
-        @Html.DropDownListFor(model => model.Category, new SelectList(new[]
-                {
-    new SelectListItem { Text = "Starter", Value = "Starter" },
-    new SelectListItem { Text = "Main Course", Value = "Main Course" },
-    new SelectListItem { Text = "Dessert", Value = "Dessert" },
-    new SelectListItem { Text = "Beverages", Value = "Beverages" }
-    }, "Value", "Text"), "Select Category", new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
-    </div>
-    <div class="col-md-6">
-        <label class="form-label">Upload Photo</label>
-        <input type="file" name="photo" class="form-control" />
-    </div>
-    <div class="col-12">
-        <input type="submit" value="Upload" class="btn btn-primary" />
-    </div>
-}
+</div>
 
-<a href="@Url.Action("MenuItems", "Vendor")" class="btn btn-secondary mt-2">Back to Menu Items</a>
