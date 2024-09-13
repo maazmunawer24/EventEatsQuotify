@@ -270,7 +270,7 @@ public class CustomerController : Controller
 </body>
 </html>";
 
-            await SendQuotationEmailAsync("maaz.munawer@outlook.com", "Quotation Request", emailContent);
+            await SendQuotationEmailAsync("", "Quotation Request", emailContent);
 
             return Ok(new { success = true, message = "Quotation request sent successfully" });
         }

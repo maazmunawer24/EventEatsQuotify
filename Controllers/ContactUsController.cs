@@ -10,7 +10,7 @@ namespace EventEatsQuotify.Controllers
 {
     public class ContactUsController : Controller
     {
-        private readonly string _adminEmail = "maaz.munawer@outlook.com"; // Change this to the admin's email address
+        private readonly string _adminEmail = ""; // Change this to the admin's email address
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ContactUsController> _logger;
 

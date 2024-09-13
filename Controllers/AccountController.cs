@@ -21,7 +21,7 @@ namespace EventEatsQuotify.Controllers
         private readonly IEmailSender _emailSender;
         private readonly IWebHostEnvironment _hostEnvironment;
         private readonly ILogger<AccountController> _logger;
-        private readonly string _adminEmail = "maaz.munawer@outlook.com"; // Change this to the admin's email address
+        private readonly string _adminEmail = ""; // Change this to the admin's email address
 
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, IWebHostEnvironment hostEnvironment, ILogger<AccountController> logger)
         {
